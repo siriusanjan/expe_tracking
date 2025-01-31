@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-enum UserRole { admin, manager, employee,none }
+enum UserRole { admin, manager, employee, none }
 
 class FirebaseUtils {
   FirebaseUtils._privateConstructor();
@@ -12,13 +12,19 @@ class FirebaseUtils {
     return _instance;
   }
 
-  Future<void> createUserWithRole(
-      String email, String password, String role) async {
-    UserCredential userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  Future<void> createUserWithRole(String email, String password, String role,
+      {Function? catchErrorMessage}) async {
+    UserCredential userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
       email: email,
       password: password,
-    );
+    )
+        .catchError((error, s) {
+      print("errotfadsf " + error.toString());
+      if (catchErrorMessage != null) {
+        catchErrorMessage!(error.toString());
+      }
+    });
 
     // Store user role in Firestore
     await FirebaseFirestore.instance
@@ -27,24 +33,26 @@ class FirebaseUtils {
         .set({
       'email': email,
       'role': role, // "admin", "manager", "employee"
+    }).catchError((e, s) {
+      print("error datatkjdklfjakldsjflaksdfma");
+      if (catchErrorMessage != null) {
+        catchErrorMessage!(e.toString());
+      }
     });
   }
 
-  void createAllRoleIfNotCreated() {
-    createUserWithRole(
-        "admin@example.com", "AdminPass123", UserRole.admin.name);
-    createUserWithRole(
-        "manager@example.com", "ManagerPass123", UserRole.manager.name);
-    createUserWithRole(
-        "employee@example.com", "EmployeePass123", UserRole.employee.name);
-  }
-
-  Future<UserRole> loginUser(String email, String password) async {
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+  Future<UserRole> loginUser(String email, String password,
+      {Function? catchErrorMessage}) async {
+    UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
       email: email,
       password: password,
-    );
+    )
+        .catchError((error) {
+      if (catchErrorMessage != null) {
+        catchErrorMessage!(error.toString());
+      }
+    });
 
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
@@ -57,12 +65,5 @@ class FirebaseUtils {
       ); // "admin", "manager", "employee"
     }
     return UserRole.none;
-  }
-
-  void login() async {
-    UserRole? role = await loginUser("admin@example.com", "AdminPass123");
-    if (role != null) {
-      print("Logged in as $role");
-    }
   }
 }

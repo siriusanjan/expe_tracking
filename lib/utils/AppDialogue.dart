@@ -2,53 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AppDialogue {
-  // static void showSettingsDialog(BuildContext context, String permissionType) {
-  //   Platform.isAndroid
-  //       ? showDialog(
-  //           context: context,
-  //           builder: (BuildContext context) => AlertDialog(
-  //             title: Text('$permissionType Permission Required'),
-  //             content: Text(
-  //                 'Please enable $permissionType access in the app settings to continue.'),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () => Navigator.of(context).pop(),
-  //                 child: const Text('Cancel'),
-  //               ),
-  //               TextButton(
-  //                 onPressed: () async {
-  //                   await openAppSettings();
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 child: const Text('Open Settings'),
-  //               ),
-  //             ],
-  //           ),
-  //         )
-  //       : showCupertinoDialog(
-  //           context: context,
-  //           builder: (BuildContext context) => CupertinoAlertDialog(
-  //             title: Text('$permissionType Permission Required'),
-  //             content: Text(
-  //                 'Please enable $permissionType access in the app settings to continue.'),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () => Navigator.of(context).pop(),
-  //                 child: const Text('Cancel'),
-  //               ),
-  //               TextButton(
-  //                 onPressed: () async {
-  //                   await openAppSettings();
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 child: const Text('Open Settings'),
-  //               ),
-  //             ],
-  //           ),
-  //         );
-  // }
+
 
   static void showLoadingDialog(BuildContext context, {String? text}) {
     showDialog(
@@ -80,15 +37,15 @@ class AppDialogue {
         );
       },
     );
-  }// Function to show the full-screen loading dialog
+  } // Function to show the full-screen loading dialog
 
-static void noUserFoundSnackBar({required BuildContext context}){
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text("No user found!"),
-      backgroundColor: Colors.red,
-    ),
-  );
-  return;
-}
+  static void noUserFoundSnackBar({required BuildContext context,required String message,Color? color=Colors.red}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+      ),
+    );
+    return;
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:expe_traking/on_boarding/login/view/login_sceen.dart';
+import 'package:expe_traking/utils/route_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -34,9 +36,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+      home: const LoginScreen(),
+      onGenerateRoute: RouteManager.generateRoute,    );
   }
+}
+
+class HomeView {
+  const HomeView();
 }
 
 class MyHomePage extends StatefulWidget {
