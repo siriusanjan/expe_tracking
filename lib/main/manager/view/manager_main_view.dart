@@ -1,3 +1,5 @@
+import 'package:expe_traking/utils/AppDialogue.dart';
+import 'package:expe_traking/utils/permission_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +13,17 @@ class ManagerMainView extends StatelessWidget {
     return Scaffold(
       body: Container(
         child: Center(
-          child: Text("Manager"),
+          child: Column(
+            children: [
+              Text("Manager"),
+              ElevatedButton(
+                onPressed: () {
+                  PermissionUtils.requestPhotoPermission(context);
+                },
+                child: Text("Upload Photo"),
+              )
+            ],
+          ),
         ),
       ),
     );

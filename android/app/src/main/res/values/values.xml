@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id">your-web-client-id</string>
+    <string name="firebase_database_url">your-firebase-db-url</string>
+    <string name="google_api_key">AIzaSyBAoxJ1S_j0UuKWo0H0lgSJMDJgD_VKbIo</string>
+    <string name="google_app_id">1:394656564898:android:61b47cc39f5949b5c579fb</string>
+    <string name="google_project_id">expensetraking-9d192</string>
+    <string name="firebase_storage_bucket">expensetraking-9d192.firebasestorage.app</string>
+</resources>

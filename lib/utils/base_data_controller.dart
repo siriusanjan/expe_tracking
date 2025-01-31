@@ -13,7 +13,17 @@ class BaseDataController {
   }
 
   Future<void> loginIn(
-      {required String email, required String password}) async {
-    currentUserRole = await FirebaseUtils().loginUser(email, password);
+      {required String email,
+      required String password,
+      Function? catchErrorMessage}) async {
+    currentUserRole = await FirebaseUtils()
+        .loginUser(email, password, catchErrorMessage: catchErrorMessage);
+  }
+
+  Future<void> createUserWithRole(
+      {required String email,
+      required String password,
+      required UserRole userRole,Function? catchErrorMessage}) async {
+    await FirebaseUtils().createUserWithRole(email, password, userRole.name, catchErrorMessage: catchErrorMessage);
   }
 }
