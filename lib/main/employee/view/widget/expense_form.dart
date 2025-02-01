@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:expe_traking/main/employee/controller/bloc_employee.dart';
 import 'package:expe_traking/main/employee/controller/employee_helper.dart';
 import 'package:expe_traking/utils/AppStyles.dart';
@@ -39,6 +41,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
       expensesModel.expensesStatus = ExpensesStatusEnum.pending;
       expensesModel.userId =
           BaseDataController().userCredential?.user?.uid ?? "";
+      expensesModel.authorMail =
+          BaseDataController().userCredential?.user?.email ?? "";
 
       employeeHelper.expensesModel = expensesModel;
       print("myUSerID " + expensesModel.userId);
@@ -58,28 +62,31 @@ class _ExpenseFormState extends State<ExpenseForm> {
               children: [
                 Stack(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.close,
-                        color: Colors.grey.shade700,
-                        size: 30,
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.grey.shade700,
+                            size: 30,
+                          ),
+                        )),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          "Add Expenses",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        "Add Expenses",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    Container(
-                      width: 30,
-                    )
                   ],
                 ),
                 Expanded(
