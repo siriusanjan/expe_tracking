@@ -1,7 +1,9 @@
+import 'package:expe_traking/on_boarding/login/view/login_sceen.dart';
 import 'package:flutter/material.dart';
 import '../main/admin/view/admin_main_view.dart';
 import '../main/employee/view/employee_main_view.dart';
 import '../main/manager/view/manager_main_view.dart';
+import '../main/parent/parent_view.dart';
 
 class RouteManager {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -9,12 +11,10 @@ class RouteManager {
     final args = settings.arguments;
 
     switch (settings.name) {
-      case AdminMainView.route:
-        return MaterialPageRoute(builder: (_) => const AdminMainView());
-      case ManagerMainView.route:
-        return MaterialPageRoute(builder: (_) => const ManagerMainView());
-      case EmployeeMainView.route:
-        return MaterialPageRoute(builder: (_) => const EmployeeMainView());
+      case ParentView.route:
+        return MaterialPageRoute(builder: (_) => ParentView());
+      case LoginScreen.route:
+        return MaterialPageRoute(builder: (_) => LoginScreen());
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();

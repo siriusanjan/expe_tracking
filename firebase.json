@@ -1,10 +1,56 @@
-{"flutter":{"platforms":{"android":
-{"default":{"projectId":"expensetraking-9d192",
-  "appId":"1:394656564898:android:61b47cc39f5949b5c579fb",
-  "fileOutput":"android/app/google-services.json"}},
-  "ios":{"default":{"projectId":"expensetraking-9d192",
-    "appId":"1:394656564898:ios:c141bebd582ab833c579fb",
-    "uploadDebugSymbols":false,
-    "fileOutput":"ios/Runner/GoogleService-Info.plist"}},
-  "macos":{"default":{"projectId":"expensetraking-9d192","appId":"1:394656564898:ios:c141bebd582ab833c579fb","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},
-  "dart":{"lib/firebase_options.dart":{"projectId":"expensetraking-9d192","configurations":{"android":"1:394656564898:android:61b47cc39f5949b5c579fb","ios":"1:394656564898:ios:c141bebd582ab833c579fb","macos":"1:394656564898:ios:c141bebd582ab833c579fb","web":"1:394656564898:web:512eaf8c4af81307c579fb","windows":"1:394656564898:web:1c9d525eff4b83d5c579fb"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "expensetraking-9d192",
+          "appId": "1:394656564898:android:61b47cc39f5949b5c579fb",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "expensetraking-9d192",
+          "appId": "1:394656564898:ios:c141bebd582ab833c579fb",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "expensetraking-9d192",
+          "appId": "1:394656564898:ios:c141bebd582ab833c579fb",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "expensetraking-9d192",
+          "configurations": {
+            "android": "1:394656564898:android:61b47cc39f5949b5c579fb",
+            "ios": "1:394656564898:ios:c141bebd582ab833c579fb",
+            "macos": "1:394656564898:ios:c141bebd582ab833c579fb",
+            "web": "1:394656564898:web:512eaf8c4af81307c579fb",
+            "windows": "1:394656564898:web:1c9d525eff4b83d5c579fb"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+      ]
+    }
+  ]
+}

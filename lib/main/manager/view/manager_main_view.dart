@@ -16,12 +16,7 @@ class ManagerMainView extends StatelessWidget {
           child: Column(
             children: [
               Text("Manager"),
-              ElevatedButton(
-                onPressed: () {
-                  PermissionUtils.requestPhotoPermission(context);
-                },
-                child: Text("Upload Photo"),
-              )
+
             ],
           ),
         ),

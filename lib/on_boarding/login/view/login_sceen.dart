@@ -1,8 +1,13 @@
 import 'package:expe_traking/on_boarding/login/controller/login_helper.dart';
+import 'package:expe_traking/utils/AppStyles.dart';
 import 'package:expe_traking/utils/AppValues.dart';
 import 'package:flutter/material.dart';
 
+import '../../../utils/app_widget.dart';
+
 class LoginScreen extends StatefulWidget {
+  static const String route = "login_screen";
+
   const LoginScreen({super.key});
 
   @override
@@ -52,43 +57,57 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextFormField(
-                      autofocus: false,
-                      controller: loginHelper.emailController,
-                      decoration: const InputDecoration(labelText: "Email"),
+                    // TextFormField(
+                    //   autofocus: false,
+                    //   controller: loginHelper.emailController,
+                    //   decoration: const InputDecoration(labelText: "Email"),
+                    //   keyboardType: TextInputType.emailAddress,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return "Please enter your email";
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
+                    TextFieldWidget(
+                      hintText: "Enter Email",
+                      icon: Icons.mail,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter your email";
-                        }
-                        return null;
-                      },
+                      textEditingController: loginHelper.emailController,
+                      validatorErrorString: "Please enter your email",
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: loginHelper.passwordController,
-                      decoration: const InputDecoration(labelText: "Password"),
-                      obscureText: true,
-                      autofocus: false,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter your password";
-                        }
-                        return null;
-                      },
+                    TextFieldWidget(
+                      hintText: "Enter password",
+                      icon: Icons.password,
+                      obscure: true,
+                      keyboardType: TextInputType.visiblePassword,
+                      textEditingController: loginHelper.passwordController,
+                      validatorErrorString:
+                          "Please enter your password length geater than 6",
                     ),
+                    // TextFormField(
+                    //   controller: loginHelper.passwordController,
+                    //   decoration: const InputDecoration(labelText: "Password"),
+                    //   obscureText: true,
+                    //   autofocus: false,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return "Please enter your password";
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-
                       onPressed: () {
                         loginHelper.processSign(context: context);
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppValues.primaryColor
+                      style: AppStyles.elevatedButtonStyle(),
+                      child: Text(
+                        loginHelper.adminSignUp ? "Sign up as Admin" : "Login",
+                        style: TextStyle(color: Colors.white),
                       ),
-                      child: Text(loginHelper.adminSignUp
-                          ? "Sign up as Admin"
-                          : "Login",style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
