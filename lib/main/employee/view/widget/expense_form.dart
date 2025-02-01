@@ -53,10 +53,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
         // Ensures the keyboard doesn't overlap the UI
         body: SingleChildScrollView(
           child: SizedBox(
-            height: AppValues.mainScreenHeight * 0.75,
+            height: AppValues.mainScreenHeight * 0.6,
             child: Column(
               children: [
-                Row(
+                Stack(
                   children: [
                     IconButton(
                       onPressed: () {
@@ -73,7 +73,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         "Add Expenses",
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -83,12 +83,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   ],
                 ),
                 Expanded(
-                  child: Align(
-                    alignment: Alignment.center,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
                     child: Form(
                       key: _formKey,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Row(
                             children: [
