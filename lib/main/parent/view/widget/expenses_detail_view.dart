@@ -55,10 +55,10 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                         height: 8,
                         width: 100,
                         decoration: BoxDecoration(
-                          color: expense.expensesStatus ==
+                          color: _selectedStatus==
                                   ExpensesStatusEnum.pending
                               ? Colors.grey
-                              : expense.expensesStatus ==
+                              : _selectedStatus ==
                                       ExpensesStatusEnum.approved
                                   ? Colors.green
                                   : Colors.red,
@@ -119,12 +119,31 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                                     color: Colors.black, fontSize: 18)),
                           ])),
                         ),
-                        Text(AppUtils.formatDate(expense.timeStamp!),
+                        Row(children: [Text(AppUtils.formatDate(expense.timeStamp!),
                             style: TextStyle(fontSize: 10)),
+                          SizedBox(width: 10),
+
+                          Container(
+                            height: 8,
+                            width: 20,
+                            decoration: BoxDecoration(
+                              color:_selectedStatus ==
+                                  ExpensesStatusEnum.pending
+                                  ? Colors.grey
+                                  : _selectedStatus ==
+                                  ExpensesStatusEnum.approved
+                                  ? Colors.green
+                                  : Colors.red,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(AppUtils.capitalizeFirstLetter(_selectedStatus.name),style: TextStyle(color: Colors.grey),)
+                        ]),
 
                         // Status Dropdown
                         if (BaseDataController().currentUserRole ==
-                            UserRole.manager)
+                            UserRole.employee)
                           Wrap(
                             children: [
                               Padding(

@@ -34,7 +34,7 @@ class EmployeeHelper {
           return BlocProvider<BlocEmployee>.value(
               value: blocEmployee,
               child: Container(
-                  height: AppValues.mainScreenHeight * 0.8,
+                  height: AppValues.mainScreenHeight * 0.65,
                   decoration: BoxDecoration(
                       color: AppValues.backgroundColor,
                       borderRadius: BorderRadius.only(
