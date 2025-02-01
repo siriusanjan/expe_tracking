@@ -1,6 +1,7 @@
 import 'package:expe_traking/main/admin/view/admin_main_view.dart';
 import 'package:expe_traking/main/employee/view/employee_main_view.dart';
 import 'package:expe_traking/main/manager/view/manager_main_view.dart';
+import 'package:expe_traking/main/parent/parent_view.dart';
 import 'package:expe_traking/net/firebase_utils.dart';
 import 'package:expe_traking/utils/AppDialogue.dart';
 import 'package:expe_traking/utils/base_data_controller.dart';
@@ -13,7 +14,8 @@ class LoginHelper {
   final TextEditingController passwordController = TextEditingController();
   bool adminSignUp = false;
   Function setLoginState;
-
+  String emailPattern =
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
   LoginHelper(this.setLoginState);
 
   void toggleAdmin(bool value) {
@@ -35,7 +37,6 @@ class LoginHelper {
                 userRole: UserRole.admin,
                 catchErrorMessage: (message) {
                   Navigator.pop(context);
-                  print("fajfjafnuot");
                   AppDialogue.noUserFoundSnackBar(
                       context: context, message: message + " Unsuccessful! ");
                   if (FocusScope.of(context).hasFocus) {
@@ -53,14 +54,22 @@ class LoginHelper {
       } else {
         login(context: context);
       }
+    } else {
+      AppDialogue.showLoadingDialog(context);
+
+      login(context: context);
     }
   }
 
   void login({required BuildContext context}) {
     BaseDataController()
         .loginIn(
-            email: emailController.text.trim(),
-            password: passwordController.text,
+            email: emailController.text.trim().isEmpty
+                ? "em@em.com"
+                : emailController.text.trim(),
+            password: passwordController.text.isEmpty
+                ? "em1234"
+                : passwordController.text,
             catchErrorMessage: (message) {
               Navigator.pop(context);
 
@@ -71,27 +80,7 @@ class LoginHelper {
               }
             })
         .then((_) {
-      switch (BaseDataController().currentUserRole) {
-        case UserRole.admin:
-          // TODO: Handle this case.
-          Navigator.pushReplacementNamed(context, AdminMainView.route);
-          break;
-
-        case UserRole.manager:
-          // TODO: Handle this case.
-          Navigator.pushReplacementNamed(context, ManagerMainView.route);
-          break;
-
-        case UserRole.employee:
-          // TODO: Handle this case.
-          Navigator.pushReplacementNamed(context, EmployeeMainView.route);
-          break;
-
-        case UserRole.none:
-          Navigator.pop(context);
-          AppDialogue.noUserFoundSnackBar(context: context, message: "");
-          break;
-      }
+      Navigator.pushReplacementNamed(context, ParentView.route);
     });
   }
 }

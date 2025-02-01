@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expe_traking/utils/base_data_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum UserRole { admin, manager, employee, none }
@@ -34,7 +35,6 @@ class FirebaseUtils {
       'email': email,
       'role': role, // "admin", "manager", "employee"
     }).catchError((e, s) {
-      print("error datatkjdklfjakldsjflaksdfma");
       if (catchErrorMessage != null) {
         catchErrorMessage!(e.toString());
       }
@@ -58,6 +58,7 @@ class FirebaseUtils {
         .collection('users')
         .doc(userCredential.user!.uid)
         .get();
+    BaseDataController().userCredential = userCredential;
 
     if (userDoc.exists) {
       return UserRole.values.firstWhere(
@@ -65,5 +66,32 @@ class FirebaseUtils {
       ); // "admin", "manager", "employee"
     }
     return UserRole.none;
+  }
+  /// update by manager
+  Future<void> updateExpenseStatus(String expenseId, String status) async {
+    await FirebaseFirestore.instance
+        .collection("expenses")
+        .doc(expenseId)
+        .update({
+      "status": status, // "approved" or "rejected"
+    });
+  }
+
+  /// get user wise expenses
+  Future<List<QueryDocumentSnapshot>> getUserExpenses(String userId) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection("expenses")
+        .where("userId", isEqualTo: userId)
+        .get();
+    return query.docs;
+  }
+
+  /// get status wise expenses
+  Future<List<QueryDocumentSnapshot>> getExpensesByStatus(String status) async {
+    QuerySnapshot query = await FirebaseFirestore.instance
+        .collection("expenses")
+        .where("status", isEqualTo: status)
+        .get();
+    return query.docs;
   }
 }
