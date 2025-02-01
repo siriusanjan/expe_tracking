@@ -53,7 +53,8 @@ class BaseDataController {
     final List<QueryDocumentSnapshot> data =
         await FirebaseUtils().getAllExpenses();
     return data
-        .map((doc) => ExpensesModel.fromMap(doc.data() as Map<String, dynamic>))
+        .map((doc) =>
+            ExpensesModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
         .toList();
   }
 
@@ -62,7 +63,8 @@ class BaseDataController {
     final List<QueryDocumentSnapshot> data =
         await FirebaseUtils().getUserExpenses(userId);
     return data
-        .map((doc) => ExpensesModel.fromMap(doc.data() as Map<String, dynamic>))
+        .map((doc) =>
+            ExpensesModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
         .toList();
   }
 
@@ -71,7 +73,8 @@ class BaseDataController {
     final List<QueryDocumentSnapshot> data =
         await FirebaseUtils().getExpensesByStatus(status);
     return data
-        .map((doc) => ExpensesModel.fromMap(doc.data() as Map<String, dynamic>))
+        .map((doc) =>
+            ExpensesModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
         .toList();
   }
 

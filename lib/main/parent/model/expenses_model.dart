@@ -11,6 +11,7 @@ class ExpensesModel {
   String receiptUrl;
   DateTime? timeStamp;
   String authorMail;
+  String expId;
 
   ExpensesModel({
     this.title = "football",
@@ -21,6 +22,7 @@ class ExpensesModel {
     this.receiptUrl = "11",
     this.timeStamp,
     this.authorMail = "mailAuthor",
+    this.expId = "expId",
   });
 
   // Convert the ExpensesModel object to a map
@@ -37,7 +39,7 @@ class ExpensesModel {
     };
   }
 
-  factory ExpensesModel.fromMap(Map<String, dynamic> map) {
+  factory ExpensesModel.fromMap(String docId, Map<String, dynamic> map) {
     return ExpensesModel(
       title: map['title'] ?? "football",
       description: map['description'] ?? "football bill",
@@ -51,6 +53,7 @@ class ExpensesModel {
       ),
       receiptUrl: map['receiptUrl'] ?? "11",
       authorMail: map['authorMail'] ?? "authorMail",
+      expId: docId,
       timeStamp: (map['timeStamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }

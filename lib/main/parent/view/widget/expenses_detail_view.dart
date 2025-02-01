@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../net/firebase_utils.dart';
+import '../../../../utils/AppDialogue.dart';
 import '../../../../utils/AppValues.dart';
 import '../../../../utils/app_utils.dart';
 import '../../../../utils/base_data_controller.dart';
@@ -55,11 +56,9 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                         height: 8,
                         width: 100,
                         decoration: BoxDecoration(
-                          color: _selectedStatus==
-                                  ExpensesStatusEnum.pending
+                          color: _selectedStatus == ExpensesStatusEnum.pending
                               ? Colors.grey
-                              : _selectedStatus ==
-                                      ExpensesStatusEnum.approved
+                              : _selectedStatus == ExpensesStatusEnum.approved
                                   ? Colors.green
                                   : Colors.red,
                           borderRadius: BorderRadius.circular(10),
@@ -119,26 +118,30 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                                     color: Colors.black, fontSize: 18)),
                           ])),
                         ),
-                        Row(children: [Text(AppUtils.formatDate(expense.timeStamp!),
-                            style: TextStyle(fontSize: 10)),
+                        Row(children: [
+                          Text(AppUtils.formatDate(expense.timeStamp!),
+                              style: TextStyle(fontSize: 10)),
                           SizedBox(width: 10),
-
                           Container(
                             height: 8,
                             width: 20,
                             decoration: BoxDecoration(
-                              color:_selectedStatus ==
-                                  ExpensesStatusEnum.pending
-                                  ? Colors.grey
-                                  : _selectedStatus ==
-                                  ExpensesStatusEnum.approved
-                                  ? Colors.green
-                                  : Colors.red,
+                              color:
+                                  _selectedStatus == ExpensesStatusEnum.pending
+                                      ? Colors.grey
+                                      : _selectedStatus ==
+                                              ExpensesStatusEnum.approved
+                                          ? Colors.green
+                                          : Colors.red,
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                           SizedBox(width: 5),
-                          Text(AppUtils.capitalizeFirstLetter(_selectedStatus.name),style: TextStyle(color: Colors.grey),)
+                          Text(
+                            AppUtils.capitalizeFirstLetter(
+                                _selectedStatus.name),
+                            style: TextStyle(color: Colors.grey),
+                          )
                         ]),
 
                         // Status Dropdown
@@ -150,7 +153,9 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                                 padding: const EdgeInsets.only(top: 15),
                                 child: Text(
                                   'Change Status:',
-                                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
                                 ),
                               ),
                               CupertinoListSection(
@@ -206,11 +211,22 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                 Align(
                   alignment: Alignment.center,
                   child: TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      AppDialogue.showLoadingDialog(context);
+                      BaseDataController()
+                          .updateExpenseStatus(
+                              expense.expId, _selectedStatus.name)
+                          .then((_) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      });
+                    },
                     child: Text(
-                        BaseDataController().currentUserRole == UserRole.manager
-                            ? "Save"
-                            : "Close",style: TextStyle(fontSize: 16),),
+                      BaseDataController().currentUserRole == UserRole.manager
+                          ? "Save"
+                          : "Close",
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
               ]),

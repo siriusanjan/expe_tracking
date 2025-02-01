@@ -30,7 +30,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
   final TextEditingController _receiptUrlController = TextEditingController();
   late EmployeeHelper employeeHelper;
 
-  String _status = "pending";
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -45,7 +44,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
           BaseDataController().userCredential?.user?.email ?? "";
 
       employeeHelper.expensesModel = expensesModel;
-      print("myUSerID " + expensesModel.userId);
       employeeHelper.submitForm(context);
     }
   }
