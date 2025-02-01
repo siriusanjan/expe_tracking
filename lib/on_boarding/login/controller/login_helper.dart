@@ -83,4 +83,7 @@ class LoginHelper {
       Navigator.pushReplacementNamed(context, ParentView.route);
     });
   }
+  void onDispose(){
+
+  }
 }

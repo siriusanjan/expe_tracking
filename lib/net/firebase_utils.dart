@@ -21,7 +21,6 @@ class FirebaseUtils {
       password: password,
     )
         .catchError((error, s) {
-      print("errotfadsf " + error.toString());
       if (catchErrorMessage != null) {
         catchErrorMessage!(error.toString());
       }

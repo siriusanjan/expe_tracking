@@ -9,6 +9,10 @@ class TextFieldWidget extends StatelessWidget {
   final TextInputType? keyboardType;
   final String validatorErrorString;
   final bool obscure;
+  final int lines;
+  final TextInputAction textInputAction;
+
+  // "Next" button
 
   const TextFieldWidget(
       {super.key,
@@ -17,7 +21,9 @@ class TextFieldWidget extends StatelessWidget {
       required this.textEditingController,
       this.keyboardType = TextInputType.text,
       this.obscure = false,
-      required this.validatorErrorString});
+      this.lines = 1,
+      required this.validatorErrorString,
+      this.textInputAction = TextInputAction.done});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +31,7 @@ class TextFieldWidget extends StatelessWidget {
       controller: textEditingController,
       keyboardType: keyboardType,
       obscureText: obscure,
+      maxLines: lines,
       validator: (value) {
         if ((value == null || value.isEmpty)) {
           return validatorErrorString;
@@ -46,7 +53,9 @@ class TextFieldWidget extends StatelessWidget {
       },
       decoration: InputDecoration(
         hintText: hintText,
-        prefixIcon: Icon(icon, color: AppValues.primaryColor),
+        prefixIcon: lines > 1
+            ? null
+            : Container(child: Icon(icon, color: AppValues.primaryColor)),
         // Icon on the left
         filled: true,
         fillColor: Colors.white,

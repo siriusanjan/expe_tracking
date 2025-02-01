@@ -72,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFieldWidget(
                       hintText: "Enter Email",
                       icon: Icons.mail,
+                      textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
                       textEditingController: loginHelper.emailController,
                       validatorErrorString: "Please enter your email",
@@ -117,5 +118,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    loginHelper.onDispose();
   }
 }
