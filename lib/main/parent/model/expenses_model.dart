@@ -10,6 +10,7 @@ class ExpensesModel {
   ExpensesStatusEnum expensesStatus;
   String receiptUrl;
   DateTime? timeStamp;
+  String authorMail;
 
   ExpensesModel({
     this.title = "football",
@@ -19,6 +20,7 @@ class ExpensesModel {
     this.expensesStatus = ExpensesStatusEnum.pending,
     this.receiptUrl = "11",
     this.timeStamp,
+    this.authorMail = "mailAuthor",
   });
 
   // Convert the ExpensesModel object to a map
@@ -31,6 +33,7 @@ class ExpensesModel {
       'expensesStatus': expensesStatus.name,
       'receiptUrl': receiptUrl,
       'timeStamp': timeStamp,
+      'authorMail': authorMail,
     };
   }
 
@@ -47,6 +50,8 @@ class ExpensesModel {
         orElse: () => ExpensesStatusEnum.pending, // Default value if not found
       ),
       receiptUrl: map['receiptUrl'] ?? "11",
-      timeStamp: (map['timeStamp'] as Timestamp?)?.toDate() ?? DateTime.now(),    );
+      authorMail: map['authorMail'] ?? "authorMail",
+      timeStamp: (map['timeStamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+    );
   }
 }

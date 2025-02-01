@@ -147,10 +147,10 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                           Wrap(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.only(top: 15),
                                 child: Text(
                                   'Change Status:',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
                                 ),
                               ),
                               CupertinoListSection(

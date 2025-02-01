@@ -57,18 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // TextFormField(
-                    //   autofocus: false,
-                    //   controller: loginHelper.emailController,
-                    //   decoration: const InputDecoration(labelText: "Email"),
-                    //   keyboardType: TextInputType.emailAddress,
-                    //   validator: (value) {
-                    //     if (value == null || value.isEmpty) {
-                    //       return "Please enter your email";
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
                     TextFieldWidget(
                       hintText: "Enter Email",
                       icon: Icons.mail,
@@ -87,18 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       validatorErrorString:
                           "Please enter your password length geater than 6",
                     ),
-                    // TextFormField(
-                    //   controller: loginHelper.passwordController,
-                    //   decoration: const InputDecoration(labelText: "Password"),
-                    //   obscureText: true,
-                    //   autofocus: false,
-                    //   validator: (value) {
-                    //     if (value == null || value.isEmpty) {
-                    //       return "Please enter your password";
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () {
