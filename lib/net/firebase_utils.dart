@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expe_traking/utils/base_data_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import '../main/parent/model/expenses_model.dart';
 
 enum UserRole { admin, manager, employee, none }
 
@@ -66,6 +69,18 @@ class FirebaseUtils {
     }
     return UserRole.none;
   }
+
+  Future<void> submitExpenses(ExpensesModel model, Function result) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("expenses")
+          .add(model.toMap());
+      result('Expense submitted successfully!', true);
+    } catch (e) {
+      result('Error submitting expense: $e', true);
+    }
+  }
+
   /// update by manager
   Future<void> updateExpenseStatus(String expenseId, String status) async {
     await FirebaseFirestore.instance
@@ -82,6 +97,13 @@ class FirebaseUtils {
         .collection("expenses")
         .where("userId", isEqualTo: userId)
         .get();
+    return query.docs;
+  }
+
+  /// get all expenses
+  Future<List<QueryDocumentSnapshot>> getAllExpenses() async {
+    QuerySnapshot query =
+        await FirebaseFirestore.instance.collection("expenses").get();
     return query.docs;
   }
 

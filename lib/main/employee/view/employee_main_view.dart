@@ -1,5 +1,6 @@
 import 'package:expe_traking/main/employee/controller/bloc_employee.dart';
 import 'package:expe_traking/main/employee/controller/employee_helper.dart';
+import 'package:expe_traking/main/parent/view/expenses_list_screen.dart';
 import 'package:expe_traking/utils/AppValues.dart';
 import 'package:expe_traking/utils/base_data_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,43 +39,37 @@ class _EmployeeMainView extends State<EmployeeMainView> {
       child: Stack(
         children: [
           Container(
+            color: Colors.red,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [],
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      PermissionUtils.requestPhotoPermission(
-                          context, Permission.photos, (isGranted) {});
-                    },
-                    child: Text("Upload Photo"),
-                  ),
+                  Expanded(child: ExpensesListScreen()),
                 ],
               ),
             ),
           ),
-          Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    employeeHelper.openAddBottomSheet(blocContext: context);
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    color: AppValues.backgroundColor,
+          SafeArea(
+            child: Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      employeeHelper.openAddBottomSheet(blocContext: context);
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      color: AppValues.backgroundColor,
+                    ),
+                    label: const Text(
+                      "Add Expenses",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: AppValues.primaryColor,
                   ),
-                  label: const Text(
-                    "Add Expenses",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: AppValues.primaryColor,
-                ),
-              )),
+                )),
+          ),
         ],
       ),
     );

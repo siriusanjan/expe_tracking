@@ -5,6 +5,9 @@ import 'package:expe_traking/net/firebase_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+
+import '../main/parent/model/expenses_model.dart';
+
 class BaseDataController {
   BaseDataController._privateConstructor();
 
@@ -36,30 +39,42 @@ class BaseDataController {
   }
 
   /// added by user
-  Future<void> addExpense(String title, String description, double amount,
-      String userId, String receiptUrl) async {
-    await FirebaseFirestore.instance.collection("expenses").add({
-      "title": title,
-      "description": description,
-      "amount": amount,
-      "userId": userId,
-      "receiptUrl": receiptUrl,
-      "status": "pending",
-      "timestamp": FieldValue.serverTimestamp(),
-    });
+  Future<void> addExpense(ExpensesModel model, Function result) async {
+    await FirebaseUtils().submitExpenses(model, result);
   }
+
   /// update by manager
   Future<void> updateExpenseStatus(String expenseId, String status) async {
     return FirebaseUtils().updateExpenseStatus(expenseId, status);
   }
 
   /// get user wise expenses
-  Future<List<QueryDocumentSnapshot>> getUserExpenses(String userId) async {
-    return FirebaseUtils().getUserExpenses(userId);
-  }  /// get user wise expenses
-  Future<List<QueryDocumentSnapshot>> getExpensesByStatus(String status) async {
-    return FirebaseUtils().getExpensesByStatus(status);
+  Future<List<ExpensesModel>> getAllExpenses() async {
+    final List<QueryDocumentSnapshot> data =
+        await FirebaseUtils().getAllExpenses();
+    return data
+        .map((doc) => ExpensesModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
   }
+
+  /// get user wise expenses
+  Future<List<ExpensesModel>> getUserExpenses(String userId) async {
+    final List<QueryDocumentSnapshot> data =
+        await FirebaseUtils().getUserExpenses(userId);
+    return data
+        .map((doc) => ExpensesModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// get user wise expenses
+  Future<List<ExpensesModel>> getExpensesByStatus(String status) async {
+    final List<QueryDocumentSnapshot> data =
+        await FirebaseUtils().getExpensesByStatus(status);
+    return data
+        .map((doc) => ExpensesModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<String?> uploadReceipt(File imageFile) async {
     try {
       String fileName = "receipts/${DateTime.now().millisecondsSinceEpoch}.jpg";
@@ -72,8 +87,9 @@ class BaseDataController {
       return null;
     }
   }
-  void clearAllData(){
-    currentUserRole=UserRole.none;
-    userCredential=null;
+
+  void clearAllData() {
+    currentUserRole = UserRole.none;
+    userCredential = null;
   }
 }
