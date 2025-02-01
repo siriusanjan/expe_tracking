@@ -45,7 +45,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
             itemCount: expenses.length,
             itemBuilder: (context, index) {
               ExpensesModel expense = expenses[index];
-
+              print("myExpID " + expense.expId.toString());
               return Card(
                 margin: EdgeInsets.all(8),
                 elevation: 4,
