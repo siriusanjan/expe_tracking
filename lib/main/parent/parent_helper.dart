@@ -14,6 +14,7 @@ class ParentHelper {
         isScrollControlled: true,
         builder: (context) {
           return Container(
+            height: AppValues.mainScreenHeight*0.5,
               decoration: BoxDecoration(
                   color: AppValues.backgroundColor,
                   borderRadius: BorderRadius.only(

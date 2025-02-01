@@ -2,24 +2,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class PermissionUtils{
-  static Future<void> requestPhotoPermission(BuildContext context) async {
-    PermissionStatus status = await Permission.photos.status;
+class PermissionUtils {
+  static Future<void> requestPhotoPermission(
+      BuildContext context, Permission permission, Function isGranted) async {
+    PermissionStatus status = await permission.status;
 
     if (status.isGranted) {
-      print("Permission already granted!");
+      isGranted(true);
       return;
     } else if (status.isPermanentlyDenied) {
       // Show alert directing to settings
-      showPermissionDialog(context, permanentlyDenied: true);
+
+      showPermissionDialog(context, permission, isGranted,
+          permanentlyDenied: true);
       return;
     } else {
       // Show explanation dialog before requesting permission
-      showPermissionDialog(context);
+      showPermissionDialog(
+        context,
+        permission,
+        isGranted,
+      );
     }
   }
 
-  static void showPermissionDialog(BuildContext context,
+  static void showPermissionDialog(
+      BuildContext context, Permission permission, Function isGranted,
       {bool permanentlyDenied = false}) {
     showDialog(
       context: context,
@@ -38,16 +46,20 @@ class PermissionUtils{
             onPressed: () async {
               Navigator.pop(context);
               if (permanentlyDenied) {
+                isGranted(false);
+
                 openAppSettings(); // Open settings if permanently denied
               } else {
-                PermissionStatus newStatus = await Permission.photos.request();
+                PermissionStatus newStatus = await permission.request();
                 if (newStatus.isGranted) {
                   print("Permission granted! Proceed with uploading.");
+                  isGranted(true);
                 } else {
+                  isGranted(false);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content:
-                      Text("Permission denied! ❌ Unable to upload photos."),
+                          Text("Permission denied! ❌ Unable to upload photos."),
                       backgroundColor: Colors.red,
                     ),
                   );
