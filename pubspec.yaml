@@ -42,6 +42,7 @@ dependencies:
   firebase_storage: ^12.4.1
   flutter_bloc: ^9.0.0
   image_picker: ^0.8.7+4
+  intl: ^0.18.0  # Add this line for date formatting
 
 dev_dependencies:
   flutter_test:

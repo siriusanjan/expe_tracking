@@ -1,18 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+enum ExpensesStatusEnum { pending, approved, rejected }
+
 class ExpensesModel {
-  final String title;
-  final String description;
-  final double amount;
-  final String userId;
-  final String expensesStatus;
-  final String receiptUrl;
+  String title;
+  String description;
+  double amount;
+  String userId;
+  ExpensesStatusEnum expensesStatus;
+  String receiptUrl;
+  DateTime? timeStamp;
 
   ExpensesModel({
     this.title = "football",
     this.description = "football bill",
     this.amount = 1200.0,
     this.userId = "aa",
-    this.expensesStatus = "pending",
+    this.expensesStatus = ExpensesStatusEnum.pending,
     this.receiptUrl = "11",
+    this.timeStamp,
   });
 
   // Convert the ExpensesModel object to a map
@@ -22,8 +28,9 @@ class ExpensesModel {
       'description': description,
       'amount': amount,
       'userId': userId,
-      'expensesStatus': expensesStatus,
+      'expensesStatus': expensesStatus.name,
       'receiptUrl': receiptUrl,
+      'timeStamp': timeStamp,
     };
   }
 
@@ -33,8 +40,13 @@ class ExpensesModel {
       description: map['description'] ?? "football bill",
       amount: map['amount']?.toDouble() ?? 1200.0,
       userId: map['userId'] ?? "aa",
-      expensesStatus: map['expensesStatus'] ?? "pending",
+      expensesStatus: ExpensesStatusEnum.values.firstWhere(
+        (e) =>
+            e.toString().split('.').last ==
+            (map['expensesStatus'] ?? "pending"),
+        orElse: () => ExpensesStatusEnum.pending, // Default value if not found
+      ),
       receiptUrl: map['receiptUrl'] ?? "11",
-    );
+      timeStamp: (map['timeStamp'] as Timestamp?)?.toDate() ?? DateTime.now(),    );
   }
 }
