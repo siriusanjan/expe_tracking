@@ -87,7 +87,7 @@ class FirebaseUtils {
         .collection("expenses")
         .doc(expenseId)
         .update({
-      "status": status, // "approved" or "rejected"
+        "expensesStatus": status, // "approved" or "rejected"
     });
   }
 
