@@ -46,7 +46,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Expense",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
@@ -64,11 +64,11 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       // Adds spacing between container and text
                       Text(
                         "\$${expense.amount.toStringAsFixed(2)}",
-                        style: TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18),
                         textAlign: TextAlign.center, // Centers the text
                       ),
                     ],
@@ -86,7 +86,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         if (expense.receiptUrl.isNotEmpty)
@@ -98,7 +98,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                               width: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
-                                  Icon(Icons.broken_image, size: 100),
+                                  const Icon(Icons.broken_image, size: 100),
                             ),
                           ),
                         Padding(
@@ -108,20 +108,20 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                             TextSpan(
                                 text: AppUtils.capitalizeFirstLetter(
                                     expense.title),
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.black,
                                     fontSize: 18)),
                             TextSpan(
                                 text: " ${expense.description}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.black, fontSize: 18)),
                           ])),
                         ),
                         Row(children: [
                           Text(AppUtils.formatDate(expense.timeStamp!),
-                              style: TextStyle(fontSize: 10)),
-                          SizedBox(width: 10),
+                              style: const TextStyle(fontSize: 10)),
+                          const SizedBox(width: 10),
                           Container(
                             height: 8,
                             width: 20,
@@ -149,8 +149,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                             UserRole.employee)
                           Wrap(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 15),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 15),
                                 child: Text(
                                   'Change Status:',
                                   style: TextStyle(
@@ -208,27 +208,62 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: TextButton(
-                    onPressed: () {
-                      AppDialogue.showLoadingDialog(context);
-                      BaseDataController()
-                          .updateExpenseStatus(
-                              expense.expId, _selectedStatus.name)
-                          .then((_) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      });
-                    },
-                    child: Text(
-                      BaseDataController().currentUserRole == UserRole.manager
-                          ? "Save"
-                          : "Close",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),
+                BaseDataController().currentUserRole == UserRole.employee
+                    ? Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                "Cancel",
+                                style:
+                                    TextStyle(fontSize: 16, color: Colors.grey),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                AppDialogue.showLoadingDialog(context);
+                                BaseDataController()
+                                    .updateExpenseStatus(
+                                        expense.expId, _selectedStatus.name)
+                                    .then((_) {
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                });
+                              },
+                              child: const Text(
+                                "Save",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Align(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          onPressed: () {
+                            AppDialogue.showLoadingDialog(context);
+                            BaseDataController()
+                                .updateExpenseStatus(
+                                    expense.expId, _selectedStatus.name)
+                                .then((_) {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: const Text(
+                            "Close",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ),
               ]),
             ]),
           ),

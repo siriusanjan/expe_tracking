@@ -11,6 +11,7 @@ class ExpensesModel {
   String receiptUrl;
   DateTime? timeStamp;
   String authorMail;
+  String updaterMail;
   String expId;
 
   ExpensesModel({
@@ -22,6 +23,7 @@ class ExpensesModel {
     this.receiptUrl = "11",
     this.timeStamp,
     this.authorMail = "mailAuthor",
+    this.updaterMail = "updaterMail",
     this.expId = "expId",
   });
 
@@ -36,6 +38,7 @@ class ExpensesModel {
       'receiptUrl': receiptUrl,
       'timeStamp': timeStamp,
       'authorMail': authorMail,
+      'updaterMail': updaterMail,
     };
   }
 
@@ -52,6 +55,7 @@ class ExpensesModel {
         orElse: () => ExpensesStatusEnum.pending, // Default value if not found
       ),
       receiptUrl: map['receiptUrl'] ?? "11",
+      updaterMail: map['updaterMail'] ?? "updaterMail",
       authorMail: map['authorMail'] ?? "authorMail",
       expId: docId,
       timeStamp: (map['timeStamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
