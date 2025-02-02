@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expe_traking/net/firebase_utils.dart';
+import 'package:expe_traking/notification/notification_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
@@ -27,6 +28,9 @@ class BaseDataController {
       Function? catchErrorMessage}) async {
     currentUserRole = await FirebaseUtils()
         .loginUser(email, password, catchErrorMessage: catchErrorMessage);
+    if (BaseDataController().userCredential?.user?.uid != null) {
+      NotificationManager().setupFirebaseMessaging(BaseDataController().userCredential?.user?.uid ?? "");
+    }
   }
 
   Future<void> createUserWithRole(
@@ -44,8 +48,8 @@ class BaseDataController {
   }
 
   /// update by manager
-  Future<void> updateExpenseStatus(String expenseId, String status) async {
-    return FirebaseUtils().updateExpenseStatus(expenseId, status);
+  Future<void> updateExpenseStatus(ExpensesModel expense) async {
+    return NotificationManager().updateExpenseStatus(expense);
   }
 
   /// get user wise expenses
@@ -59,9 +63,9 @@ class BaseDataController {
   }
 
   /// get user wise expenses
-  Future<List<ExpensesModel>> getUserExpenses(String userId) async {
+  Future<List<ExpensesModel>> getUserExpenses(String employeeID) async {
     final List<QueryDocumentSnapshot> data =
-        await FirebaseUtils().getUserExpenses(userId);
+        await FirebaseUtils().getUserExpenses(employeeID);
     return data
         .map((doc) =>
             ExpensesModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))

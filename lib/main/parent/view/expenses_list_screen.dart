@@ -23,7 +23,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String userId = "user123"; // Replace with actual user ID
+    String employeeID = "user123"; // Replace with actual user ID
 
     return Scaffold(
       body: FutureBuilder<List<ExpensesModel>>(

@@ -26,7 +26,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _userIdController = TextEditingController();
+  final TextEditingController _employeeIDController = TextEditingController();
   final TextEditingController _receiptUrlController = TextEditingController();
   late EmployeeHelper employeeHelper;
 
@@ -38,11 +38,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
       expensesModel.description = _descriptionController.text;
       expensesModel.amount = double.parse(_amountController.text);
       expensesModel.expensesStatus = ExpensesStatusEnum.pending;
-      expensesModel.userId =
+      expensesModel.employeeID =
           BaseDataController().userCredential?.user?.uid ?? "";
       expensesModel.authorMail =
           BaseDataController().userCredential?.user?.email ?? "";
-
       employeeHelper.expensesModel = expensesModel;
       employeeHelper.submitForm(context);
     }
@@ -212,7 +211,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     _titleController.dispose();
     _descriptionController.dispose();
     _amountController.dispose();
-    _userIdController.dispose();
+    _employeeIDController.dispose();
     _receiptUrlController.dispose();
     try {
       employeeHelper.finalPickedFile!.delete();

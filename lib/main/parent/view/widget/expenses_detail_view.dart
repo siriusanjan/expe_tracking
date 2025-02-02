@@ -146,7 +146,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
 
                         // Status Dropdown
                         if (BaseDataController().currentUserRole ==
-                            UserRole.employee)
+                            UserRole.manager)
                           Wrap(
                             children: [
                               const Padding(
@@ -208,7 +208,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                     ),
                   ),
                 ),
-                BaseDataController().currentUserRole == UserRole.employee
+                BaseDataController().currentUserRole == UserRole.manager
                     ? Align(
                         alignment: Alignment.center,
                         child: Row(
@@ -227,9 +227,14 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                             TextButton(
                               onPressed: () {
                                 AppDialogue.showLoadingDialog(context);
+                                expense.updaterMail = BaseDataController()
+                                        .userCredential
+                                        ?.user
+                                        ?.email ??
+                                    "";
+                                expense.expensesStatus = _selectedStatus;
                                 BaseDataController()
-                                    .updateExpenseStatus(
-                                        expense.expId, _selectedStatus.name)
+                                    .updateExpenseStatus(expense)
                                     .then((_) {
                                   Navigator.pop(context);
                                   Navigator.pop(context);
@@ -248,14 +253,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                         alignment: Alignment.center,
                         child: TextButton(
                           onPressed: () {
-                            AppDialogue.showLoadingDialog(context);
-                            BaseDataController()
-                                .updateExpenseStatus(
-                                    expense.expId, _selectedStatus.name)
-                                .then((_) {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            });
+
+                            Navigator.pop(context);
                           },
                           child: const Text(
                             "Close",
