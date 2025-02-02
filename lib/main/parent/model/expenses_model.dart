@@ -6,7 +6,7 @@ class ExpensesModel {
   String title;
   String description;
   double amount;
-  String userId;
+  String employeeID;
   ExpensesStatusEnum expensesStatus;
   String receiptUrl;
   DateTime? timeStamp;
@@ -18,7 +18,7 @@ class ExpensesModel {
     this.title = "football",
     this.description = "football bill",
     this.amount = 1200.0,
-    this.userId = "aa",
+    this.employeeID = "aa",
     this.expensesStatus = ExpensesStatusEnum.pending,
     this.receiptUrl = "11",
     this.timeStamp,
@@ -33,21 +33,37 @@ class ExpensesModel {
       'title': title,
       'description': description,
       'amount': amount,
-      'userId': userId,
+      'employeeID': employeeID,
       'expensesStatus': expensesStatus.name,
       'receiptUrl': receiptUrl,
-      'timeStamp': timeStamp,
+      'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
       'authorMail': authorMail,
       'updaterMail': updaterMail,
     };
   }
 
-  factory ExpensesModel.fromMap(String docId, Map<String, dynamic> map) {
+  // Convert the ExpensesModel object to a JSON-friendly format
+  Map<String, dynamic> toJson() {
+    return {
+      'expensesStatus': expensesStatus.name.toString(),
+      'description': description.toString(),
+      'amount': amount.toString(),
+      'receiptUrl': receiptUrl.toString(),
+      'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
+      'authorMail': authorMail.toString(),
+      'updaterMail': updaterMail.toString(),
+      'employeeID': employeeID,
+
+    };
+  }
+
+  factory ExpensesModel.fromMap(String? docId, Map<String, dynamic> map) {
     return ExpensesModel(
       title: map['title'] ?? "football",
       description: map['description'] ?? "football bill",
-      amount: map['amount']?.toDouble() ?? 1200.0,
-      userId: map['userId'] ?? "aa",
+      amount: (map['amount'] is String)
+          ? double.tryParse(map['amount']) ?? 1200.0
+          : (map['amount'] as num?)?.toDouble() ?? 1200.0,      employeeID: map['employeeID'] ?? "aa",
       expensesStatus: ExpensesStatusEnum.values.firstWhere(
         (e) =>
             e.toString().split('.').last ==
@@ -57,8 +73,9 @@ class ExpensesModel {
       receiptUrl: map['receiptUrl'] ?? "11",
       updaterMail: map['updaterMail'] ?? "updaterMail",
       authorMail: map['authorMail'] ?? "authorMail",
-      expId: docId,
-      timeStamp: (map['timeStamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
-    );
+      expId:map['expId'] ?? docId ?? "",
+      timeStamp: (map['timeStamp'] is Timestamp)
+          ? (map['timeStamp'] as Timestamp).toDate()
+          : DateTime.now(),    );
   }
 }

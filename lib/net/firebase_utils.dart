@@ -82,20 +82,21 @@ class FirebaseUtils {
   }
 
   /// update by manager
-  Future<void> updateExpenseStatus(String expenseId, String status) async {
+  Future<void> updateExpenseStatus(String expenseId, String status,String updaterMail) async {
     await FirebaseFirestore.instance
         .collection("expenses")
         .doc(expenseId)
         .update({
         "expensesStatus": status, // "approved" or "rejected"
+        "updaterMail": updaterMail, // "approved" or "rejected"
     });
   }
 
   /// get user wise expenses
-  Future<List<QueryDocumentSnapshot>> getUserExpenses(String userId) async {
+  Future<List<QueryDocumentSnapshot>> getUserExpenses(String employeeID) async {
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection("expenses")
-        .where("userId", isEqualTo: userId)
+        .where("employeeID", isEqualTo: employeeID)
         .get();
     return query.docs;
   }
