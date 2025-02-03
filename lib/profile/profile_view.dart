@@ -129,8 +129,8 @@ class ProfileView extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                 )),
             GestureDetector(
-              onTap: () {
-                BaseDataController().clearAllData();
+              onTap: () async {
+                await BaseDataController().clearAllData();
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   LoginScreen.route, // Named route for LoginScreen

@@ -97,7 +97,8 @@ class BaseDataController {
     }
   }
 
-  void clearAllData() {
+  Future<void> clearAllData() async {
+    await NotificationManager().removeFireBaseNotificationToken();
     currentUserRole = UserRole.none;
     userCredential = null;
   }
