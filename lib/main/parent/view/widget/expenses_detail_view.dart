@@ -236,6 +236,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                                 BaseDataController()
                                     .updateExpenseStatus(expense)
                                     .then((_) {
+                                  BaseDataController()
+                                      .updateExpenseList(expense,shouldUpdate:true);
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 });
@@ -253,7 +255,6 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                         alignment: Alignment.center,
                         child: TextButton(
                           onPressed: () {
-
                             Navigator.pop(context);
                           },
                           child: const Text(

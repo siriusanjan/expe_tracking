@@ -1,8 +1,12 @@
+import 'package:expe_traking/main/parent/model/expenses_model.dart';
 import 'package:expe_traking/profile/profile_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../utils/AppValues.dart';
+import 'controller/expense_bloc.dart';
+import 'controller/expense_events.dart';
 
 class ParentHelper {
   ParentHelper();
@@ -14,7 +18,7 @@ class ParentHelper {
         isScrollControlled: true,
         builder: (context) {
           return Container(
-            height: AppValues.mainScreenHeight*0.5,
+              height: AppValues.mainScreenHeight * 0.5,
               decoration: BoxDecoration(
                   color: AppValues.backgroundColor,
                   borderRadius: BorderRadius.only(
@@ -24,4 +28,6 @@ class ParentHelper {
               child: ProfileView());
         });
   }
+
+
 }
