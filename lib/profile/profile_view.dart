@@ -134,7 +134,7 @@ class ProfileView extends StatelessWidget {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   LoginScreen.route, // Named route for LoginScreen
-                  (route) => false, // Removes all previous routes
+                  (route) => true, // Removes all previous routes
                 );
               },
               child: Container(

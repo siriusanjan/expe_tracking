@@ -57,6 +57,7 @@ class _EmployeeMainView extends State<EmployeeMainView> {
                   child: FloatingActionButton.extended(
                     onPressed: () {
                       employeeHelper.openAddBottomSheet(blocContext: context);
+
                     },
                     icon: const Icon(
                       Icons.add,

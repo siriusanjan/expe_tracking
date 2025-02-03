@@ -41,14 +41,15 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
               int updatedIndex = expensesHelper.indexUpdated;
               expensesHelper.indexUpdated = -1;
               _expenses = List.from(state.expenseList);
-              if(expensesHelper.newAdded){
+              if (expensesHelper.newAdded) {
+                print("newwAddedItem ");
                 _listKey.currentState?.insertItem(updatedIndex);
-              }else{
+              } else {
                 // Animate item update
-                print("updateIndex "+updatedIndex.toString());
                 _listKey.currentState?.removeItem(
                   updatedIndex,
-                      (context, animation) => _buildExpenseCard(_expenses[updatedIndex], context),
+                  (context, animation) =>
+                      _buildExpenseCard(_expenses[updatedIndex], context),
                 );
                 Future.delayed(Duration(milliseconds: 300), () {
                   // Re-insert the updated item
@@ -64,11 +65,12 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
             } else if (state.error != null) {
               return Center(child: Text("Error: ${state.error}"));
             } else if (state.expenseList.isEmpty) {
+              BaseDataController().updateExpenseList = expensesHelper.onUpdate;
+
               return const Center(child: Text("No expenses found"));
             }
 
             _expenses = List.from(state.expenseList);
-print("expensesListLength "+_expenses.length.toString());
             return AnimatedList(
               key: _listKey,
               initialItemCount: _expenses.length,
@@ -77,13 +79,15 @@ print("expensesListLength "+_expenses.length.toString());
 
                 return SlideTransition(
                   position: animation.drive(
-                  expensesHelper.newAdded?  Tween<Offset>(
-                      begin: const Offset(0, -1), // Start off-screen
-                      end: Offset.zero,
-                    ).chain(CurveTween(curve: Curves.easeInOut)):Tween<Offset>(
-                    begin: const Offset(0, 1), // Start off-screen
-                    end: Offset.zero,
-                  ).chain(CurveTween(curve: Curves.easeInOut)),
+                    expensesHelper.newAdded
+                        ? Tween<Offset>(
+                            begin: const Offset(0, -1), // Start off-screen
+                            end: Offset.zero,
+                          ).chain(CurveTween(curve: Curves.easeInOut))
+                        : Tween<Offset>(
+                            begin: const Offset(0, 1), // Start off-screen
+                            end: Offset.zero,
+                          ).chain(CurveTween(curve: Curves.easeInOut)),
                   ),
                   child: _buildExpenseCard(expense, context),
                 );
