@@ -112,7 +112,7 @@ class FirebaseUtils {
   Future<List<QueryDocumentSnapshot>> getExpensesByStatus(String status) async {
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection("expenses")
-        .where("status", isEqualTo: status)
+        .where("expensesStatus", isEqualTo: status)
         .get();
     return query.docs;
   }

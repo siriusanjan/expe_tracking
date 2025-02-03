@@ -11,8 +11,7 @@ import '../net/firebase_utils.dart';
 import '../utils/base_data_controller.dart';
 
 const String accessToken =
-    "ya29.a0AXeO80Tc1eKzF4nvLi_K2LPUP6e6oT4pbO9-WeAFV5_GknAxh_iTEno3jyfOuy2QcRbQvpLkckv_WDIU07iN-TvHcIwsyQ-UNrefKgMNvCmoXAlANp5_xnuRBwyBJAkr2f8ZCNWfRCtGLOfdaLkdGCVKV3AkNhTYKkEVOuMmiQaCgYKATQSAQ8SFQHGX2Mi2kK4_HRqtxay3jeFK37RAw0177";
-
+"ya29.a0AXeO80RudANN1w4AC_MY1ErpETkIN0Lg29HgWNX7SwXE0IyL8HXXqDvLr1WuBwV7Xe-9EV7nKrgCGYLMXSGMpAOjr76gsxlA78gaD4sBSahz_z-GMjipFk6Y59QPkcqf-MK3t2KQGc2Yol7FCppuvkyWP9X9xObxq1-td21R5waCgYKAVISAQ8SFQHGX2MiQ8TuiJ42GiG9XNafGBXYGw0177";
 class NotificationManager {
   NotificationManager._privateConstructor();
 
@@ -182,11 +181,7 @@ class NotificationManager {
           print("❌ fcmTokens is in an unexpected format.");
         }
       }
-
-// Add the new token to the list
       tokens.add(token);
-
-// Update the Firestore document with the new list of tokens
       await userRef.set({'fcmTokens': tokens}, SetOptions(merge: true));
     }
   }

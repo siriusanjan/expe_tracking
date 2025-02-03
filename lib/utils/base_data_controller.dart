@@ -17,6 +17,7 @@ class BaseDataController {
 
   UserRole currentUserRole = UserRole.none;
   late UserCredential? userCredential;
+  late Function updateExpenseList;
 
   factory BaseDataController() {
     return _instance;
@@ -29,7 +30,8 @@ class BaseDataController {
     currentUserRole = await FirebaseUtils()
         .loginUser(email, password, catchErrorMessage: catchErrorMessage);
     if (BaseDataController().userCredential?.user?.uid != null) {
-      NotificationManager().setupFirebaseMessaging(BaseDataController().userCredential?.user?.uid ?? "");
+      NotificationManager().setupFirebaseMessaging(
+          BaseDataController().userCredential?.user?.uid ?? "");
     }
   }
 

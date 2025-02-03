@@ -65,10 +65,10 @@ class LoginHelper {
     BaseDataController()
         .loginIn(
             email: emailController.text.trim().isEmpty
-                ? "man@man.com"
+                ? "em@em.com"
                 : emailController.text.trim(),
             password: passwordController.text.isEmpty
-                ? "man1234"
+                ? "em1234"
                 : passwordController.text,
             catchErrorMessage: (message) {
               Navigator.pop(context);

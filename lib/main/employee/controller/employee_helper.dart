@@ -99,6 +99,10 @@ class EmployeeHelper {
           );
           if (isSuccess) {
             blocEmployee.changeBlocState(EmployeeState.submittingResulted);
+            WidgetsBinding.instance.addPostFrameCallback((_){
+              BaseDataController().updateExpenseList(expensesModel);
+
+            });
             Navigator.pop(context);
             Navigator.pop(context);
           } else {
