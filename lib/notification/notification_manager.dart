@@ -33,8 +33,6 @@ class NotificationManager {
   List<String> adminTokens = [];
   List<String> empToken = [];
 
-
-
   void initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -62,13 +60,6 @@ class NotificationManager {
 
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     }
-  }
-
-// Call this method when the user logs out
-  void removeFirebaseMessagingListener() {
-    _firebaseStream?.cancel();
-    _firebaseStream = null;
-    print("✅ Firebase Messaging listener removed.");
   }
 
   Future<void> setupFirebaseMessaging(String employeeID) async {
@@ -216,7 +207,9 @@ class NotificationManager {
     String? myFirebaseToke = await _firebaseMessaging.getToken();
     if (canShowNotification(expensesModel) &&
         messageData['messageID'] == myFirebaseToke) {
-      print("myFireBaseToken "+myFirebaseToke.toString());
+      print("mySendJSon "+message.data.toString());
+      print("myData id "+expensesModel.expId.toString());
+
       const AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
         'channel_id',
@@ -363,6 +356,7 @@ class NotificationManager {
           "data": expense.toJsonWithMessageID(token),
         }
       };
+      print("mySendJSon "+expense.toJsonWithMessageID(token.toString()).toString());
       await sendPushNotification(expense, notificationData);
     }
   }
@@ -414,11 +408,12 @@ class NotificationManager {
     }
     return false;
   }
+
   Future<void> removeFireBaseNotificationToken() async {
     final currentToken = _firebaseMessaging.getToken();
     String? userId = BaseDataController().userCredential?.user?.uid ?? "";
     DocumentReference userRef =
-    FirebaseFirestore.instance.collection('users').doc(userId);
+        FirebaseFirestore.instance.collection('users').doc(userId);
     if (BaseDataController().currentUserRole == UserRole.admin) {
       adminTokens.remove(currentToken ?? "");
       await userRef.set({'fcmTokens': adminTokens}, SetOptions(merge: true));
@@ -430,5 +425,12 @@ class NotificationManager {
       await userRef.set({'fcmTokens': empToken}, SetOptions(merge: true));
     }
     removeFirebaseMessagingListener();
+  }
+
+  // Call this method when the user logs out
+  void removeFirebaseMessagingListener() {
+    _firebaseStream?.cancel();
+    _firebaseStream = null;
+    print("✅ Firebase Messaging listener removed.");
   }
 }
