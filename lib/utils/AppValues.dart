@@ -6,5 +6,6 @@ class AppValues {
   static double appCommonHorizontalPadding = -1;
   static const Color primaryColor = Color(0XFF26A69A);
   static const Color backgroundColor = Color(0XFFf0f1f7);
+  static String myNotificationToken="";
 
 }

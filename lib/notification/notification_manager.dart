@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:expe_traking/main/parent/model/expenses_model.dart';
+import 'package:expe_traking/utils/AppValues.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,7 +13,8 @@ import '../net/firebase_utils.dart';
 import '../utils/base_data_controller.dart';
 
 const String accessToken =
-"ya29.a0AXeO80RudANN1w4AC_MY1ErpETkIN0Lg29HgWNX7SwXE0IyL8HXXqDvLr1WuBwV7Xe-9EV7nKrgCGYLMXSGMpAOjr76gsxlA78gaD4sBSahz_z-GMjipFk6Y59QPkcqf-MK3t2KQGc2Yol7FCppuvkyWP9X9xObxq1-td21R5waCgYKAVISAQ8SFQHGX2MiQ8TuiJ42GiG9XNafGBXYGw0177";
+    "ya29.a0AXeO80RIzlhTKn70LlqZpJNGeFEaGZOIk1SMfkTunWSWgLDS21JKkG7qgCHamXit526h9ADwHwdUhag6XtE0NajQWYabf7FCIyCjIPbGVHMXv6YTmHpqpsvrgaXN2S0B7KTuDqWxgDIvQSjIQNq8P-CwHOcITXxik4IU4De4bwaCgYKAesSAQ8SFQHGX2Mi3Qj-ZqeOmgCyntP8des2Mg0177";
+
 class NotificationManager {
   NotificationManager._privateConstructor();
 
@@ -26,6 +29,12 @@ class NotificationManager {
     return _instance;
   }
 
+  StreamSubscription<RemoteMessage>? _firebaseStream;
+  List<String> adminTokens = [];
+  List<String> empToken = [];
+
+
+
   void initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -38,14 +47,14 @@ class NotificationManager {
 
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     } else {
-      final DarwinInitializationSettings initializationSettingsIOS =
+      const DarwinInitializationSettings initializationSettingsIOS =
           DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
         requestSoundPermission: true,
       );
 
-      final InitializationSettings initializationSettings =
+      const InitializationSettings initializationSettings =
           InitializationSettings(
         android: initializationSettingsAndroid,
         iOS: initializationSettingsIOS,
@@ -53,6 +62,13 @@ class NotificationManager {
 
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     }
+  }
+
+// Call this method when the user logs out
+  void removeFirebaseMessagingListener() {
+    _firebaseStream?.cancel();
+    _firebaseStream = null;
+    print("✅ Firebase Messaging listener removed.");
   }
 
   Future<void> setupFirebaseMessaging(String employeeID) async {
@@ -99,10 +115,11 @@ class NotificationManager {
     _firebaseMessaging.onTokenRefresh.listen((newToken) async {
       await _saveTokenToFireStore(employeeID, newToken);
     });
-
+    _firebaseStream
+        ?.cancel(); // Cancel any previous listener before setting a new one
     // Handle Incoming Notifications
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("🔔 Foreground Notification: ${message.notification?.title}");
+    _firebaseStream =
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       _showNotification(message);
     });
   }
@@ -122,32 +139,33 @@ class NotificationManager {
     if (fcmToken != null) {
       // Add token to user's fcmTokens field if not already present
       if (doc.exists) {
-        List<String> tokens = [];
+        adminTokens = [];
         var fcmTokensField = doc['fcmTokens'];
 
         // If fcmTokens is a String, wrap it in a list
         if (fcmTokensField is String) {
-          tokens.add(fcmTokensField);
+          adminTokens.add(fcmTokensField);
         }
         // If fcmTokens is a List, ensure it's a list of Strings
         else if (fcmTokensField is List) {
-          tokens.addAll(List<String>.from(fcmTokensField));
+          adminTokens.addAll(List<String>.from(fcmTokensField));
         } else {
           print("❌ fcmTokens is in an unexpected format.");
         }
         // Add the new token if it's not already in the list
-        if (!tokens.contains(fcmToken)) {
-          tokens.add(fcmToken);
+        if (!adminTokens.contains(fcmToken)) {
+          adminTokens.add(fcmToken);
+          adminTokens = empToken.toSet().toList();
 
           // Save the token back to Firestore
           await userRef.set({
-            'fcmTokens': tokens,
+            'fcmTokens': adminTokens,
           }, SetOptions(merge: true));
         }
       } else {
         // If the user doesn't exist, create a new document with the token
         await userRef.set({
-          'fcmTokens': [fcmToken],
+          'fcmTokens': [],
         });
       }
     } else {
@@ -158,13 +176,13 @@ class NotificationManager {
   Future<void> _saveTokenToFireStore(String employeeID, String token) async {
     if (BaseDataController().currentUserRole == UserRole.admin) {
       registerAdminFCMToken();
-    } else {
+      print("registerForAdmin ");
+    } else if (BaseDataController().currentUserRole == UserRole.employee) {
       DocumentReference userRef = FirebaseFirestore.instance
           .collection('users')
           .doc(BaseDataController().userCredential?.user?.uid ?? "");
 
       DocumentSnapshot doc = await userRef.get();
-      List<String> tokens = [];
 
 // If the document exists and the fcmTokens field is present
       if (doc.exists && doc.data() != null) {
@@ -172,22 +190,33 @@ class NotificationManager {
 
         // If fcmTokens is a String, wrap it in a list
         if (fcmTokensField is String) {
-          tokens.add(fcmTokensField);
+          empToken.add(fcmTokensField);
         }
         // If fcmTokens is already a List, add all items to the list
         else if (fcmTokensField is List) {
-          tokens.addAll(List<String>.from(fcmTokensField));
+          empToken.addAll(List<String>.from(fcmTokensField));
         } else {
           print("❌ fcmTokens is in an unexpected format.");
         }
       }
-      tokens.add(token);
-      await userRef.set({'fcmTokens': tokens}, SetOptions(merge: true));
+      if (!empToken.contains(token)) {
+        empToken.add(token);
+        print("myEmpTokens " + empToken.toString());
+        AppValues.myNotificationToken = token;
+      }
+      empToken = empToken.toSet().toList();
+      await userRef.set({'fcmTokens': empToken}, SetOptions(merge: true));
     }
   }
 
   void _showNotification(RemoteMessage message) async {
-    if (canShowNotification(message.data as Map<String, dynamic> ?? {})) {
+    final ExpensesModel expensesModel =
+        ExpensesModel.fromMap(null, message.data);
+    Map<String, dynamic> messageData = message.data;
+    String? myFirebaseToke = await _firebaseMessaging.getToken();
+    if (canShowNotification(expensesModel) &&
+        messageData['messageID'] == myFirebaseToke) {
+      print("myFireBaseToken "+myFirebaseToke.toString());
       const AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
         'channel_id',
@@ -199,12 +228,29 @@ class NotificationManager {
       const NotificationDetails notificationDetails =
           NotificationDetails(android: androidDetails);
 
-      await flutterLocalNotificationsPlugin.show(
+      await flutterLocalNotificationsPlugin
+          .show(
         message.hashCode,
         message.notification?.title,
         message.notification?.body,
         notificationDetails,
-      );
+      )
+          .then((_) {
+        if (BaseDataController().currentUserRole == UserRole.admin &&
+            expensesModel.expensesStatus == ExpensesStatusEnum.approved) {
+          BaseDataController()
+              .updateExpenseList(expensesModel, shouldUpdate: true);
+          return true;
+        }
+
+        if (BaseDataController().userCredential?.user?.uid ==
+                expensesModel.employeeID &&
+            BaseDataController().currentUserRole == UserRole.employee) {
+          BaseDataController()
+              .updateExpenseList(expensesModel, shouldUpdate: true);
+          return true;
+        }
+      });
     } else {
       print("cannotShowthe nnotification");
     }
@@ -301,9 +347,11 @@ class NotificationManager {
       print("❌ No FCM tokens found for admin users");
       return;
     }
+    print("myuserNtfToken " + tokens.length.toString());
 
     // Send notifications to all admin tokens
     for (String token in tokens) {
+      print("tokesn " + token.toString());
       final Map<String, dynamic> notificationData = {
         "message": {
           "token": token,
@@ -312,7 +360,7 @@ class NotificationManager {
             "body":
                 "Your expense item ${expense.title} is ${expense.expensesStatus.name}"
           },
-          "data": expense.toJson()
+          "data": expense.toJsonWithMessageID(token),
         }
       };
       await sendPushNotification(expense, notificationData);
@@ -353,17 +401,34 @@ class NotificationManager {
     sendNotificationToEmployee(expense);
   }
 
-  bool canShowNotification(Map<String, dynamic> data) {
-    ExpensesModel expensesModel = ExpensesModel.fromMap(null, data);
-    print("expenseMode " + expensesModel.expensesStatus.toString());
+  bool canShowNotification(ExpensesModel expensesModel) {
     if (BaseDataController().currentUserRole == UserRole.admin &&
         expensesModel.expensesStatus == ExpensesStatusEnum.approved) {
       return true;
     }
+
     if (BaseDataController().userCredential?.user?.uid ==
-        expensesModel.employeeID) {
+            expensesModel.employeeID &&
+        BaseDataController().currentUserRole == UserRole.employee) {
       return true;
     }
     return false;
+  }
+  Future<void> removeFireBaseNotificationToken() async {
+    final currentToken = _firebaseMessaging.getToken();
+    String? userId = BaseDataController().userCredential?.user?.uid ?? "";
+    DocumentReference userRef =
+    FirebaseFirestore.instance.collection('users').doc(userId);
+    if (BaseDataController().currentUserRole == UserRole.admin) {
+      adminTokens.remove(currentToken ?? "");
+      await userRef.set({'fcmTokens': adminTokens}, SetOptions(merge: true));
+    } else if (BaseDataController().currentUserRole == UserRole.employee) {
+      DocumentReference userRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(BaseDataController().userCredential?.user?.uid ?? "");
+      empToken.remove(currentToken);
+      await userRef.set({'fcmTokens': empToken}, SetOptions(merge: true));
+    }
+    removeFirebaseMessagingListener();
   }
 }

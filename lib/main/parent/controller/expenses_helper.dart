@@ -51,6 +51,7 @@ class ExpensesHelper {
         expense: model,
         shouldUpdate: shouldUpdate,
         updatedIndex: (updatedIndex,isNew) {
+
           indexUpdated = updatedIndex;
           newAdded=isNew;
         }));

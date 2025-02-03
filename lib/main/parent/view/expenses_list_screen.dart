@@ -45,6 +45,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                 print("newwAddedItem ");
                 _listKey.currentState?.insertItem(updatedIndex);
               } else {
+                print("updatedIndex "+updatedIndex.toString());
                 // Animate item update
                 _listKey.currentState?.removeItem(
                   updatedIndex,

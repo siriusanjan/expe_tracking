@@ -53,7 +53,20 @@ class ExpensesModel {
       'authorMail': authorMail.toString(),
       'updaterMail': updaterMail.toString(),
       'employeeID': employeeID,
+    };
+  }
 
+  Map<String, dynamic> toJsonWithMessageID(String messageId) {
+    return {
+      'expensesStatus': expensesStatus.name.toString(),
+      'description': description.toString(),
+      'amount': amount.toString(),
+      'receiptUrl': receiptUrl.toString(),
+      'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
+      'authorMail': authorMail.toString(),
+      'updaterMail': updaterMail.toString(),
+      'employeeID': employeeID,
+      'messageID': messageId,
     };
   }
 
@@ -63,7 +76,8 @@ class ExpensesModel {
       description: map['description'] ?? "football bill",
       amount: (map['amount'] is String)
           ? double.tryParse(map['amount']) ?? 1200.0
-          : (map['amount'] as num?)?.toDouble() ?? 1200.0,      employeeID: map['employeeID'] ?? "aa",
+          : (map['amount'] as num?)?.toDouble() ?? 1200.0,
+      employeeID: map['employeeID'] ?? "aa",
       expensesStatus: ExpensesStatusEnum.values.firstWhere(
         (e) =>
             e.toString().split('.').last ==
@@ -73,9 +87,10 @@ class ExpensesModel {
       receiptUrl: map['receiptUrl'] ?? "11",
       updaterMail: map['updaterMail'] ?? "updaterMail",
       authorMail: map['authorMail'] ?? "authorMail",
-      expId:map['expId'] ?? docId ?? "",
+      expId: map['expId'] ?? docId ?? "",
       timeStamp: (map['timeStamp'] is Timestamp)
           ? (map['timeStamp'] as Timestamp).toDate()
-          : DateTime.now(),    );
+          : DateTime.now(),
+    );
   }
 }
