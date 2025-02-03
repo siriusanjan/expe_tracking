@@ -39,12 +39,14 @@ class ExpensesModel {
       'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
       'authorMail': authorMail,
       'updaterMail': updaterMail,
+      'expId': expId.toString(),
     };
   }
 
   // Convert the ExpensesModel object to a JSON-friendly format
   Map<String, dynamic> toJson() {
     return {
+      'title': title.toString(),
       'expensesStatus': expensesStatus.name.toString(),
       'description': description.toString(),
       'amount': amount.toString(),
@@ -52,12 +54,14 @@ class ExpensesModel {
       'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
       'authorMail': authorMail.toString(),
       'updaterMail': updaterMail.toString(),
-      'employeeID': employeeID,
+      'employeeID': employeeID.toString(),
+      'expId': expId.toString(),
     };
   }
 
   Map<String, dynamic> toJsonWithMessageID(String messageId) {
     return {
+      'title': title.toString(),
       'expensesStatus': expensesStatus.name.toString(),
       'description': description.toString(),
       'amount': amount.toString(),
@@ -65,8 +69,9 @@ class ExpensesModel {
       'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
       'authorMail': authorMail.toString(),
       'updaterMail': updaterMail.toString(),
-      'employeeID': employeeID,
-      'messageID': messageId,
+      'employeeID': employeeID.toString(),
+      'messageID': messageId.toString(),
+      'expId': expId.toString(),
     };
   }
 
