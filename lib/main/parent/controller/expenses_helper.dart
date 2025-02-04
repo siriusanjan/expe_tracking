@@ -11,6 +11,16 @@ import '../../../utils/app_utils.dart';
 import 'expense_bloc.dart';
 import 'expense_events.dart';
 
+enum ExpenseEnum {
+  travel,
+  meals,
+  office,
+  software,
+  training,
+  business,
+  miscellaneous
+}
+
 class ExpensesHelper {
   List<ExpensesModel> expensesList = [];
   late ExpensesModel selectedDetailModel;
@@ -44,16 +54,13 @@ class ExpensesHelper {
     // BaseDataController().updateExpenseStatus(selectedDetailModel., status)
   }
 
-
-
-  void onUpdate(ExpensesModel model,{bool shouldUpdate=false}) {
+  void onUpdate(ExpensesModel model, {bool shouldUpdate = false}) {
     BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
         expense: model,
         shouldUpdate: shouldUpdate,
-        updatedIndex: (updatedIndex,isNew) {
-
+        updatedIndex: (updatedIndex, isNew) {
           indexUpdated = updatedIndex;
-          newAdded=isNew;
+          newAdded = isNew;
         }));
   }
 

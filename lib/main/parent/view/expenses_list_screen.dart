@@ -1,3 +1,4 @@
+import 'package:expe_traking/main/parent/view/widget/cat_wise_expense_view.dart';
 import 'package:expe_traking/utils/AppValues.dart';
 import 'package:expe_traking/utils/base_data_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,10 +43,8 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
               expensesHelper.indexUpdated = -1;
               _expenses = List.from(state.expenseList);
               if (expensesHelper.newAdded) {
-                print("newwAddedItem ");
                 _listKey.currentState?.insertItem(updatedIndex);
               } else {
-                print("updatedIndex "+updatedIndex.toString());
                 // Animate item update
                 _listKey.currentState?.removeItem(
                   updatedIndex,
@@ -72,27 +71,34 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
             }
 
             _expenses = List.from(state.expenseList);
-            return AnimatedList(
-              key: _listKey,
-              initialItemCount: _expenses.length,
-              itemBuilder: (context, index, animation) {
-                ExpensesModel expense = _expenses[index];
-
-                return SlideTransition(
-                  position: animation.drive(
-                    expensesHelper.newAdded
-                        ? Tween<Offset>(
-                            begin: const Offset(0, -1), // Start off-screen
-                            end: Offset.zero,
-                          ).chain(CurveTween(curve: Curves.easeInOut))
-                        : Tween<Offset>(
-                            begin: const Offset(0, 1), // Start off-screen
-                            end: Offset.zero,
-                          ).chain(CurveTween(curve: Curves.easeInOut)),
+            return Column(
+              children: [
+                CategoryWiseExpenseView(),
+                Expanded(
+                  child: AnimatedList(
+                    key: _listKey,
+                    initialItemCount: _expenses.length,
+                    itemBuilder: (context, index, animation) {
+                      ExpensesModel expense = _expenses[index];
+                  
+                      return SlideTransition(
+                        position: animation.drive(
+                          expensesHelper.newAdded
+                              ? Tween<Offset>(
+                                  begin: const Offset(0, -1), // Start off-screen
+                                  end: Offset.zero,
+                                ).chain(CurveTween(curve: Curves.easeInOut))
+                              : Tween<Offset>(
+                                  begin: const Offset(0, 1), // Start off-screen
+                                  end: Offset.zero,
+                                ).chain(CurveTween(curve: Curves.easeInOut)),
+                        ),
+                        child: _buildExpenseCard(expense, context),
+                      );
+                    },
                   ),
-                  child: _buildExpenseCard(expense, context),
-                );
-              },
+                ),
+              ],
             );
           },
         ),
@@ -116,7 +122,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
           expense.title,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text("Amount: \$${expense.amount}"),
+        subtitle: Text("Amount: \$${AppUtils.formatDollor(expense.amount)}"),
         trailing: SizedBox(
           width: 80,
           child: Row(

@@ -54,7 +54,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                     children: [
                       Container(
                         height: 8,
-                        width: 100,
+                        width: 70,
                         decoration: BoxDecoration(
                           color: _selectedStatus == ExpensesStatusEnum.pending
                               ? Colors.grey
@@ -67,7 +67,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                       const SizedBox(height: 8),
                       // Adds spacing between container and text
                       Text(
-                        "\$${expense.amount.toStringAsFixed(2)}",
+                        "\$${AppUtils.formatDollor(expense.amount)}",
                         style: const TextStyle(fontSize: 18),
                         textAlign: TextAlign.center, // Centers the text
                       ),
@@ -86,6 +86,21 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 8),
+
+                        Row(
+                          children: [
+                            Icon(Icons.account_circle, size: 24),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "${BaseDataController().userCredential!.user!.email!.split('@')[0].toUpperCase()}",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15),
+                            )
+                          ],
+                        ),
                         const SizedBox(
                           height: 15,
                         ),
@@ -138,9 +153,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                           ),
                           SizedBox(width: 5),
                           Text(
-                            AppUtils.capitalizeFirstLetter(
-                                _selectedStatus.name),
-                            style: TextStyle(color: Colors.grey),
+                            "${AppUtils.capitalizeFirstLetter(_selectedStatus.name)} ${(AppUtils.capitalizeFirstLetter(_selectedStatus != ExpensesStatusEnum.pending ? "by ${expense.updaterMail == BaseDataController().userCredential?.user?.email && _selectedStatus != expense.expensesStatus ? "You" : expense.updaterMail}" : ""))} ",
+                            style: TextStyle(color: Colors.grey, fontSize: 10),
                           )
                         ]),
 
@@ -226,21 +240,26 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                             ),
                             TextButton(
                               onPressed: () {
-                                AppDialogue.showLoadingDialog(context);
-                                expense.updaterMail = BaseDataController()
-                                        .userCredential
-                                        ?.user
-                                        ?.email ??
-                                    "";
-                                expense.expensesStatus = _selectedStatus;
-                                BaseDataController()
-                                    .updateExpenseStatus(expense)
-                                    .then((_) {
+                                if (_selectedStatus != expense.expensesStatus) {
+                                  AppDialogue.showLoadingDialog(context);
+                                  expense.updaterMail = BaseDataController()
+                                          .userCredential
+                                          ?.user
+                                          ?.email ??
+                                      "";
+                                  expense.expensesStatus = _selectedStatus;
                                   BaseDataController()
-                                      .updateExpenseList(expense,shouldUpdate:true);
+                                      .updateExpenseStatus(expense)
+                                      .then((_) {
+                                    BaseDataController().updateExpenseList(
+                                        expense,
+                                        shouldUpdate: true);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  });
+                                } else {
                                   Navigator.pop(context);
-                                  Navigator.pop(context);
-                                });
+                                }
                               },
                               child: const Text(
                                 "Save",
