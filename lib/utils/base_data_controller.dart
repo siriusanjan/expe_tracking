@@ -97,8 +97,15 @@ class BaseDataController {
     }
   }
 
-  Future<void> clearAllData() async {
-    await NotificationManager().removeFireBaseNotificationToken();
+  Future<void> clearAllData(String userEmail) async {
+    if (currentUserRole == UserRole.employee) {
+      await NotificationManager().removeFireBaseNotificationToken(
+          notificationTopicName:
+              BaseDataController().userCredential?.user?.uid ?? "");
+    } else {
+      await NotificationManager().removeFireBaseNotificationToken(
+          notificationTopicName: currentUserRole.name);
+    }
     currentUserRole = UserRole.none;
     userCredential = null;
   }

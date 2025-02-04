@@ -72,10 +72,10 @@ class FirebaseUtils {
 
   Future<void> submitExpenses(ExpensesModel model, Function result) async {
     try {
-      await FirebaseFirestore.instance
+      DocumentReference docRef = await FirebaseFirestore.instance
           .collection("expenses")
           .add(model.toMap());
-      result('Expense submitted successfully!', true);
+      result('Expense submitted successfully!', docRef.id.toString(),true);
     } catch (e) {
       result('Error submitting expense: $e', true);
     }
@@ -88,6 +88,7 @@ class FirebaseUtils {
         .doc(expenseId)
         .update({
         "expensesStatus": status, // "approved" or "rejected"
+        "expId": expenseId, // "approved" or "rejected"
         "updaterMail": updaterMail, // "approved" or "rejected"
     });
   }

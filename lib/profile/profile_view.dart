@@ -67,7 +67,7 @@ class ProfileView extends StatelessWidget {
                             size: 15,
                           ),
                           Text(
-                              " ${BaseDataController().userCredential!.user!.email!}",
+                              "${BaseDataController().userCredential?.user?.email ?? ""}",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -130,12 +130,13 @@ class ProfileView extends StatelessWidget {
                 )),
             GestureDetector(
               onTap: () async {
-                await BaseDataController().clearAllData();
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  LoginScreen.route, // Named route for LoginScreen
-                  (route) => true, // Removes all previous routes
-                );
+                await BaseDataController().clearAllData(BaseDataController().userCredential?.user?.email ?? "").then((_) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    LoginScreen.route, // Named route for LoginScreen
+                    (route) => true, // Removes all previous routes
+                  );
+                });
               },
               child: Container(
                   margin: EdgeInsets.only(top: 8),
