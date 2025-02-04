@@ -75,7 +75,7 @@ class ExpensesModel {
     };
   }
 
-  factory ExpensesModel.fromMap(String? docId, Map<String, dynamic> map) {
+  factory ExpensesModel.fromMap(String docId, Map<String, dynamic> map) {
     return ExpensesModel(
       title: map['title'] ?? "football",
       description: map['description'] ?? "football bill",
@@ -92,7 +92,7 @@ class ExpensesModel {
       receiptUrl: map['receiptUrl'] ?? "11",
       updaterMail: map['updaterMail'] ?? "updaterMail",
       authorMail: map['authorMail'] ?? "authorMail",
-      expId: map['expId'] ?? docId ?? "",
+      expId:   docId ,
       timeStamp: (map['timeStamp'] is Timestamp)
           ? (map['timeStamp'] as Timestamp).toDate()
           : DateTime.now(),

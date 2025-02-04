@@ -34,7 +34,7 @@ class LoginHelper {
             .createUserWithRole(
                 email: emailController.text.trim(),
                 password: passwordController.text,
-                userRole: UserRole.admin,
+                userRole: UserRole.manager,
                 catchErrorMessage: (message) {
                   Navigator.pop(context);
                   AppDialogue.noUserFoundSnackBar(

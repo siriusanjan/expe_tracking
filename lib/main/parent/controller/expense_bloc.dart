@@ -78,10 +78,14 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       ExpensesModel updatedExpense = updatedList[updatedIndex];
       updatedList.removeAt(updatedIndex); // Remove from the original position
       updatedList.insert(0, updatedExpense); // Add to the top of the list
+    } else if (event.shouldUpdate) {
+      updatedList = [
+        event.expense, // Add the new expense at the top
+        ...state.expenseList,
+      ];
     }
-    print("updatedIndex "+updatedIndex.toString());
-    print("updatedIndex id "+event.expense.expId.toString());
-    event.updatedIndex(event.shouldUpdate ? 0 : 0, !event.shouldUpdate);
+    event.updatedIndex(event.shouldUpdate ? 0 : 0,
+        updatedIndex.isNegative && event.shouldUpdate ? event.shouldUpdate : !event.shouldUpdate);
     emit(state.copyWith(expenseList: updatedList));
   }
 }
