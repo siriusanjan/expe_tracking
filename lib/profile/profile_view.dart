@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import '../utils/base_data_controller.dart';
 
 class ProfileView extends StatelessWidget {
+  const ProfileView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

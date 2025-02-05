@@ -1,5 +1,6 @@
 import 'package:expe_traking/main/parent/model/expenses_model.dart';
 import 'package:expe_traking/main/parent/view/widget/expenses_detail_view.dart';
+import 'package:expe_traking/main/parent/view/widget/filter_view.dart';
 import 'package:expe_traking/net/firebase_utils.dart';
 import 'package:expe_traking/utils/AppValues.dart';
 import 'package:expe_traking/utils/base_data_controller.dart';
@@ -11,24 +12,17 @@ import '../../../utils/app_utils.dart';
 import 'expense_bloc.dart';
 import 'expense_events.dart';
 
-enum ExpenseEnum {
-  travel,
-  meals,
-  office,
-  software,
-  training,
-  business,
-  miscellaneous
-}
-
 class ExpensesHelper {
+  late ExpenseListBloc expenseListBloc;
   List<ExpensesModel> expensesList = [];
   late ExpensesModel selectedDetailModel;
   late BuildContext blocContext;
   int indexUpdated = 0;
   bool newAdded = false;
 
-  ExpensesHelper();
+  ExpensesHelper() {
+    expenseListBloc = ExpenseListBloc(expensesHelper: this);
+  }
 
   Future<List<ExpensesModel>> getExpenses() async {
     if (BaseDataController().currentUserRole == UserRole.admin) {
@@ -37,6 +31,91 @@ class ExpensesHelper {
     } else {
       return await BaseDataController().getAllExpenses();
     }
+  }
+
+  Future<List<ExpensesModel>> filterExpenses({
+    required List<ExpensesModel> expensesList,
+    DateTime? startDate,
+    DateTime? endDate,
+    ExpensesStatusEnum? expensesStatusFilter,
+    ExpenseCategoryEnum? expenseCategoryEnum,
+    String? employeeEmailFilter,
+  }) async {
+    final List<ExpensesModel> expenses = expensesList;
+    await BaseDataController().getFilterList(employeeID: "");
+    final resultExpenses = expenses.where((expense) {
+      // Date Filter
+      bool dateFilter = true;
+      if (startDate != null && endDate != null) {
+        dateFilter = expense.timeStamp != null &&
+            expense.timeStamp!.isAfter(startDate) &&
+            expense.timeStamp!.isBefore(endDate);
+      }
+
+      // Expenses Status Filter
+      bool statusFilter = true;
+      if (expensesStatusFilter != null) {
+        statusFilter = expense.expensesStatus == expensesStatusFilter;
+      }
+
+      // Employee Email Filter
+      bool emailFilter = true;
+      if (employeeEmailFilter != null) {
+        emailFilter = expense.authorMail == employeeEmailFilter;
+      }
+      // Employee Email Filter
+      bool expenseCategoryEnumFilter = true;
+      if (expenseCategoryEnum != null) {
+        expenseCategoryEnumFilter =
+            expense.category == expenseCategoryEnum.name;
+      }
+
+      // Combine all filters
+      final filterResult = dateFilter &&
+          statusFilter &&
+          emailFilter &&
+          expenseCategoryEnumFilter;
+      return filterResult;
+    }).toList();
+    return resultExpenses;
+  }
+
+  Map<ExpenseCategoryEnum, double> getCategoryWiseTotal(
+      List<ExpensesModel> expenses) {
+    Map<ExpenseCategoryEnum, double> categoryTotals = {};
+
+    for (var expense in expenses) {
+      String category = expense.category;
+      ExpenseCategoryEnum categoryEnum = ExpenseCategoryEnum.values.firstWhere(
+        (e) => e.name.toLowerCase() == category.toLowerCase(),
+      );
+      double amount = expense.amount;
+
+      if (categoryTotals.containsKey(categoryEnum)) {
+        categoryTotals[categoryEnum] = categoryTotals[categoryEnum]! + amount;
+      } else {
+        categoryTotals[categoryEnum] = amount;
+      }
+    }
+
+    return categoryTotals;
+  }
+
+  void showFilterDialog(BuildContext blocContext) {
+    showModalBottomSheet(
+      useSafeArea: true,
+      context: blocContext,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return BlocProvider<ExpenseListBloc>.value(
+            value: expenseListBloc,
+            child: Wrap(
+              children: [
+                const FilterView(),
+              ],
+            ));
+      },
+    );
   }
 
   void showExpenseDetailsDialog(BuildContext context, ExpensesModel expense) {

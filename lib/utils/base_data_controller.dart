@@ -5,7 +5,6 @@ import 'package:expe_traking/net/firebase_utils.dart';
 import 'package:expe_traking/notification/notification_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
 
 import '../main/parent/model/expenses_model.dart';
 
@@ -68,6 +67,29 @@ class BaseDataController {
   Future<List<ExpensesModel>> getUserExpenses(String employeeID) async {
     final List<QueryDocumentSnapshot> data =
         await FirebaseUtils().getUserExpenses(employeeID);
+    return data
+        .map((doc) =>
+            ExpensesModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// get filter list
+  Future<List<ExpensesModel>> getFilterList({
+    required String employeeID,
+    DateTime? startDate,
+    DateTime? endDate,
+    ExpensesStatusEnum? expensesStatusFilter,
+    ExpenseCategoryEnum? expenseCategoryEnum,
+    String? employeeEmailFilter,
+  }) async {
+    final List<QueryDocumentSnapshot> data = await FirebaseUtils()
+        .getFilteredExpensesFromDatabase(
+            employeeID: employeeID,
+            startDate: startDate,
+            endDate: endDate,
+            employeeEmailFilter: employeeEmailFilter,
+            expenseCategoryEnum: expenseCategoryEnum,
+            expensesStatusFilter: expensesStatusFilter);
     return data
         .map((doc) =>
             ExpensesModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
