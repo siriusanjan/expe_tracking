@@ -1,6 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum ExpensesStatusEnum { pending, approved, rejected }
+enum ExpenseCategoryEnum {
+  travel,
+  meals,
+  office,
+  software,
+  training,
+  business,
+  miscellaneous
+}
 
 class ExpensesModel {
   String title;
@@ -13,6 +22,7 @@ class ExpensesModel {
   String authorMail;
   String updaterMail;
   String expId;
+  String category;
 
   ExpensesModel({
     this.title = "football",
@@ -25,6 +35,7 @@ class ExpensesModel {
     this.authorMail = "mailAuthor",
     this.updaterMail = "updaterMail",
     this.expId = "expId",
+    this.category = "category",
   });
 
   // Convert the ExpensesModel object to a map
@@ -40,6 +51,7 @@ class ExpensesModel {
       'authorMail': authorMail,
       'updaterMail': updaterMail,
       'expId': expId.toString(),
+      'category': category.toString(),
     };
   }
 
@@ -56,6 +68,7 @@ class ExpensesModel {
       'updaterMail': updaterMail.toString(),
       'employeeID': employeeID.toString(),
       'expId': expId.toString(),
+      'category': category.toString(),
     };
   }
 
@@ -72,6 +85,7 @@ class ExpensesModel {
       'employeeID': employeeID.toString(),
       'messageID': messageId.toString(),
       'expId': expId.toString(),
+      'category': category.toString(),
     };
   }
 
@@ -92,6 +106,7 @@ class ExpensesModel {
       receiptUrl: map['receiptUrl'] ?? "11",
       updaterMail: map['updaterMail'] ?? "updaterMail",
       authorMail: map['authorMail'] ?? "authorMail",
+      category: map['category'] ?? "meal",
       expId:   docId ,
       timeStamp: (map['timeStamp'] is Timestamp)
           ? (map['timeStamp'] as Timestamp).toDate()

@@ -23,7 +23,6 @@ class EmployeeMainView extends StatefulWidget {
 class _EmployeeMainView extends State<EmployeeMainView> {
   late EmployeeHelper employeeHelper;
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -48,28 +47,6 @@ class _EmployeeMainView extends State<EmployeeMainView> {
                 ],
               ),
             ),
-          ),
-          SafeArea(
-            child: Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      employeeHelper.openAddBottomSheet(blocContext: context);
-
-                    },
-                    icon: const Icon(
-                      Icons.add,
-                      color: AppValues.backgroundColor,
-                    ),
-                    label: const Text(
-                      "Add Expenses",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: AppValues.primaryColor,
-                  ),
-                )),
           ),
         ],
       ),

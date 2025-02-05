@@ -75,21 +75,22 @@ class FirebaseUtils {
       DocumentReference docRef = await FirebaseFirestore.instance
           .collection("expenses")
           .add(model.toMap());
-      result('Expense submitted successfully!', docRef.id.toString(),true);
+      result('Expense submitted successfully!', docRef.id.toString(), true);
     } catch (e) {
       result('Error submitting expense: $e', true);
     }
   }
 
   /// update by manager
-  Future<void> updateExpenseStatus(String expenseId, String status,String updaterMail) async {
+  Future<void> updateExpenseStatus(
+      String expenseId, String status, String updaterMail) async {
     await FirebaseFirestore.instance
         .collection("expenses")
         .doc(expenseId)
         .update({
-        "expensesStatus": status, // "approved" or "rejected"
-        "expId": expenseId, // "approved" or "rejected"
-        "updaterMail": updaterMail, // "approved" or "rejected"
+      "expensesStatus": status, // "approved" or "rejected"
+      "expId": expenseId, // "approved" or "rejected"
+      "updaterMail": updaterMail, // "approved" or "rejected"
     });
   }
 
@@ -100,6 +101,42 @@ class FirebaseUtils {
         .where("employeeID", isEqualTo: employeeID)
         .get();
     return query.docs;
+  }
+
+  /// filter list
+
+  Future<List<QueryDocumentSnapshot>> getFilteredExpensesFromDatabase({
+    required String employeeID,
+    DateTime? startDate,
+    DateTime? endDate,
+    ExpensesStatusEnum? expensesStatusFilter,
+    ExpenseCategoryEnum? expenseCategoryEnum,
+    String? employeeEmailFilter,
+  }) async {
+    Query query = FirebaseFirestore.instance
+        .collection("expenses")
+        .where("employeeID", isEqualTo: employeeID);
+
+    // Apply filters directly in Firestore
+    if (startDate != null) {
+      query = query.where("timeStamp",
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
+    }
+    if (endDate != null) {
+      query = query.where("timeStamp",
+          isLessThanOrEqualTo: Timestamp.fromDate(endDate));
+    }
+    if (expenseCategoryEnum != null) {
+      query = query.where("expenseCategoryEnum",
+          isEqualTo: expenseCategoryEnum.name);
+    }
+
+    if (employeeEmailFilter != null) {
+      query = query.where("authorMail", isEqualTo: employeeEmailFilter);
+    }
+
+    QuerySnapshot querySnapshot = await query.get();
+    return querySnapshot.docs;
   }
 
   /// get all expenses

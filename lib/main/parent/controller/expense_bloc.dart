@@ -36,6 +36,24 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
     // Register event handlers
     on<FetchExpensesEvent>(_onFetchExpensesEvent);
     on<UpdateExpenseEvent>(_onUpdateExpenseEvent);
+    on<FilterExpensesEvent>(_onFilterExpensesEvent);
+  }
+
+  Future<void> _onFilterExpensesEvent(
+      FilterExpensesEvent event, Emitter<ExpenseListState> emit) async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      final List<ExpensesModel> expenses = await expensesHelper.filterExpenses(
+          startDate: event.startDate,
+          endDate: event.endDate,
+          expensesStatusFilter: event.expensesStatusFilter,
+          expenseCategoryEnum: event.expenseCategoryEnum,
+          employeeEmailFilter: event.employeeEmailFilter,
+          expensesList: state.expenseList);
+      emit(state.copyWith(expenseList: expenses, isLoading: false));
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), isLoading: false));
+    }
   }
 
   Future<void> _onFetchExpensesEvent(
@@ -84,8 +102,11 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
         ...state.expenseList,
       ];
     }
-    event.updatedIndex(event.shouldUpdate ? 0 : 0,
-        updatedIndex.isNegative && event.shouldUpdate ? event.shouldUpdate : !event.shouldUpdate);
+    event.updatedIndex(
+        event.shouldUpdate ? 0 : 0,
+        updatedIndex.isNegative && event.shouldUpdate
+            ? event.shouldUpdate
+            : !event.shouldUpdate);
     emit(state.copyWith(expenseList: updatedList));
   }
 }
