@@ -25,6 +25,7 @@ class CategoryWiseExpenseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("expenseCatLength "+expensesCategoryAmountMap.length.toString());
     double totalExpense = expensesCategoryAmountMap.isEmpty
         ? 0
         : expensesCategoryAmountMap.values.reduce((a, b) => a + b);

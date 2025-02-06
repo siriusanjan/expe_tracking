@@ -39,7 +39,7 @@ class ExpenseListState {
         error: error ?? this.error,
         currentPage: currentPage ?? this.currentPage,
         hasMoreData: hasMoreData ?? this.hasMoreData,
-        expenseCategoryTotal: {},
+        expenseCategoryTotal: expenseCategoryTotal ?? {},
         pageSize: pageSize ?? this.pageSize);
   }
 }
@@ -62,7 +62,7 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
   ) async {
     if (!state.hasMoreData || state.isLoading) return; // Stop if no more data
 
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true,expenseCategoryTotal: state.expenseCategoryTotal));
 
     try {
       List<ExpensesModel> moreExpenses =
@@ -89,7 +89,7 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
 
   Future<void> _onFilterExpensesEvent(
       FilterExpensesEvent event, Emitter<ExpenseListState> emit) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true,expenseCategoryTotal: state.expenseCategoryTotal));
     try {
       final mapCategoryTotal = await expensesHelper.getExpenseCategoryWiseTotal(
         startDate: event.startDate,
@@ -124,7 +124,7 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
     FetchExpensesEvent event,
     Emitter<ExpenseListState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, currentPage: 0));
+    emit(state.copyWith(isLoading: true, currentPage: 0,expenseCategoryTotal: state.expenseCategoryTotal));
 
     try {
       final expensesServer = await expensesHelper.getExpenses();
@@ -132,8 +132,11 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       await DatabaseHelper.instance.insertExpensesList(expensesServer);
       final mapCategoryTotal =
           await expensesHelper.getExpenseCategoryWiseTotal();
+      print("fetchCatTotal "+mapCategoryTotal.length.toString());
       List<ExpensesModel> expensesList =
           await DatabaseHelper.instance.getFilteredExpenses(page: 0);
+      print("fetchItemTotal "+expensesList.length.toString().toString());
+
       emit(state.copyWith(
         expenseCategoryTotal: mapCategoryTotal,
         expenseList: expensesList,
@@ -186,6 +189,6 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
         updatedIndex.isNegative && event.shouldUpdate
             ? event.shouldUpdate
             : !event.shouldUpdate);
-    emit(state.copyWith(expenseList: updatedList));
+    emit(state.copyWith(expenseList: updatedList,expenseCategoryTotal: state.expenseCategoryTotal));
   }
 }

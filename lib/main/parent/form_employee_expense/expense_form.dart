@@ -41,6 +41,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           BaseDataController().userCredential?.user?.uid ?? "";
       expensesModel.authorMail =
           BaseDataController().userCredential?.user?.email ?? "";
+      expensesModel.category=employeeHelper.expenseCategoryEnum;
       employeeHelper.expensesModel = expensesModel;
       employeeHelper.submitForm(context);
     }
@@ -105,18 +106,23 @@ class _ExpenseFormState extends State<ExpenseForm> {
                             children: [
                               Row(
                                 children: [
-                                  BlocBuilder<BlocEmployeeForm, EmployeeFormState>(
+                                  BlocBuilder<BlocEmployeeForm,
+                                          EmployeeFormState>(
                                       buildWhen: (prevState, state) {
-                                    if (state == EmployeeFormState.initialState ||
-                                        state == EmployeeFormState.photoPicked ||
-                                        state == EmployeeFormState.pickingImage) {
+                                    if (state ==
+                                            EmployeeFormState.initialState ||
+                                        state ==
+                                            EmployeeFormState.photoPicked ||
+                                        state ==
+                                            EmployeeFormState.pickingImage) {
                                       return true;
                                     } else {
                                       return false;
                                     }
                                   }, builder: (context, state) {
                                     employeeHelper =
-                                        BlocProvider.of<BlocEmployeeForm>(context)
+                                        BlocProvider.of<BlocEmployeeForm>(
+                                                context)
                                             .employeeHelper;
                                     return Container(
                                       width: 120,
@@ -196,6 +202,36 @@ class _ExpenseFormState extends State<ExpenseForm> {
                                     ),
                                   )
                                 ],
+                              ),
+                              Padding(padding: EdgeInsets.all(4)),
+                              DropdownButtonFormField<ExpenseCategoryEnum>(
+                                value: employeeHelper.expenseCategoryEnum,
+                                decoration: InputDecoration(
+                                  labelText: "Select Category",
+                                  prefixIcon: Icon(Icons.category),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                items: ExpenseCategoryEnum.values
+                                    .map((ExpenseCategoryEnum category) {
+                                  return DropdownMenuItem(
+                                    value: category,
+                                    child: Text(category.name[0].toUpperCase() +
+                                        category.name.substring(
+                                            1)), // Capitalize first letter
+                                  );
+                                }).toList(),
+                                onChanged: (ExpenseCategoryEnum? value) {
+                                  setState(() {
+                                    employeeHelper.expenseCategoryEnum =
+                                        value ??
+                                            ExpenseCategoryEnum.miscellaneous;
+                                  });
+                                },
+                                validator: (value) => value == null
+                                    ? "Please select a category"
+                                    : null,
                               ),
                               Padding(padding: EdgeInsets.all(4)),
                               TextFieldWidget(

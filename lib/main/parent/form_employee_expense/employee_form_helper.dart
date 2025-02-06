@@ -24,6 +24,7 @@ class EmployeeFormHelper {
   final FocusNode descriptionFocusNode = FocusNode();
   final FocusNode amountFocusNode = FocusNode();
   ExpensesModel expensesModel = ExpensesModel();
+  ExpenseCategoryEnum expenseCategoryEnum=ExpenseCategoryEnum.miscellaneous;
 
   EmployeeFormHelper();
 
