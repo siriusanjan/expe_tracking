@@ -21,7 +21,7 @@ class ExpensesHelper {
   late BuildContext blocContext;
   int indexUpdated = 0;
   bool newAdded = false;
-  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   double currentOffset = 0;
 
   ExpensesHelper() {
@@ -69,8 +69,8 @@ class ExpensesHelper {
       listKey.currentState?.insertAllItems(
           recordeExpenseLength - 1, ((currentLength) - recordeExpenseLength));
     } else if (!expenseListBloc.state.hasMoreData) {
-      listKey.currentState?.removeItem(expensesList.length,
-          (context, animation) => const CircularProgressIndicator());
+      // listKey.currentState?.removeItem(expensesList.length,
+      //     (context, animation) => const CircularProgressIndicator());
     }
 
     return -1;
@@ -79,6 +79,7 @@ class ExpensesHelper {
   bool canListViewRebuilds(
       {required ExpenseListState previous, required ExpenseListState current}) {
     return current.expenseList.isEmpty ||
+        current.currentPage == 1 ||
         previous.expenseList != current.expenseList ||
         (previous.hasMoreData && !current.hasMoreData);
   }
@@ -93,6 +94,7 @@ class ExpensesHelper {
   }) async {
     final List<ExpensesModel> expenses = expensesList;
     await BaseDataController().getFilterList(employeeID: "");
+
     final expenseList = DatabaseHelper.instance.getFilteredExpenses(
         startDate: startDate,
         endDate: endDate,
@@ -134,6 +136,8 @@ class ExpensesHelper {
     //       expenseCategoryEnumFilter;
     //   return filterResult;
     // }).toList();
+    listKey = GlobalKey<AnimatedListState>();
+
     return expenseList;
   }
 

@@ -66,9 +66,9 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
           await DatabaseHelper.instance.getFilteredExpenses(
         page: state.currentPage,
       );
-      final lengthExpenses = [...state.expenseList, ...moreExpenses];
+      final addedExpenses = [...state.expenseList, ...moreExpenses];
       emit(state.copyWith(
-        expenseList: lengthExpenses, // Append new data
+        expenseList: addedExpenses, // Append new data
         isLoading: false,
         currentPage: state.currentPage + 1,
         hasMoreData:
@@ -90,7 +90,7 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
           expenseCategoryEnum: event.expenseCategoryEnum,
           employeeEmailFilter: event.employeeEmailFilter,
           expensesList: state.expenseList);
-      emit(state.copyWith(expenseList: expenses, isLoading: false));
+      emit(state.copyWith(expenseList: expenses, isLoading: false,currentPage: 1));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
