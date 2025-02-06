@@ -63,7 +63,69 @@ class DatabaseHelper {
     final db = await instance.database;
     await db.delete('expenses');
   }
+  Future<Map<ExpenseCategoryEnum, double>> getCategoryWiseTotalExpenses({
+    DateTime? startDate,
+    DateTime? endDate,
+    ExpensesStatusEnum? expensesStatusFilter,
+    ExpenseCategoryEnum? expenseCategoryEnum,
+    String? employeeEmailFilter,
+  }) async {
+    final db = await instance.database;
+    List<String> whereClauses = [];
+    List<dynamic> whereArgs = [];
 
+    if (startDate != null) {
+      whereClauses.add("timeStamp >= ?");
+      whereArgs.add(startDate.toIso8601String());
+    }
+
+    if (endDate != null) {
+      whereClauses.add("timeStamp <= ?");
+      whereArgs.add(endDate.toIso8601String());
+    }
+
+    if (expensesStatusFilter != null) {
+      whereClauses.add("expensesStatus = ?");
+      whereArgs.add(expensesStatusFilter.name);
+    }
+
+    if (expenseCategoryEnum != null) {
+      whereClauses.add("category = ?");
+      whereArgs.add(expenseCategoryEnum.name);
+    }
+
+    if (employeeEmailFilter != null) {
+      whereClauses.add("authorMail = ?");
+      whereArgs.add(employeeEmailFilter);
+    }
+
+    String whereString =
+    whereClauses.isNotEmpty ? whereClauses.join(" AND ") : "";
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'expenses',
+      where: whereString.isNotEmpty ? whereString : null,
+      whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
+    );
+
+    // Initialize a map to hold the total expenses for each category
+    Map<ExpenseCategoryEnum, double> categoryTotals = {};
+
+    for (var map in maps) {
+      ExpensesModel expense = ExpensesModel.fromMap(map['expId'], map);
+      ExpenseCategoryEnum category = expense.category;
+
+      // If the category is already in the map, add to the total
+      if (categoryTotals.containsKey(category)) {
+        categoryTotals[category] = categoryTotals[category]! + expense.amount;
+      } else {
+        // Otherwise, initialize the total for this category
+        categoryTotals[category] = expense.amount;
+      }
+    }
+
+    return categoryTotals;
+  }
   Future<List<ExpensesModel>> getFilteredExpenses({
     DateTime? startDate,
     DateTime? endDate,
@@ -97,7 +159,7 @@ class DatabaseHelper {
     }
 
     if (employeeEmailFilter != null) {
-      whereClauses.add("employeeID = ?");
+      whereClauses.add("authorMail = ?");
       whereArgs.add(employeeEmailFilter);
     }
 

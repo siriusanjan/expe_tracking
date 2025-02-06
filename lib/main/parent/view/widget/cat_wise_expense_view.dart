@@ -1,3 +1,5 @@
+import 'package:expe_traking/main/parent/controller/expense_bloc.dart';
+import 'package:expe_traking/main/parent/model/expenses_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:ui' as ui;
 
@@ -6,41 +8,27 @@ import 'package:flutter/material.dart';
 import '../../../../utils/AppValues.dart';
 import '../../../../utils/app_utils.dart';
 
-enum ExpenseEnum {
-  travel,
-  meals,
-  office,
-  software,
-  training,
-  business,
-  miscellaneous
-}
-
 class CategoryWiseExpenseView extends StatelessWidget {
-  final Map<ExpenseEnum, double> expenses = {
-    ExpenseEnum.travel: 250.75,
-    ExpenseEnum.meals: 120.50,
-    ExpenseEnum.office: 340.00,
-    ExpenseEnum.software: 150.25,
-    ExpenseEnum.training: 200.00,
-    ExpenseEnum.business: 180.80,
-    ExpenseEnum.miscellaneous: 90.40,
-  };
+  final Map<ExpenseCategoryEnum, double> expensesCategoryAmountMap;
 
   final List<Color> pieColors = [
-    Colors.blue,          // Classic Blue
-    Colors.red,           // Classic Red
-    Colors.green,         // Classic Green
-    Colors.orange,        // Classic Orange
-    Colors.purple,        // Classic Purple
-    Colors.teal,          // Classic Teal
-    Colors.brown,         // Classic Brown
+    Colors.blue, // Classic Blue
+    Colors.red, // Classic Red
+    Colors.green, // Classic Green
+    Colors.orange, // Classic Orange
+    Colors.purple, // Classic Purple
+    Colors.teal, // Classic Teal
+    Colors.brown, // Classic Brown
   ];
+
+  CategoryWiseExpenseView({super.key, required this.expensesCategoryAmountMap});
+
   @override
   Widget build(BuildContext context) {
-    double totalExpense = expenses.values.reduce((a, b) => a + b);
-    double maxExpense =
-        expenses.values.reduce((a, b) => a > b ? a : b); // Get max expense
+    double totalExpense =
+        expensesCategoryAmountMap.values.reduce((a, b) => a + b);
+    double maxExpense = expensesCategoryAmountMap.values
+        .reduce((a, b) => a > b ? a : b); // Get max expense
 
     return Container(
       height: 150,
@@ -60,10 +48,11 @@ class CategoryWiseExpenseView extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ListView.builder(
-                        itemCount: expenses.length,
+                        itemCount: expensesCategoryAmountMap.length,
                         itemBuilder: (context, index) {
-                          var category = expenses.keys.elementAt(index);
-                          double expense = expenses[category]!;
+                          var category =
+                              expensesCategoryAmountMap.keys.elementAt(index);
+                          double expense = expensesCategoryAmountMap[category]!;
                           double progress = expense /
                               maxExpense; // Normalize for progress bar
 
@@ -122,9 +111,11 @@ class CategoryWiseExpenseView extends StatelessWidget {
                         children: [
                           PieChart(
                             PieChartData(
-                              sections: expenses.entries.map((entry) {
-                                int index =
-                                    expenses.keys.toList().indexOf(entry.key);
+                              sections: expensesCategoryAmountMap.entries
+                                  .map((entry) {
+                                int index = expensesCategoryAmountMap.keys
+                                    .toList()
+                                    .indexOf(entry.key);
                                 return PieChartSectionData(
                                   value: entry.value,
                                   color: pieColors[index],

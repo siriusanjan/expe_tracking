@@ -1,5 +1,6 @@
 import 'package:expe_traking/net/firebase_utils.dart';
 import 'package:expe_traking/on_boarding/login/view/login_sceen.dart';
+import 'package:expe_traking/utils/AppDialogue.dart';
 import 'package:expe_traking/utils/AppValues.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -132,6 +133,7 @@ class ProfileView extends StatelessWidget {
                 )),
             GestureDetector(
               onTap: () async {
+                AppDialogue.showLoadingDialog(context);
                 await BaseDataController().clearAllData(BaseDataController().userCredential?.user?.email ?? "").then((_) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
