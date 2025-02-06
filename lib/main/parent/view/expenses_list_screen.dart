@@ -49,7 +49,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                   final i = expensesHelper.addUpdateExpenses();
                   if (!i.isNegative) {
                     expensesHelper.listKey.currentState?.removeItem(
-                      expensesHelper.addUpdateExpenses(),
+                      i,
                       (context, animation) => _buildExpenseCard(
                           expensesHelper.expensesList[i], context),
                     );
@@ -59,6 +59,8 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                     });
                   }
                 },
+                buildWhen: (previous, current) => expensesHelper
+                    .canListViewRebuilds(previous: previous, current: current),
                 builder: (context, state) {
                   expensesHelper.blocContext = context;
                   if (state.isLoading) {
@@ -70,23 +72,19 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                         expensesHelper.onUpdate;
                     return const Center(child: Text("No expenses found"));
                   }
-                  print(
-                      "stateCallInHere" + state.expenseList.length.toString());
                   expensesHelper.expensesList = List.from(state.expenseList);
-
                   return Expanded(
                     child: AnimatedList(
-                      // controller: expensesHelper.scrollController,
                       key: expensesHelper.listKey,
-                      initialItemCount: expensesHelper.expensesList.length +
+                      initialItemCount: state.expenseList.length +
                           (state.hasMoreData ? 1 : 0),
                       itemBuilder: (context, index, animation) {
                         if (index == state.expenseList.length) {
-                          expensesHelper.loadMoreExpense();
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          if (state.hasMoreData) {
+                            expensesHelper.loadMoreExpense();
+                          }
+                          return Center(child: CircularProgressIndicator());
                         }
-                        final expense = state.expenseList[index];
                         return SlideTransition(
                           position: animation.drive(
                             expensesHelper.newAdded
@@ -101,7 +99,8 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                                     end: Offset.zero,
                                   ).chain(CurveTween(curve: Curves.easeInOut)),
                           ),
-                          child: _buildExpenseCard(expense, context),
+                          child: _buildExpenseCard(
+                              state.expenseList[index], context),
                         );
                       },
                     ),

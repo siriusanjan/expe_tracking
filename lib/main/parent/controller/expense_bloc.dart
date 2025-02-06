@@ -15,6 +15,7 @@ class ExpenseListState {
   final bool hasMoreData;
   final int pageSize;
 
+
   ExpenseListState(
       {required this.expenseList,
       this.isLoading = false,
@@ -66,13 +67,12 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
         page: state.currentPage,
       );
       final lengthExpenses = [...state.expenseList, ...moreExpenses];
-
       emit(state.copyWith(
         expenseList: lengthExpenses, // Append new data
         isLoading: false,
         currentPage: state.currentPage + 1,
         hasMoreData:
-            moreExpenses.length == state.pageSize, // Check if more data exists
+            moreExpenses.length == AppValues.paginationLimit, // Check if more data exists
       ));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
