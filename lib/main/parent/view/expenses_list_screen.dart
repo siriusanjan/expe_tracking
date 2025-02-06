@@ -19,9 +19,6 @@ class ExpensesListScreen extends StatefulWidget {
 
 class _ExpensesListScreenState extends State<ExpensesListScreen> {
   late ExpensesHelper expensesHelper;
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-
-  List<ExpensesModel> _expenses = [];
 
   @override
   void initState() {
@@ -30,60 +27,66 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    expensesHelper.disposeCallers();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => expensesHelper.expenseListBloc
-        ..add(FetchExpensesEvent()),
+      create: (context) =>
+          expensesHelper.expenseListBloc..add(FetchExpensesEvent()),
       child: Container(
         color: AppValues.backgroundColor,
         child: Stack(children: [
-          BlocConsumer<ExpenseListBloc, ExpenseListState>(
-            listener: (context, state) {
-              if (expensesHelper.indexUpdated > -1) {
-                // Animate new items added to the list
-                int updatedIndex = expensesHelper.indexUpdated;
-                expensesHelper.indexUpdated = -1;
-                _expenses = List.from(state.expenseList);
-                if (expensesHelper.newAdded) {
-                  _listKey.currentState?.insertItem(updatedIndex);
-                } else {
-                  // Animate item update
-                  _listKey.currentState?.removeItem(
-                    updatedIndex,
-                    (context, animation) =>
-                        _buildExpenseCard(_expenses[updatedIndex], context),
-                  );
-                  Future.delayed(Duration(milliseconds: 300), () {
-                    // Re-insert the updated item
-                    _listKey.currentState?.insertItem(updatedIndex);
-                  });
-                }
-              }
-            },
-            builder: (context, state) {
-              expensesHelper.blocContext = context;
-              if (state.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state.error != null) {
-                return Center(child: Text("Error: ${state.error}"));
-              } else if (state.expenseList.isEmpty) {
-                BaseDataController().updateExpenseList =
-                    expensesHelper.onUpdate;
+          Column(
+            children: [
+              CategoryWiseExpenseView(),
+              BlocConsumer<ExpenseListBloc, ExpenseListState>(
+                listener: (context, state) {
+                  final i = expensesHelper.addUpdateExpenses();
+                  if (!i.isNegative) {
+                    expensesHelper.listKey.currentState?.removeItem(
+                      expensesHelper.addUpdateExpenses(),
+                      (context, animation) => _buildExpenseCard(
+                          expensesHelper.expensesList[i], context),
+                    );
+                    Future.delayed(Duration(milliseconds: 300), () {
+                      // Re-insert the updated item
+                      expensesHelper.listKey.currentState?.insertItem(i);
+                    });
+                  }
+                },
+                builder: (context, state) {
+                  expensesHelper.blocContext = context;
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state.error != null) {
+                    return Center(child: Text("Error: ${state.error}"));
+                  } else if (state.expenseList.isEmpty) {
+                    BaseDataController().updateExpenseList =
+                        expensesHelper.onUpdate;
+                    return const Center(child: Text("No expenses found"));
+                  }
+                  print(
+                      "stateCallInHere" + state.expenseList.length.toString());
+                  expensesHelper.expensesList = List.from(state.expenseList);
 
-                return const Center(child: Text("No expenses found"));
-              }
-
-              _expenses = List.from(state.expenseList);
-              return Column(
-                children: [
-                  CategoryWiseExpenseView(),
-                  Expanded(
+                  return Expanded(
                     child: AnimatedList(
-                      key: _listKey,
-                      initialItemCount: _expenses.length,
+                      // controller: expensesHelper.scrollController,
+                      key: expensesHelper.listKey,
+                      initialItemCount: expensesHelper.expensesList.length +
+                          (state.hasMoreData ? 1 : 0),
                       itemBuilder: (context, index, animation) {
-                        ExpensesModel expense = _expenses[index];
-
+                        if (index == state.expenseList.length) {
+                          expensesHelper.loadMoreExpense();
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        final expense = state.expenseList[index];
                         return SlideTransition(
                           position: animation.drive(
                             expensesHelper.newAdded
@@ -102,10 +105,10 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                         );
                       },
                     ),
-                  ),
-                ],
-              );
-            },
+                  );
+                },
+              )
+            ],
           ),
           Align(
               alignment: Alignment.bottomRight,
@@ -117,7 +120,8 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                     child: Align(
                         alignment: Alignment.bottomRight,
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 15.0,bottom: 10),
+                          padding:
+                              const EdgeInsets.only(right: 15.0, bottom: 10),
                           child: FloatingActionButton(
                             onPressed: () {
                               expensesHelper.showFilterDialog(context);
@@ -134,7 +138,8 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                     child: Align(
                         alignment: Alignment.bottomRight,
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 15.0,bottom: 15),
+                          padding:
+                              const EdgeInsets.only(right: 15.0, bottom: 15),
                           child: FloatingActionButton(
                             onPressed: () {
                               expensesHelper.showFilterDialog(context);
@@ -152,7 +157,8 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                       child: Align(
                           alignment: Alignment.bottomRight,
                           child: Padding(
-                            padding: const EdgeInsets.only(right: 15.0,bottom: 15),
+                            padding:
+                                const EdgeInsets.only(right: 15.0, bottom: 15),
                             child: FloatingActionButton.extended(
                               onPressed: () {
                                 // employeeHelper.openAddBottomSheet(blocContext: context);

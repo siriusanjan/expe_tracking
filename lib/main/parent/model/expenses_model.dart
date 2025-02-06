@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum ExpensesStatusEnum { pending, approved, rejected }
+
 enum ExpenseCategoryEnum {
   travel,
   meals,
@@ -22,7 +23,7 @@ class ExpensesModel {
   String authorMail;
   String updaterMail;
   String expId;
-  String category;
+  ExpenseCategoryEnum category;
 
   ExpensesModel({
     this.title = "football",
@@ -35,7 +36,7 @@ class ExpensesModel {
     this.authorMail = "mailAuthor",
     this.updaterMail = "updaterMail",
     this.expId = "expId",
-    this.category = "category",
+    this.category = ExpenseCategoryEnum.miscellaneous,
   });
 
   // Convert the ExpensesModel object to a map
@@ -51,7 +52,7 @@ class ExpensesModel {
       'authorMail': authorMail,
       'updaterMail': updaterMail,
       'expId': expId.toString(),
-      'category': category.toString(),
+      'category': category.name.toString(),
     };
   }
 
@@ -68,7 +69,7 @@ class ExpensesModel {
       'updaterMail': updaterMail.toString(),
       'employeeID': employeeID.toString(),
       'expId': expId.toString(),
-      'category': category.toString(),
+      'category': category.name.toString(),
     };
   }
 
@@ -85,7 +86,7 @@ class ExpensesModel {
       'employeeID': employeeID.toString(),
       'messageID': messageId.toString(),
       'expId': expId.toString(),
-      'category': category.toString(),
+      'category': category.name.toString(),
     };
   }
 
@@ -106,8 +107,10 @@ class ExpensesModel {
       receiptUrl: map['receiptUrl'] ?? "11",
       updaterMail: map['updaterMail'] ?? "updaterMail",
       authorMail: map['authorMail'] ?? "authorMail",
-      category: map['category'] ?? "meal",
-      expId:   docId ,
+      category: ExpenseCategoryEnum.values.firstWhere((e) =>
+          e.toString().split('.').last ==
+          (map['category'] ?? ExpenseCategoryEnum.miscellaneous.name)),
+      expId: docId,
       timeStamp: (map['timeStamp'] is Timestamp)
           ? (map['timeStamp'] as Timestamp).toDate()
           : DateTime.now(),

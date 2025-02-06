@@ -3,6 +3,7 @@ import 'package:expe_traking/main/parent/model/expenses_model.dart';
 abstract class ExpenseListEvent {}
 
 class FetchExpensesEvent extends ExpenseListEvent {}
+class LoadMoreExpensesEvent extends ExpenseListEvent {}
 
 class UpdateExpenseEvent extends ExpenseListEvent {
   final ExpensesModel expense;

@@ -1,6 +1,9 @@
 import 'package:expe_traking/main/parent/model/expenses_model.dart';
+import 'package:expe_traking/storage/database_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../utils/AppValues.dart';
 import 'expense_events.dart';
 import 'expenses_helper.dart';
 
@@ -8,23 +11,32 @@ class ExpenseListState {
   final List<ExpensesModel> expenseList;
   final bool isLoading;
   final String? error;
+  final int currentPage;
+  final bool hasMoreData;
+  final int pageSize;
 
-  ExpenseListState({
-    required this.expenseList,
-    this.isLoading = false,
-    this.error,
-  });
+  ExpenseListState(
+      {required this.expenseList,
+      this.isLoading = false,
+      this.error,
+      this.currentPage = 0,
+      this.hasMoreData = true,
+      this.pageSize = AppValues.paginationLimit});
 
-  ExpenseListState copyWith({
-    List<ExpensesModel>? expenseList,
-    bool? isLoading,
-    String? error,
-  }) {
+  ExpenseListState copyWith(
+      {List<ExpensesModel>? expenseList,
+      bool? isLoading,
+      String? error,
+      int? currentPage,
+      bool? hasMoreData,
+      int? pageSize}) {
     return ExpenseListState(
-      expenseList: expenseList ?? this.expenseList,
-      isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
-    );
+        expenseList: expenseList ?? this.expenseList,
+        isLoading: isLoading ?? this.isLoading,
+        error: error ?? this.error,
+        currentPage: currentPage ?? this.currentPage,
+        hasMoreData: hasMoreData ?? this.hasMoreData,
+        pageSize: pageSize ?? this.pageSize);
   }
 }
 
@@ -37,6 +49,34 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
     on<FetchExpensesEvent>(_onFetchExpensesEvent);
     on<UpdateExpenseEvent>(_onUpdateExpenseEvent);
     on<FilterExpensesEvent>(_onFilterExpensesEvent);
+    on<LoadMoreExpensesEvent>(_onLoadMoreExpensesEvent);
+  }
+
+  Future<void> _onLoadMoreExpensesEvent(
+    LoadMoreExpensesEvent event,
+    Emitter<ExpenseListState> emit,
+  ) async {
+    if (!state.hasMoreData || state.isLoading) return; // Stop if no more data
+
+    emit(state.copyWith(isLoading: true));
+
+    try {
+      List<ExpensesModel> moreExpenses =
+          await DatabaseHelper.instance.getFilteredExpenses(
+        page: state.currentPage,
+      );
+      final lengthExpenses = [...state.expenseList, ...moreExpenses];
+
+      emit(state.copyWith(
+        expenseList: lengthExpenses, // Append new data
+        isLoading: false,
+        currentPage: state.currentPage + 1,
+        hasMoreData:
+            moreExpenses.length == state.pageSize, // Check if more data exists
+      ));
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), isLoading: false));
+    }
   }
 
   Future<void> _onFilterExpensesEvent(
@@ -60,11 +100,19 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
     FetchExpensesEvent event,
     Emitter<ExpenseListState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, currentPage: 0));
 
     try {
-      final expenses = await expensesHelper.getExpenses();
-      emit(state.copyWith(expenseList: expenses, isLoading: false));
+      final expensesServer = await expensesHelper.getExpenses();
+      await DatabaseHelper.instance.clearExpenses();
+      await DatabaseHelper.instance.insertExpensesList(expensesServer);
+      List<ExpensesModel> expensesList =
+          await DatabaseHelper.instance.getFilteredExpenses(page: 0);
+      emit(state.copyWith(
+          expenseList: expensesList,
+          isLoading: false,
+          currentPage: 1,
+          hasMoreData: expensesList.length == state.pageSize));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
