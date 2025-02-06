@@ -47,13 +47,10 @@ class ExpensesHelper {
   }
 
   void loadMoreExpense() {
-    // currentOffset = scrollController.offset;
     recordeExpenseLength = expenseListBloc.state.expenseList.length;
     print("previousLength " + recordeExpenseLength.toString());
     expenseListBloc.add(LoadMoreExpensesEvent());
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   scrollController.jumpTo(currentOffset);
-    // });
+
     print(
         "currentLength " + expenseListBloc.state.expenseList.length.toString());
   }

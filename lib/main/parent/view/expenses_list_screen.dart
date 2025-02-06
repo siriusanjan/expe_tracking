@@ -47,7 +47,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                   buildWhen: (previous, current) {
                 return current.currentPage == 1;
               }, builder: (context, state) {
-                return CategoryWiseExpenseView(
+                return state.expenseCategoryTotal.isEmpty?Container(): CategoryWiseExpenseView(
                     expensesCategoryAmountMap: state.expenseCategoryTotal);
               }),
               BlocConsumer<ExpenseListBloc, ExpenseListState>(
@@ -171,7 +171,8 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                                 const EdgeInsets.only(right: 15.0, bottom: 15),
                             child: FloatingActionButton.extended(
                               onPressed: () {
-                                expensesHelper.openAddBottomSheet(blocContext: context);
+                                expensesHelper.openAddBottomSheet(
+                                    blocContext: context);
                               },
                               icon: const Icon(
                                 Icons.add,
