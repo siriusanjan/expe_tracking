@@ -90,7 +90,7 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
           expenseCategoryEnum: event.expenseCategoryEnum,
           employeeEmailFilter: event.employeeEmailFilter,
           expensesList: state.expenseList);
-      emit(state.copyWith(expenseList: expenses, isLoading: false,currentPage: 1));
+      emit(state.copyWith(expenseList: expenses, isLoading: false,currentPage: 1,hasMoreData: expenses.length == state.pageSize));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
