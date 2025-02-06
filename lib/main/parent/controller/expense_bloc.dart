@@ -14,7 +14,7 @@ class ExpenseListState {
   final int currentPage;
   final bool hasMoreData;
   final int pageSize;
-
+  final Map<ExpenseCategoryEnum, double> expenseCategoryTotal;
 
   ExpenseListState(
       {required this.expenseList,
@@ -22,6 +22,7 @@ class ExpenseListState {
       this.error,
       this.currentPage = 0,
       this.hasMoreData = true,
+      required this.expenseCategoryTotal,
       this.pageSize = AppValues.paginationLimit});
 
   ExpenseListState copyWith(
@@ -30,6 +31,7 @@ class ExpenseListState {
       String? error,
       int? currentPage,
       bool? hasMoreData,
+      Map<ExpenseCategoryEnum, double>? expenseCategoryTotal,
       int? pageSize}) {
     return ExpenseListState(
         expenseList: expenseList ?? this.expenseList,
@@ -37,6 +39,7 @@ class ExpenseListState {
         error: error ?? this.error,
         currentPage: currentPage ?? this.currentPage,
         hasMoreData: hasMoreData ?? this.hasMoreData,
+        expenseCategoryTotal: {},
         pageSize: pageSize ?? this.pageSize);
   }
 }
@@ -45,7 +48,7 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
   final ExpensesHelper expensesHelper;
 
   ExpenseListBloc({required this.expensesHelper})
-      : super(ExpenseListState(expenseList: [])) {
+      : super(ExpenseListState(expenseList: [], expenseCategoryTotal: {})) {
     // Register event handlers
     on<FetchExpensesEvent>(_onFetchExpensesEvent);
     on<UpdateExpenseEvent>(_onUpdateExpenseEvent);
@@ -68,14 +71,19 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       );
       final addedExpenses = [...state.expenseList, ...moreExpenses];
       emit(state.copyWith(
-        expenseList: addedExpenses, // Append new data
+        expenseCategoryTotal: state.expenseCategoryTotal,
+        expenseList: addedExpenses,
+        // Append new data
         isLoading: false,
         currentPage: state.currentPage + 1,
-        hasMoreData:
-            moreExpenses.length == AppValues.paginationLimit, // Check if more data exists
+        hasMoreData: moreExpenses.length ==
+            AppValues.paginationLimit, // Check if more data exists
       ));
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: e.toString(),
+          isLoading: false,
+          expenseCategoryTotal: state.expenseCategoryTotal));
     }
   }
 
@@ -83,6 +91,13 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       FilterExpensesEvent event, Emitter<ExpenseListState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
+      final mapCategoryTotal = await expensesHelper.getExpenseCategoryWiseTotal(
+        startDate: event.startDate,
+        endDate: event.endDate,
+        expensesStatusFilter: event.expensesStatusFilter,
+        expenseCategoryEnum: event.expenseCategoryEnum,
+        employeeEmailFilter: event.employeeEmailFilter,
+      );
       final List<ExpensesModel> expenses = await expensesHelper.filterExpenses(
           startDate: event.startDate,
           endDate: event.endDate,
@@ -90,9 +105,18 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
           expenseCategoryEnum: event.expenseCategoryEnum,
           employeeEmailFilter: event.employeeEmailFilter,
           expensesList: state.expenseList);
-      emit(state.copyWith(expenseList: expenses, isLoading: false,currentPage: 1,hasMoreData: expenses.length == state.pageSize));
+      emit(state.copyWith(
+        expenseCategoryTotal: mapCategoryTotal,
+        expenseList: expenses,
+        isLoading: false,
+        currentPage: 1,
+        hasMoreData: expenses.length == state.pageSize,
+      ));
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: e.toString(),
+          isLoading: false,
+          expenseCategoryTotal: state.expenseCategoryTotal));
     }
   }
 
@@ -106,15 +130,22 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       final expensesServer = await expensesHelper.getExpenses();
       await DatabaseHelper.instance.clearExpenses();
       await DatabaseHelper.instance.insertExpensesList(expensesServer);
+      final mapCategoryTotal =
+          await expensesHelper.getExpenseCategoryWiseTotal();
       List<ExpensesModel> expensesList =
           await DatabaseHelper.instance.getFilteredExpenses(page: 0);
       emit(state.copyWith(
-          expenseList: expensesList,
-          isLoading: false,
-          currentPage: 1,
-          hasMoreData: expensesList.length == state.pageSize));
+        expenseCategoryTotal: mapCategoryTotal,
+        expenseList: expensesList,
+        isLoading: false,
+        currentPage: 1,
+        hasMoreData: expensesList.length == state.pageSize,
+      ));
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: e.toString(),
+          isLoading: false,
+          expenseCategoryTotal: state.expenseCategoryTotal));
     }
   }
 

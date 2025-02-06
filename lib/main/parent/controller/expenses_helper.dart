@@ -84,6 +84,22 @@ class ExpensesHelper {
         (previous.hasMoreData && !current.hasMoreData);
   }
 
+  Future<Map<ExpenseCategoryEnum, double>> getExpenseCategoryWiseTotal({
+    DateTime? startDate,
+    DateTime? endDate,
+    ExpensesStatusEnum? expensesStatusFilter,
+    ExpenseCategoryEnum? expenseCategoryEnum,
+    String? employeeEmailFilter,
+  }) async {
+    return await DatabaseHelper.instance.getCategoryWiseTotalExpenses(
+      startDate: startDate,
+      endDate: endDate,
+      expensesStatusFilter: expensesStatusFilter,
+      expenseCategoryEnum: expenseCategoryEnum,
+      employeeEmailFilter: employeeEmailFilter,
+    );
+  }
+
   Future<List<ExpensesModel>> filterExpenses({
     required List<ExpensesModel> expensesList,
     DateTime? startDate,

@@ -43,7 +43,13 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
         child: Stack(children: [
           Column(
             children: [
-              CategoryWiseExpenseView(),
+              BlocBuilder<ExpenseListBloc, ExpenseListState>(
+                  buildWhen: (previous, current) {
+                return current.currentPage == 1;
+              }, builder: (context, state) {
+                return CategoryWiseExpenseView(
+                    expensesCategoryAmountMap: state.expenseCategoryTotal);
+              }),
               BlocConsumer<ExpenseListBloc, ExpenseListState>(
                 listener: (context, state) {
                   final i = expensesHelper.addUpdateExpenses();
