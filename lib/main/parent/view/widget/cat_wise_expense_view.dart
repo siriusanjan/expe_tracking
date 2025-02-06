@@ -25,10 +25,13 @@ class CategoryWiseExpenseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double totalExpense =
-        expensesCategoryAmountMap.values.reduce((a, b) => a + b);
-    double maxExpense = expensesCategoryAmountMap.values
-        .reduce((a, b) => a > b ? a : b); // Get max expense
+    double totalExpense = expensesCategoryAmountMap.isEmpty
+        ? 0
+        : expensesCategoryAmountMap.values.reduce((a, b) => a + b);
+    double maxExpense = expensesCategoryAmountMap.isEmpty
+        ? 0
+        : expensesCategoryAmountMap.values
+            .reduce((a, b) => a > b ? a : b); // Get max expense
 
     return Container(
       height: 150,

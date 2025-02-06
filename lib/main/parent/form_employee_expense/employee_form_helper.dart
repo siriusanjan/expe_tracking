@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expe_traking/main/employee/controller/bloc_employee.dart';
-import 'package:expe_traking/main/employee/view/widget/expense_form.dart';
+import 'package:expe_traking/main/parent/form_employee_expense/bloc_employee_form.dart';
+import 'package:expe_traking/main/parent/form_employee_expense/expense_form.dart';
 import 'package:expe_traking/notification/notification_manager.dart';
 import 'package:expe_traking/utils/AppDialogue.dart';
 import 'package:expe_traking/utils/base_data_controller.dart';
@@ -13,10 +13,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../utils/AppValues.dart';
 import '../../../utils/permission_utils.dart';
-import '../../parent/model/expenses_model.dart';
+import '../model/expenses_model.dart';
 
-class EmployeeHelper {
-  BlocEmployee blocEmployee = BlocEmployee(EmployeeState.initialState);
+class EmployeeFormHelper {
+  BlocEmployeeForm blocEmployee = BlocEmployeeForm(EmployeeFormState.initialState);
   File? finalPickedFile;
 
   // Focus nodes to manage focus between fields
@@ -25,14 +25,14 @@ class EmployeeHelper {
   final FocusNode amountFocusNode = FocusNode();
   ExpensesModel expensesModel = ExpensesModel();
 
-  EmployeeHelper();
+  EmployeeFormHelper();
 
   void openAddBottomSheet({required BuildContext blocContext}) {
     showModalBottomSheet(
         context: blocContext,
         isScrollControlled: true,
         builder: (dialogContext) {
-          return BlocProvider<BlocEmployee>.value(
+          return BlocProvider<BlocEmployeeForm>.value(
               value: blocEmployee,
               child: Container(
                   height: AppValues.mainScreenHeight * 0.65,
@@ -48,7 +48,7 @@ class EmployeeHelper {
 
   Future<void> pickImage(BuildContext context) async {
     AppDialogue.showLoadingDialog(context);
-    blocEmployee.changeBlocState(EmployeeState.pickingImage);
+    blocEmployee.changeBlocState(EmployeeFormState.pickingImage);
 
     PermissionUtils.requestPhotoPermission(context, Permission.photos,
         (isGranted) async {
@@ -58,7 +58,7 @@ class EmployeeHelper {
         Navigator.pop(context);
         if (pickedFile != null) {
           finalPickedFile = File(pickedFile.path);
-          blocEmployee.changeBlocState(EmployeeState.photoPicked);
+          blocEmployee.changeBlocState(EmployeeFormState.photoPicked);
         }
       }
     });
@@ -66,7 +66,7 @@ class EmployeeHelper {
 
   void submitForm(BuildContext context) {
     AppDialogue.showLoadingDialog(context);
-    blocEmployee.changeBlocState(EmployeeState.submittingForm);
+    blocEmployee.changeBlocState(EmployeeFormState.submittingForm);
     expensesModel.timeStamp = DateTime.timestamp();
     BaseDataController().uploadReceipt(finalPickedFile!).then((receiptUrl) {
       if (receiptUrl != null) {
@@ -76,11 +76,11 @@ class EmployeeHelper {
             SnackBar(content: Text(message)),
           );
           if (isSuccess) {
-            blocEmployee.changeBlocState(EmployeeState.submittingResulted);
+            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
             Navigator.pop(context);
             Navigator.pop(context);
           } else {
-            blocEmployee.changeBlocState(EmployeeState.submittingResulted);
+            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
             Navigator.pop(context);
           }
         });
@@ -99,7 +99,7 @@ class EmployeeHelper {
             SnackBar(content: Text(message)),
           );
           if (isSuccess) {
-            blocEmployee.changeBlocState(EmployeeState.submittingResulted);
+            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
             WidgetsBinding.instance.addPostFrameCallback((_) {
               expensesModel.expId=docID;
               NotificationManager().sendNotificationToManager(expensesModel);
@@ -108,7 +108,7 @@ class EmployeeHelper {
             Navigator.pop(context);
             Navigator.pop(context);
           } else {
-            blocEmployee.changeBlocState(EmployeeState.submittingResulted);
+            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
             Navigator.pop(context);
           }
         });
