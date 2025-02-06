@@ -83,25 +83,30 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                           if (state.hasMoreData) {
                             expensesHelper.loadMoreExpense();
                           }
-                          return Center(child: CircularProgressIndicator());
+                          return Center(child: Container());
                         }
-                        return SlideTransition(
-                          position: animation.drive(
-                            expensesHelper.newAdded
-                                ? Tween<Offset>(
-                                    begin:
-                                        const Offset(0, -1), // Start off-screen
-                                    end: Offset.zero,
-                                  ).chain(CurveTween(curve: Curves.easeInOut))
-                                : Tween<Offset>(
-                                    begin:
-                                        const Offset(0, 1), // Start off-screen
-                                    end: Offset.zero,
-                                  ).chain(CurveTween(curve: Curves.easeInOut)),
-                          ),
-                          child: _buildExpenseCard(
-                              state.expenseList[index], context),
-                        );
+                        final expenses = state.expenseList;
+                        return expenses.length > index
+                            ? SlideTransition(
+                                position: animation.drive(
+                                  expensesHelper.newAdded
+                                      ? Tween<Offset>(
+                                          begin: const Offset(
+                                              0, -1), // Start off-screen
+                                          end: Offset.zero,
+                                        ).chain(
+                                          CurveTween(curve: Curves.easeInOut))
+                                      : Tween<Offset>(
+                                          begin: const Offset(
+                                              0, 1), // Start off-screen
+                                          end: Offset.zero,
+                                        ).chain(
+                                          CurveTween(curve: Curves.easeInOut)),
+                                ),
+                                child:
+                                    _buildExpenseCard(expenses[index], context),
+                              )
+                            : Container();
                       },
                     ),
                   );
