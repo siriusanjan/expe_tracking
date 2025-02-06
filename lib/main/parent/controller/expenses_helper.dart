@@ -22,6 +22,7 @@ class ExpensesHelper {
   int indexUpdated = 0;
   bool newAdded = false;
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  double currentOffset = 0;
 
   ExpensesHelper() {
     expenseListBloc = ExpenseListBloc(expensesHelper: this);
@@ -37,32 +38,49 @@ class ExpensesHelper {
   }
 
   void loadMoreExpense() {
+    // currentOffset = scrollController.offset;
     recordeExpenseLength = expenseListBloc.state.expenseList.length;
+    print("previousLength " + recordeExpenseLength.toString());
     expenseListBloc.add(LoadMoreExpensesEvent());
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   scrollController.jumpTo(currentOffset);
+    // });
+    print(
+        "currentLength " + expenseListBloc.state.expenseList.length.toString());
   }
 
   int addUpdateExpenses() {
+    expensesList = List.from(expenseListBloc.state.expenseList);
+
     if (indexUpdated > -1) {
       // Animate new items added to the list
       int updatedIndex = indexUpdated;
       indexUpdated = -1;
-      expensesList = List.from(expenseListBloc.state.expenseList);
       if (newAdded) {
         listKey.currentState?.insertItem(updatedIndex);
         return -1;
       } else {
-        // Animate item update
         return 0;
       }
     }
     final currentLength = expenseListBloc.state.expenseList.length;
     if (currentLength != recordeExpenseLength) {
+      // Re-insert the updated item
       listKey.currentState?.insertAllItems(
-          recordeExpenseLength, currentLength - recordeExpenseLength);
+          recordeExpenseLength - 1, ((currentLength) - recordeExpenseLength));
+    } else if (!expenseListBloc.state.hasMoreData) {
+      listKey.currentState?.removeItem(expensesList.length,
+          (context, animation) => const CircularProgressIndicator());
     }
 
     return -1;
-    // working on it
+  }
+
+  bool canListViewRebuilds(
+      {required ExpenseListState previous, required ExpenseListState current}) {
+    return current.expenseList.isEmpty ||
+        previous.expenseList != current.expenseList ||
+        (previous.hasMoreData && !current.hasMoreData);
   }
 
   Future<List<ExpensesModel>> filterExpenses({
