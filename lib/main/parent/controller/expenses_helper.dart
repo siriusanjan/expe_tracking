@@ -2,6 +2,7 @@ import 'package:expe_traking/main/parent/model/expenses_model.dart';
 import 'package:expe_traking/main/parent/view/widget/expenses_detail_view.dart';
 import 'package:expe_traking/main/parent/view/widget/filter_view.dart';
 import 'package:expe_traking/net/firebase_utils.dart';
+import 'package:expe_traking/storage/database_helper.dart';
 import 'package:expe_traking/utils/AppValues.dart';
 import 'package:expe_traking/utils/base_data_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,10 +16,12 @@ import 'expense_events.dart';
 class ExpensesHelper {
   late ExpenseListBloc expenseListBloc;
   List<ExpensesModel> expensesList = [];
+  int recordeExpenseLength = 0;
   late ExpensesModel selectedDetailModel;
   late BuildContext blocContext;
   int indexUpdated = 0;
   bool newAdded = false;
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
 
   ExpensesHelper() {
     expenseListBloc = ExpenseListBloc(expensesHelper: this);
@@ -33,6 +36,35 @@ class ExpensesHelper {
     }
   }
 
+  void loadMoreExpense() {
+    recordeExpenseLength = expenseListBloc.state.expenseList.length;
+    expenseListBloc.add(LoadMoreExpensesEvent());
+  }
+
+  int addUpdateExpenses() {
+    if (indexUpdated > -1) {
+      // Animate new items added to the list
+      int updatedIndex = indexUpdated;
+      indexUpdated = -1;
+      expensesList = List.from(expenseListBloc.state.expenseList);
+      if (newAdded) {
+        listKey.currentState?.insertItem(updatedIndex);
+        return -1;
+      } else {
+        // Animate item update
+        return 0;
+      }
+    }
+    final currentLength = expenseListBloc.state.expenseList.length;
+    if (currentLength != recordeExpenseLength) {
+      listKey.currentState?.insertAllItems(
+          recordeExpenseLength, currentLength - recordeExpenseLength);
+    }
+
+    return -1;
+    // working on it
+  }
+
   Future<List<ExpensesModel>> filterExpenses({
     required List<ExpensesModel> expensesList,
     DateTime? startDate,
@@ -43,41 +75,48 @@ class ExpensesHelper {
   }) async {
     final List<ExpensesModel> expenses = expensesList;
     await BaseDataController().getFilterList(employeeID: "");
-    final resultExpenses = expenses.where((expense) {
-      // Date Filter
-      bool dateFilter = true;
-      if (startDate != null && endDate != null) {
-        dateFilter = expense.timeStamp != null &&
-            expense.timeStamp!.isAfter(startDate) &&
-            expense.timeStamp!.isBefore(endDate);
-      }
-
-      // Expenses Status Filter
-      bool statusFilter = true;
-      if (expensesStatusFilter != null) {
-        statusFilter = expense.expensesStatus == expensesStatusFilter;
-      }
-
-      // Employee Email Filter
-      bool emailFilter = true;
-      if (employeeEmailFilter != null) {
-        emailFilter = expense.authorMail == employeeEmailFilter;
-      }
-      // Employee Email Filter
-      bool expenseCategoryEnumFilter = true;
-      if (expenseCategoryEnum != null) {
-        expenseCategoryEnumFilter =
-            expense.category == expenseCategoryEnum.name;
-      }
-
-      // Combine all filters
-      final filterResult = dateFilter &&
-          statusFilter &&
-          emailFilter &&
-          expenseCategoryEnumFilter;
-      return filterResult;
-    }).toList();
-    return resultExpenses;
+    final expenseList = DatabaseHelper.instance.getFilteredExpenses(
+        startDate: startDate,
+        endDate: endDate,
+        expensesStatusFilter: expensesStatusFilter,
+        expenseCategoryEnum: expenseCategoryEnum,
+        employeeEmailFilter: employeeEmailFilter,
+        page: 0);
+    // final resultExpenses = expenses.where((expense) {
+    //   // Date Filter
+    //   bool dateFilter = true;
+    //   if (startDate != null && endDate != null) {
+    //     dateFilter = expense.timeStamp != null &&
+    //         expense.timeStamp!.isAfter(startDate) &&
+    //         expense.timeStamp!.isBefore(endDate);
+    //   }
+    //
+    //   // Expenses Status Filter
+    //   bool statusFilter = true;
+    //   if (expensesStatusFilter != null) {
+    //     statusFilter = expense.expensesStatus == expensesStatusFilter;
+    //   }
+    //
+    //   // Employee Email Filter
+    //   bool emailFilter = true;
+    //   if (employeeEmailFilter != null) {
+    //     emailFilter = expense.authorMail == employeeEmailFilter;
+    //   }
+    //   // Employee Email Filter
+    //   bool expenseCategoryEnumFilter = true;
+    //   if (expenseCategoryEnum != null) {
+    //     expenseCategoryEnumFilter =
+    //         expense.category == expenseCategoryEnum.name;
+    //   }
+    //
+    //   // Combine all filters
+    //   final filterResult = dateFilter &&
+    //       statusFilter &&
+    //       emailFilter &&
+    //       expenseCategoryEnumFilter;
+    //   return filterResult;
+    // }).toList();
+    return expenseList;
   }
 
   Map<ExpenseCategoryEnum, double> getCategoryWiseTotal(
@@ -85,7 +124,7 @@ class ExpensesHelper {
     Map<ExpenseCategoryEnum, double> categoryTotals = {};
 
     for (var expense in expenses) {
-      String category = expense.category;
+      String category = expense.category.name;
       ExpenseCategoryEnum categoryEnum = ExpenseCategoryEnum.values.firstWhere(
         (e) => e.name.toLowerCase() == category.toLowerCase(),
       );
@@ -159,4 +198,6 @@ class ExpensesHelper {
       ),
     );
   }
+
+  void disposeCallers() {}
 }
