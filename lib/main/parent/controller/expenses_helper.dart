@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:expe_traking/main/parent/model/expenses_model.dart';
 import 'package:expe_traking/main/parent/view/widget/expenses_detail_view.dart';
 import 'package:expe_traking/main/parent/view/widget/filter_view.dart';
@@ -8,8 +10,14 @@ import 'package:expe_traking/utils/base_data_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import '../../../notification/notification_manager.dart';
+import '../../../utils/AppDialogue.dart';
 import '../../../utils/app_utils.dart';
+import '../../../utils/permission_utils.dart';
+import '../form_employee_expense/expense_form.dart';
 import 'expense_bloc.dart';
 import 'expense_events.dart';
 
@@ -23,6 +31,7 @@ class ExpensesHelper {
   bool newAdded = false;
   GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   double currentOffset = 0;
+  File? finalPickedFile;
 
   ExpensesHelper() {
     expenseListBloc = ExpenseListBloc(expensesHelper: this);
@@ -176,6 +185,25 @@ class ExpensesHelper {
     }
 
     return categoryTotals;
+  }
+
+  void openAddBottomSheet({required BuildContext blocContext}) {
+    showModalBottomSheet(
+        context: blocContext,
+        isScrollControlled: true,
+        builder: (dialogContext) {
+          return BlocProvider<ExpenseListBloc>.value(
+              value: expenseListBloc,
+              child: Container(
+                  height: AppValues.mainScreenHeight * 0.65,
+                  decoration: BoxDecoration(
+                      color: AppValues.backgroundColor,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16))),
+                  padding: const EdgeInsets.all(16),
+                  child: ExpenseForm()));
+        });
   }
 
   void showFilterDialog(BuildContext blocContext) {

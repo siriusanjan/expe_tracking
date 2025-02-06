@@ -1,14 +1,13 @@
-import 'package:expe_traking/main/admin/controller/employee_helper.dart';
 import 'package:expe_traking/main/parent/form_employee_expense/employee_form_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-enum AdminState{
+enum EmployeeFormState{
   initialState,networkState,photoPicked,pickingImage,submittingForm,submittingResulted
 }
 
-class BlocAdmin extends Cubit<AdminState>{
-  late AdminHelper adminHelper;
-  BlocAdmin(super.initialState);
-  void changeBlocState(AdminState state){
+class BlocEmployeeForm extends Cubit<EmployeeFormState>{
+  late EmployeeFormHelper employeeHelper;
+  BlocEmployeeForm(super.initialState);
+  void changeBlocState(EmployeeFormState state){
     emit(state);
   }
 

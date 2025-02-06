@@ -171,7 +171,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                                 const EdgeInsets.only(right: 15.0, bottom: 15),
                             child: FloatingActionButton.extended(
                               onPressed: () {
-                                // employeeHelper.openAddBottomSheet(blocContext: context);
+                                expensesHelper.openAddBottomSheet(blocContext: context);
                               },
                               icon: const Icon(
                                 Icons.add,
