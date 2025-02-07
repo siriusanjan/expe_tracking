@@ -8,7 +8,7 @@ A new Flutter project for managing expenses with role-based authentication and o
 ### Project Setup & Authentication
 - 🔲 Set up Flutter project and configure Firebase
 - 🔲 Implement role-based authentication (Admin, Manager, Employee)
-- 🔲 Create predefined accounts for each role
+- 🔲 Create dynamic accounts creation for each role (for tesing and expirenment)
 - 🔲 Set up navigation for role-based routing
 
 ### Expense Management & Offline Mode
