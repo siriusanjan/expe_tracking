@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
+import 'package:expe_traking/data_domain/storage/database_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -142,6 +143,7 @@ class BaseDataController {
     currentUserRole = UserRole.none;
     user = null;
     BaseDataController().filterMap = {};
+    DatabaseHelper.instance.clearAllExpenses();
     await AuthHelper.logout();
   }
 }

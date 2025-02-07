@@ -79,7 +79,16 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                   } else if (state.expenseList.isEmpty) {
                     BaseDataController().updateExpenseList =
                         expensesHelper.onUpdate;
-                    return  Center(child: Image.asset("assets/emptyExpense.png",width: AppValues.mainScreenWidth*0.7,));
+                    return  Expanded(child: Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("No Expense Found ",style: TextStyle(color: Colors.grey),),
+                        SizedBox(height: 30,),
+                        Opacity(
+                          opacity: 0.5, // Adjust opacity between 0.0 (fully transparent) and 1.0 (fully visible)
+                          child: Image.asset("assets/emptyExpense.png",width: AppValues.mainScreenWidth*0.3,)),
+                      ],
+                    )));
                   }
                   expensesHelper.expensesList = List.from(state.expenseList);
                   return Expanded(

@@ -1,3 +1,4 @@
+import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
 import 'package:expe_traking/data_domain/login/login_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showManual = false;
 
   @override
-  void initState()  {
+  void initState() {
     // TODO: implement initState
     super.initState();
     loginHelper = LoginHelper(setLoginState);
@@ -33,8 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamedAndRemoveUntil(
           context,
           ParentView.route, // Named route for LoginScreen
-              (route) => route.settings.name == ParentView.route, // Removes all previous routes
-        );      }
+          (route) =>
+              route.settings.name ==
+              ParentView.route, // Removes all previous routes
+        );
+      }
     });
   }
 
@@ -47,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return !showManual
         ? const CircularProgressIndicator()
         : Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(title: const Text("Login")),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -55,23 +60,102 @@ class _LoginScreenState extends State<LoginScreen> {
                   Align(
                     alignment: Alignment.topRight,
                     child: SizedBox(
-                      width: 200,
+                      width: 300,
                       height: 50,
                       child: SwitchListTile(
                         title: const Text("Sign Admin"),
                         activeTrackColor: AppValues.primaryColor,
                         activeColor: Colors.white,
                         inactiveTrackColor: Colors.grey.shade200,
-                        value: loginHelper.adminSignUp,
+                        value: loginHelper.doSignUp,
                         onChanged: loginHelper.toggleAdmin,
                       ),
                     ),
                   ),
+                  if (loginHelper
+                      .doSignUp) // Show role selection when admin sign-up is enabled
+                    Container(
+                      height: 150,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        // This makes it scroll horizontally
+                        child: SizedBox(
+                            child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  width: AppValues.mainScreenWidth * 0.45,
+                                  child: RadioListTile<UserRole>(
+                                    title: const Text("Admin"),
+                                    value: UserRole.admin,
+                                    groupValue: loginHelper.adminRole,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        loginHelper.adminRole = value;
+                                        setState(() {});
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                    width: AppValues.mainScreenWidth * 0.45,
+                                    child: RadioListTile<UserRole>(
+                                      title: const Text("Manager"),
+                                      value: UserRole.manager,
+                                      groupValue: loginHelper.adminRole,
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          loginHelper.adminRole = value;
+                                          setState(() {});
+                                        }
+                                      },
+                                    )),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                    width: AppValues.mainScreenWidth * 0.45,
+                                    child: RadioListTile<UserRole>(
+                                      title: const Text("Employee"),
+                                      value: UserRole.employee,
+                                      groupValue: loginHelper.adminRole,
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          loginHelper.adminRole = value;
+                                          setState(() {});
+                                        }
+                                      },
+                                    )),
+                                Container(
+                                    width: AppValues.mainScreenWidth * 0.45,
+                                    child: RadioListTile<UserRole>(
+                                      title: const Text(
+                                        "None",
+                                      ),
+                                      value: UserRole.none,
+                                      groupValue: loginHelper.adminRole,
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          loginHelper.adminRole = value;
+                                          setState(() {});
+                                        }
+                                      },
+                                    )),
+                              ],
+                            )
+                          ],
+                        )),
+                      ),
+                    ),
                   Expanded(
                     child: Form(
                       key: loginHelper.formKey,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: loginHelper
+                            .doSignUp?MainAxisAlignment.start:MainAxisAlignment.center,
                         children: [
                           TextFieldWidget(
                             hintText: "Enter Email",
@@ -90,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             textEditingController:
                                 loginHelper.passwordController,
                             validatorErrorString:
-                                "Please enter your password length geater than 6",
+                                "Please enter your password length greater than 6",
                           ),
                           const SizedBox(height: 24),
                           ElevatedButton(
@@ -99,8 +183,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             style: AppStyles.elevatedButtonStyle(),
                             child: Text(
-                              loginHelper.adminSignUp
-                                  ? "Sign up as Admin"
+                              loginHelper.doSignUp
+                                  ? "Sign up as ${loginHelper.adminRole}"
                                   : "Login",
                               style: const TextStyle(color: Colors.white),
                             ),

@@ -34,8 +34,11 @@ class ExpensesHelper {
     if (BaseDataController().currentUserRole == UserRole.admin) {
       return await BaseDataController()
           .getExpensesByStatus(ExpensesStatusEnum.approved.name);
-    } else {
+    } else if (BaseDataController().currentUserRole == UserRole.manager) {
       return await BaseDataController().getAllExpenses();
+    } else {
+      return await BaseDataController()
+          .getUserExpenses(BaseDataController().user?.uid ?? "");
     }
   }
 
@@ -233,13 +236,13 @@ class ExpensesHelper {
 
   void onUpdate(ExpensesModel model, {bool shouldUpdate = false}) {
     DatabaseHelper.instance.updateExpense(model);
-      BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
-          expense: model,
-          shouldUpdate: shouldUpdate,
-          updatedIndex: (updatedIndex, isNew) {
-            indexUpdated = updatedIndex;
-            newAdded = isNew;
-          }));
+    BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
+        expense: model,
+        shouldUpdate: shouldUpdate,
+        updatedIndex: (updatedIndex, isNew) {
+          indexUpdated = updatedIndex;
+          newAdded = isNew;
+        }));
     // if (BaseDataController().filterMap.isEmpty) {
     //   BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
     //       expense: model,
