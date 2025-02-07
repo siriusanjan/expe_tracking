@@ -99,23 +99,14 @@ class ExpensesHelper {
   }
 
   Future<List<ExpensesModel>> filterExpenses({
+    required Map<dynamic, dynamic> filterGear,
     required List<ExpensesModel> expensesList,
-    DateTime? startDate,
-    DateTime? endDate,
-    ExpensesStatusEnum? expensesStatusFilter,
-    ExpenseCategoryEnum? expenseCategoryEnum,
-    String? employeeEmailFilter,
   }) async {
     final List<ExpensesModel> expenses = expensesList;
     await BaseDataController().getFilterList(employeeID: "");
 
-    final expenseList = DatabaseHelper.instance.getFilteredExpenses(
-        startDate: startDate,
-        endDate: endDate,
-        expensesStatusFilter: expensesStatusFilter,
-        expenseCategoryEnum: expenseCategoryEnum,
-        employeeEmailFilter: employeeEmailFilter,
-        page: 0);
+    final expenseList = DatabaseHelper.instance
+        .getFilteredExpenses(filterGear: filterGear, page: 0);
     // final resultExpenses = expenses.where((expense) {
     //   // Date Filter
     //   bool dateFilter = true;
@@ -177,6 +168,8 @@ class ExpensesHelper {
   }
 
   void openAddBottomSheet({required BuildContext blocContext}) {
+    BaseDataController().filterMap = {};
+    expenseListBloc.add(FilterExpensesEvent(filterGear: {}));
     showDialog(
       context: blocContext,
       barrierDismissible: false,

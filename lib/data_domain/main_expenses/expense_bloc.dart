@@ -1,3 +1,4 @@
+import 'package:expe_traking/data_domain/utils/base_data_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../storage/database_helper.dart';
@@ -61,11 +62,13 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
   ) async {
     if (!state.hasMoreData || state.isLoading) return; // Stop if no more data
 
-    emit(state.copyWith(isLoading: true,expenseCategoryTotal: state.expenseCategoryTotal));
+    emit(state.copyWith(
+        isLoading: true, expenseCategoryTotal: state.expenseCategoryTotal));
 
     try {
       List<ExpensesModel> moreExpenses =
           await DatabaseHelper.instance.getFilteredExpenses(
+        filterGear: BaseDataController().filterMap,
         page: state.currentPage,
       );
       final addedExpenses = [...state.expenseList, ...moreExpenses];
@@ -88,22 +91,15 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
 
   Future<void> _onFilterExpensesEvent(
       FilterExpensesEvent event, Emitter<ExpenseListState> emit) async {
-    emit(state.copyWith(isLoading: true,expenseCategoryTotal: state.expenseCategoryTotal));
+    emit(state.copyWith(
+        isLoading: true, expenseCategoryTotal: state.expenseCategoryTotal));
     try {
-      final mapCategoryTotal = await expensesHelper.getExpenseCategoryWiseTotal(
-        startDate: event.startDate,
-        endDate: event.endDate,
-        expensesStatusFilter: event.expensesStatusFilter,
-        expenseCategoryEnum: event.expenseCategoryEnum,
-        employeeEmailFilter: event.employeeEmailFilter,
-      );
+      final mapCategoryTotal =
+          await expensesHelper.getExpenseCategoryWiseTotal();
       final List<ExpensesModel> expenses = await expensesHelper.filterExpenses(
-          startDate: event.startDate,
-          endDate: event.endDate,
-          expensesStatusFilter: event.expensesStatusFilter,
-          expenseCategoryEnum: event.expenseCategoryEnum,
-          employeeEmailFilter: event.employeeEmailFilter,
-          expensesList: state.expenseList);
+          expensesList: state.expenseList, filterGear: event.filterGear);
+
+      print("expensesList " + expenses.length.toString());
       emit(state.copyWith(
         expenseCategoryTotal: mapCategoryTotal,
         expenseList: expenses,
@@ -123,7 +119,10 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
     FetchExpensesEvent event,
     Emitter<ExpenseListState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, currentPage: 0,expenseCategoryTotal: state.expenseCategoryTotal));
+    emit(state.copyWith(
+        isLoading: true,
+        currentPage: 0,
+        expenseCategoryTotal: state.expenseCategoryTotal));
 
     try {
       final expensesServer = await expensesHelper.getExpenses();
@@ -132,8 +131,8 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       final mapCategoryTotal =
           await expensesHelper.getExpenseCategoryWiseTotal();
       print("fetchCatTotal ${mapCategoryTotal.length}");
-      List<ExpensesModel> expensesList =
-          await DatabaseHelper.instance.getFilteredExpenses(page: 0);
+      List<ExpensesModel> expensesList = await DatabaseHelper.instance
+          .getFilteredExpenses(filterGear: {}, page: 0);
       print("fetchItemTotal ${expensesList.length}");
 
       emit(state.copyWith(
@@ -188,6 +187,8 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
         updatedIndex.isNegative && event.shouldUpdate
             ? event.shouldUpdate
             : !event.shouldUpdate);
-    emit(state.copyWith(expenseList: updatedList,expenseCategoryTotal: state.expenseCategoryTotal));
+    emit(state.copyWith(
+        expenseList: updatedList,
+        expenseCategoryTotal: state.expenseCategoryTotal));
   }
 }
