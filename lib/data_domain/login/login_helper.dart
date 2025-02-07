@@ -86,8 +86,11 @@ class LoginHelper {
         .then((_) async {
       await AuthHelper.signInWithEmail(
           email, password, BaseDataController().currentUserRole);
-      Navigator.pushReplacementNamed(context, ParentView.route);
-    });
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        ParentView.route, // Named route for LoginScreen
+            (route) => route.settings.name == ParentView.route, // Removes all previous routes
+      );    });
   }
 
   void onDispose() {}
