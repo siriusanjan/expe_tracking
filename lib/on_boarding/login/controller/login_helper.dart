@@ -8,19 +8,25 @@ import 'package:expe_traking/utils/base_data_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../storage/auth_helper.dart';
+
 class LoginHelper {
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool adminSignUp = false;
   Function setLoginState;
-  String emailPattern =
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+
   LoginHelper(this.setLoginState);
 
   void toggleAdmin(bool value) {
     adminSignUp = !adminSignUp;
     setLoginState();
+  }
+
+  Future<bool> autoLogin(BuildContext context) async {
+   return  BaseDataController().autoLogin(context);
   }
 
   Future<void> processSign({required BuildContext context}) async {
@@ -62,14 +68,15 @@ class LoginHelper {
   }
 
   void login({required BuildContext context}) {
+    final email = emailController.text.trim().isEmpty
+        ? "em@em.com"
+        : emailController.text.trim();
+    final password =
+        passwordController.text.isEmpty ? "em1234" : passwordController.text;
     BaseDataController()
         .loginIn(
-            email: emailController.text.trim().isEmpty
-                ? "em@em.com"
-                : emailController.text.trim(),
-            password: passwordController.text.isEmpty
-                ? "em1234"
-                : passwordController.text,
+            email: email,
+            password: password,
             catchErrorMessage: (message) {
               Navigator.pop(context);
 
@@ -79,11 +86,12 @@ class LoginHelper {
                 FocusScope.of(context).unfocus();
               }
             })
-        .then((_) {
+        .then((_) async {
+      await AuthHelper.signInWithEmail(
+          email, password, BaseDataController().currentUserRole);
       Navigator.pushReplacementNamed(context, ParentView.route);
     });
   }
-  void onDispose(){
 
-  }
+  void onDispose() {}
 }

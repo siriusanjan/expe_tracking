@@ -37,11 +37,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
       expensesModel.description = _descriptionController.text;
       expensesModel.amount = double.parse(_amountController.text);
       expensesModel.expensesStatus = ExpensesStatusEnum.pending;
-      expensesModel.employeeID =
-          BaseDataController().userCredential?.user?.uid ?? "";
-      expensesModel.authorMail =
-          BaseDataController().userCredential?.user?.email ?? "";
-      expensesModel.category=employeeHelper.expenseCategoryEnum;
+      expensesModel.employeeID = BaseDataController().user?.uid ?? "";
+      expensesModel.authorMail = BaseDataController().user?.email ?? "";
+      expensesModel.category = employeeHelper.expenseCategoryEnum;
       employeeHelper.expensesModel = expensesModel;
       employeeHelper.submitForm(context);
     }

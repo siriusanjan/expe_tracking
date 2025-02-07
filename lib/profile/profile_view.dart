@@ -54,7 +54,7 @@ class ProfileView extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                            " ${BaseDataController().userCredential!.user!.email!.split('@')[0].toUpperCase()}",
+                            " ${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
                             style: TextStyle(
                               fontSize: 18,
                               color: Colors.black,
@@ -70,7 +70,7 @@ class ProfileView extends StatelessWidget {
                             size: 15,
                           ),
                           Text(
-                              "${BaseDataController().userCredential?.user?.email ?? ""}",
+                              "${BaseDataController().user?.email ?? ""}",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -134,7 +134,7 @@ class ProfileView extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 AppDialogue.showLoadingDialog(context);
-                await BaseDataController().clearAllData(BaseDataController().userCredential?.user?.email ?? "").then((_) {
+                await BaseDataController().clearAllDataWithLogout(BaseDataController().user?.email ?? "").then((_) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     LoginScreen.route, // Named route for LoginScreen

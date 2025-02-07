@@ -5,8 +5,11 @@ import 'package:expe_traking/net/firebase_utils.dart';
 import 'package:expe_traking/notification/notification_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../main/parent/model/expenses_model.dart';
+import '../main/parent/parent_view.dart';
+import '../storage/auth_helper.dart';
 
 class BaseDataController {
   BaseDataController._privateConstructor();
@@ -15,7 +18,7 @@ class BaseDataController {
       BaseDataController._privateConstructor();
 
   UserRole currentUserRole = UserRole.none;
-  late UserCredential? userCredential;
+  late User? user;
   late Function updateExpenseList;
 
   factory BaseDataController() {
@@ -28,9 +31,22 @@ class BaseDataController {
       Function? catchErrorMessage}) async {
     currentUserRole = await FirebaseUtils()
         .loginUser(email, password, catchErrorMessage: catchErrorMessage);
-    if (BaseDataController().userCredential?.user?.uid != null) {
-      NotificationManager().setupFirebaseMessaging(
-          BaseDataController().userCredential?.user?.uid ?? "");
+    if (BaseDataController().user?.uid != null) {
+      NotificationManager()
+          .setupFirebaseMessaging(BaseDataController().user?.uid ?? "");
+    }
+  }
+
+  Future<bool> autoLogin(BuildContext context) async {
+    bool isLogin = await AuthHelper.checkUserLoginStatus();
+    if (isLogin) {
+      BaseDataController().user = AuthHelper.getCurrentUser();
+      final role = await AuthHelper.getSavedUserRole();
+      BaseDataController().currentUserRole = UserRole.values
+          .firstWhere((v) => v.name == role, orElse: () => UserRole.employee);
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -119,16 +135,16 @@ class BaseDataController {
     }
   }
 
-  Future<void> clearAllData(String userEmail) async {
+  Future<void> clearAllDataWithLogout(String userEmail) async {
     if (currentUserRole == UserRole.employee) {
       await NotificationManager().removeFireBaseNotificationToken(
-          notificationTopicName:
-              BaseDataController().userCredential?.user?.uid ?? "");
+          notificationTopicName: BaseDataController().user?.uid ?? "");
     } else {
       await NotificationManager().removeFireBaseNotificationToken(
           notificationTopicName: currentUserRole.name);
     }
     currentUserRole = UserRole.none;
-    userCredential = null;
+    user = null;
+    await AuthHelper.logout();
   }
 }
