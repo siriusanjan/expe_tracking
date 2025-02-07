@@ -30,8 +30,11 @@ class _LoginScreenState extends State<LoginScreen> {
         showManual = true;
         setState(() {});
       } else {
-        Navigator.pushReplacementNamed(context, ParentView.route);
-      }
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          ParentView.route, // Named route for LoginScreen
+              (route) => route.settings.name == ParentView.route, // Removes all previous routes
+        );      }
     });
   }
 

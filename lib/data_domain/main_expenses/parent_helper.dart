@@ -4,6 +4,8 @@ import '../../ui_layer/profile/profile_view.dart';
 import '../utils/AppValues.dart';
 
 class ParentHelper {
+  DateTime? lastPressed;
+
   ParentHelper();
 
   void openAddBottomSheet({required BuildContext context}) {
@@ -24,5 +26,21 @@ class ParentHelper {
         });
   }
 
-
+  bool canExit(BuildContext context) {
+    final now = DateTime.now();
+    if (lastPressed == null ||
+        now.difference(lastPressed!) > const Duration(seconds: 2)) {
+      lastPressed = now;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Press back again to exit'),
+          duration: Duration(milliseconds: 400),
+        ),
+      );
+      return false; // Wait for double press
+    } else {
+      lastPressed = null;
+    }
+    return true;
+  }
 }
