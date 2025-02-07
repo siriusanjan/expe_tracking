@@ -60,7 +60,7 @@ class FirebaseUtils {
         .collection('users')
         .doc(userCredential.user!.uid)
         .get();
-    BaseDataController().userCredential = userCredential;
+    BaseDataController().user = userCredential.user;
 
     if (userDoc.exists) {
       return UserRole.values.firstWhere(

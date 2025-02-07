@@ -230,7 +230,7 @@ class NotificationManager {
       registerManagerFCMToken();
     } else if (BaseDataController().currentUserRole == UserRole.employee) {
       await FirebaseMessaging.instance.subscribeToTopic(
-          BaseDataController().userCredential?.user?.uid ?? "");
+          BaseDataController().user?.uid ?? "");
     }
   }
 
@@ -387,7 +387,7 @@ class NotificationManager {
       return true;
     }
 
-    if (BaseDataController().userCredential?.user?.uid ==
+    if (BaseDataController().user?.uid ==
             expensesModel.employeeID &&
         BaseDataController().currentUserRole == UserRole.employee) {
       return true;
@@ -401,7 +401,7 @@ class NotificationManager {
   Future<void> removeFireBaseNotificationToken(
       {required String notificationTopicName}) async {
     final currentToken = _firebaseMessaging.getToken();
-    String? userId = BaseDataController().userCredential?.user?.uid ?? "";
+    String? userId = BaseDataController().user?.uid ?? "";
     DocumentReference userRef =
         FirebaseFirestore.instance.collection('users').doc(userId);
     if (BaseDataController().currentUserRole == UserRole.admin) {
@@ -410,13 +410,13 @@ class NotificationManager {
     } else if (BaseDataController().currentUserRole == UserRole.employee) {
       DocumentReference userRef = FirebaseFirestore.instance
           .collection('users')
-          .doc(BaseDataController().userCredential?.user?.uid ?? "");
+          .doc(BaseDataController().user?.uid ?? "");
       empToken.remove(currentToken);
       await userRef.set({'fcmTokens': empToken}, SetOptions(merge: true));
     } else if (BaseDataController().currentUserRole == UserRole.manager) {
       DocumentReference userRef = FirebaseFirestore.instance
           .collection('users')
-          .doc(BaseDataController().userCredential?.user?.uid ?? "");
+          .doc(BaseDataController().user?.uid ?? "");
       managerToken.remove(currentToken);
       await userRef.set({'fcmTokens': empToken}, SetOptions(merge: true));
     }

@@ -47,7 +47,7 @@ class ParentView extends StatelessWidget {
                 ),
                 TextSpan(
                   text:
-                      "\n${BaseDataController().userCredential!.user!.email!.split('@')[0].toUpperCase()}",
+                      "\n${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,

@@ -3,6 +3,7 @@ import 'package:expe_traking/utils/AppStyles.dart';
 import 'package:expe_traking/utils/AppValues.dart';
 import 'package:flutter/material.dart';
 
+import '../../../main/parent/parent_view.dart';
 import '../../../utils/app_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,12 +17,22 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late LoginHelper loginHelper;
+  bool showManual = false;
 
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
     loginHelper = LoginHelper(setLoginState);
+    loginHelper.autoLogin(context).then((autologin) {
+      print("curretnAutoLoginStatus" +autologin.toString());
+      if (!autologin) {
+        showManual = true;
+        setState(() {});
+      } else {
+        Navigator.pushReplacementNamed(context, ParentView.route);
+      }
+    });
   }
 
   void setLoginState() {
@@ -30,71 +41,77 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: SizedBox(
-                width: 200,
-                height: 50,
-                child: SwitchListTile(
-                  title: Text("Sign Admin"),
-                  activeTrackColor: AppValues.primaryColor,
-                  activeColor: Colors.white,
-                  inactiveTrackColor: Colors.grey.shade200,
-                  value: loginHelper.adminSignUp,
-                  onChanged: loginHelper.toggleAdmin,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Form(
-                key: loginHelper.formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextFieldWidget(
-                      hintText: "Enter Email",
-                      icon: Icons.mail,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                      textEditingController: loginHelper.emailController,
-                      validatorErrorString: "Please enter your email",
-                    ),
-                    const SizedBox(height: 16),
-                    TextFieldWidget(
-                      hintText: "Enter password",
-                      icon: Icons.password,
-                      obscure: true,
-                      keyboardType: TextInputType.visiblePassword,
-                      textEditingController: loginHelper.passwordController,
-                      validatorErrorString:
-                          "Please enter your password length geater than 6",
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () {
-                        loginHelper.processSign(context: context);
-                      },
-                      style: AppStyles.elevatedButtonStyle(),
-                      child: Text(
-                        loginHelper.adminSignUp ? "Sign up as Admin" : "Login",
-                        style: TextStyle(color: Colors.white),
+    return !showManual
+        ? CircularProgressIndicator()
+        : Scaffold(
+            appBar: AppBar(title: const Text("Login")),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: SwitchListTile(
+                        title: Text("Sign Admin"),
+                        activeTrackColor: AppValues.primaryColor,
+                        activeColor: Colors.white,
+                        inactiveTrackColor: Colors.grey.shade200,
+                        value: loginHelper.adminSignUp,
+                        onChanged: loginHelper.toggleAdmin,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: Form(
+                      key: loginHelper.formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextFieldWidget(
+                            hintText: "Enter Email",
+                            icon: Icons.mail,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
+                            textEditingController: loginHelper.emailController,
+                            validatorErrorString: "Please enter your email",
+                          ),
+                          const SizedBox(height: 16),
+                          TextFieldWidget(
+                            hintText: "Enter password",
+                            icon: Icons.password,
+                            obscure: true,
+                            keyboardType: TextInputType.visiblePassword,
+                            textEditingController:
+                                loginHelper.passwordController,
+                            validatorErrorString:
+                                "Please enter your password length geater than 6",
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () {
+                              loginHelper.processSign(context: context);
+                            },
+                            style: AppStyles.elevatedButtonStyle(),
+                            child: Text(
+                              loginHelper.adminSignUp
+                                  ? "Sign up as Admin"
+                                  : "Login",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
+
   @override
   void dispose() {
     // TODO: implement dispose

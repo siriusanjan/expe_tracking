@@ -95,7 +95,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                               width: 10,
                             ),
                             Text(
-                              "${BaseDataController().userCredential!.user!.email!.split('@')[0].toUpperCase()}",
+                              "${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
                               style:
                                   TextStyle(color: Colors.black, fontSize: 15),
                             )
@@ -153,7 +153,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                           ),
                           SizedBox(width: 5),
                           Text(
-                            "${AppUtils.capitalizeFirstLetter(_selectedStatus.name)} ${(AppUtils.capitalizeFirstLetter(_selectedStatus != ExpensesStatusEnum.pending ? "by ${expense.updaterMail == BaseDataController().userCredential?.user?.email && _selectedStatus != expense.expensesStatus ? "You" : expense.updaterMail}" : ""))} ",
+                            "${AppUtils.capitalizeFirstLetter(_selectedStatus.name)} ${(AppUtils.capitalizeFirstLetter(_selectedStatus != ExpensesStatusEnum.pending ? "by ${expense.updaterMail == BaseDataController().user?.email && _selectedStatus != expense.expensesStatus ? "You" : expense.updaterMail}" : ""))} ",
                             style: TextStyle(color: Colors.grey, fontSize: 10),
                           )
                         ]),
@@ -242,11 +242,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                               onPressed: () {
                                 if (_selectedStatus != expense.expensesStatus) {
                                   AppDialogue.showLoadingDialog(context);
-                                  expense.updaterMail = BaseDataController()
-                                          .userCredential
-                                          ?.user
-                                          ?.email ??
-                                      "";
+                                  expense.updaterMail =
+                                      BaseDataController().user?.email ?? "";
                                   expense.expensesStatus = _selectedStatus;
                                   BaseDataController()
                                       .updateExpenseStatus(expense)
