@@ -14,7 +14,7 @@ import '../storage/auth_helper.dart';
 import '../utils/base_data_controller.dart';
 
 const String accessToken =
-    "ya29.a0AXeO80SkgcU6wKwKFa9Xq1Sqx34JC62nrtrD8ysHvCkC9Y2MqHczekhtcad7LDYyL-qYxfV3eQc_CtU5BN4Bcw6RYW7wP9dgq5uS0X8IP8No3AO6fhjuwpDhHoxd_YiH3zbEqJuHELteQgj0j--sFE1yDcalr7XXvc9HdGBTMwaCgYKAS4SAQ8SFQHGX2Mid0sDIxYVta2GAHeRt3S7hw0177";
+    "ya29.a0AXeO80Qz4LR4yjyY-8yoVqGz7DG5ysCfLqsjH8URVYHUeXa-sYpPHVJckQbo08WlRQbgWjQFJNIrNts0YAt9WBf6aaJ0RcOxQZYyR5Ld1KC6PIRhC-kzBYdDICJD7M6yxTkHRvwbfud-OtEkiPpTWUCjBXMWk0DMA1XH4mo1WgaCgYKARgSAQ8SFQHGX2MifJX0YJxMYfx1RvcQ18UblA0177";
 
 class NotificationManager {
   NotificationManager._privateConstructor();
@@ -71,12 +71,11 @@ class NotificationManager {
       badge: true,
       sound: true,
     );
-
+    print("registeringUSer ");
     if (settings.authorizationStatus == AuthorizationStatus.denied) {
       print("User denied push notifications");
       return;
     }
-
     if (Platform.isIOS) {
       String? apnsToken = await _firebaseMessaging.getAPNSToken();
       if (apnsToken != null) {
@@ -221,7 +220,7 @@ class NotificationManager {
 
   Future<void> _saveTokenToFireStore(String employeeID, String token) async {
     List<String> allTopics = [UserRole.manager.name, UserRole.admin.name];
-
+    print("processRegister ");
     // Unsubscribe from all topics first
     for (String topic in allTopics) {
       await FirebaseMessaging.instance.unsubscribeFromTopic(topic);

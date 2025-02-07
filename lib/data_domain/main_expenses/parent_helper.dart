@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../../ui_layer/profile/profile_view.dart';
+import '../notification/notification_manager.dart';
 import '../utils/AppValues.dart';
+import '../utils/base_data_controller.dart';
 
 class ParentHelper {
   DateTime? lastPressed;
 
-  ParentHelper();
+  ParentHelper(){
+    if (BaseDataController().user?.uid != null) {
+      print("managingNotification ");
+      NotificationManager()
+          .setupFirebaseMessaging(BaseDataController().user?.uid ?? "");
+    }
+  }
 
   void openAddBottomSheet({required BuildContext context}) {
     showModalBottomSheet(
