@@ -1,3 +1,4 @@
+import 'package:expe_traking/data_domain/filter_helper.dart';
 import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
 import 'package:expe_traking/data_domain/utils/base_data_controller.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +17,16 @@ class FilterView extends StatefulWidget {
 }
 
 class _FilterView extends State<FilterView> {
-  // Controllers
-  TextEditingController employeeIDController = TextEditingController();
-  TextEditingController employeeEmailController = TextEditingController();
+  late FilterHelper filterHelper;
 
   // Date Variables
-  DateTime? startDate;
-  DateTime? endDate;
 
-  // Enum Variables
-  ExpensesStatusEnum? selectedStatus;
-  ExpenseCategoryEnum? selectedCategory;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    filterHelper = FilterHelper();
+  }
 
   // Date Picker
   Future<void> _selectDate(BuildContext context, bool isStart) async {
@@ -39,9 +39,9 @@ class _FilterView extends State<FilterView> {
     if (picked != null) {
       setState(() {
         if (isStart) {
-          startDate = picked;
+          filterHelper.startDate = picked;
         } else {
-          endDate = picked;
+          filterHelper.endDate = picked;
         }
       });
     }
@@ -90,7 +90,12 @@ class _FilterView extends State<FilterView> {
                           alignment: Alignment.topRight,
                           child: Container(
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                filterHelper.onReset();
+                                setState(() {
+
+                                });
+                              },
                               child: const Text("Reset",
                                   style: TextStyle(
                                       color: Colors.blue,
@@ -105,7 +110,7 @@ class _FilterView extends State<FilterView> {
                     if (BaseDataController().currentUserRole !=
                         UserRole.employee)
                       TextFormField(
-                        controller: employeeEmailController,
+                        controller: filterHelper.employeeEmailController,
                         decoration: const InputDecoration(
                           labelText: "Employee Email",
                           border: OutlineInputBorder(),
@@ -116,19 +121,20 @@ class _FilterView extends State<FilterView> {
                       children: [
                         Expanded(
                           child: ListTile(
-                            title: Text(startDate == null
+                            title: Text(filterHelper.startDate == null
                                 ? "Start Date"
-                                : "Start: ${startDate!.toLocal()}"
-                                    .split(' ')[0]),
-                            trailing: const Icon(Icons.calendar_today),
+                                : "${filterHelper.startDate!.toLocal().toString()}"
+                                    .split(' ')[0],style: TextStyle(color: Colors.black),),
+                            trailing: const Icon(Icons.calendar_today,),
                             onTap: () => _selectDate(context, true),
                           ),
                         ),
                         Expanded(
                           child: ListTile(
-                            title: Text(endDate == null
+                            title: Text(filterHelper.endDate == null
                                 ? "End Date"
-                                : "End: ${endDate!.toLocal()}".split(' ')[0]),
+                                : "${filterHelper.endDate!.toLocal()}"
+                                    .split(' ')[0]),
                             trailing: const Icon(Icons.calendar_today),
                             onTap: () => _selectDate(context, false),
                           ),
@@ -137,7 +143,7 @@ class _FilterView extends State<FilterView> {
                     ),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<ExpensesStatusEnum>(
-                      value: selectedStatus,
+                      value: filterHelper.selectedStatus,
                       items: ExpensesStatusEnum.values.map((status) {
                         return DropdownMenuItem(
                           value: status,
@@ -146,7 +152,7 @@ class _FilterView extends State<FilterView> {
                       }).toList(),
                       onChanged: (value) {
                         setState(() {
-                          selectedStatus = value;
+                          filterHelper.selectedStatus = value;
                         });
                       },
                       decoration: const InputDecoration(
@@ -156,7 +162,7 @@ class _FilterView extends State<FilterView> {
                     ),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<ExpenseCategoryEnum>(
-                      value: selectedCategory,
+                      value: filterHelper.selectedCategory,
                       items: ExpenseCategoryEnum.values.map((category) {
                         return DropdownMenuItem(
                           value: category,
@@ -165,7 +171,7 @@ class _FilterView extends State<FilterView> {
                       }).toList(),
                       onChanged: (value) {
                         setState(() {
-                          selectedCategory = value;
+                          filterHelper.selectedCategory = value;
                         });
                       },
                       decoration: const InputDecoration(
@@ -178,25 +184,7 @@ class _FilterView extends State<FilterView> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print("Employee ID: ${employeeIDController.text}");
-                        print(
-                            "Employee Email: ${employeeEmailController.text}");
-                        print("Start Date: $startDate");
-                        print("End Date: $endDate");
-                        print("Status: $selectedStatus");
-                        print("Category: $selectedCategory");
-
-                        BlocProvider.of<ExpenseListBloc>(context).add(
-                            FilterExpensesEvent(
-                                startDate: startDate,
-                                endDate: endDate,
-                                employeeEmailFilter:
-                                    employeeEmailController.text.trim().isEmpty
-                                        ? null
-                                        : employeeEmailController.text.trim(),
-                                expenseCategoryEnum: selectedCategory,
-                                expensesStatusFilter: selectedStatus));
-                        Navigator.pop(context);
+                        filterHelper.startFilter(context);
                       },
                       style: AppStyles.elevatedButtonStyle(),
                       child: const Text('Filter'),

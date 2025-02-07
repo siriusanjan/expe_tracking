@@ -19,6 +19,7 @@ class BaseDataController {
   UserRole currentUserRole = UserRole.none;
   late User? user;
   late Function updateExpenseList;
+  Map<dynamic, dynamic> filterMap = {};
 
   factory BaseDataController() {
     return _instance;
