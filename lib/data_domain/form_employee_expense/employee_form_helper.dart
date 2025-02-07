@@ -71,7 +71,7 @@ class EmployeeFormHelper {
   Future<void> submitForm(BuildContext context) async {
     AppDialogue.showLoadingDialog(context);
     blocEmployee.changeBlocState(EmployeeFormState.submittingForm);
-    expensesModel.timeStamp = DateTime.timestamp();
+    expensesModel.timeStamp = DateTime.now().toString();
     if (finalPickedFile != null) {
       if (await AppUtils.hasInternetConnection(context)) {
         BaseDataController()

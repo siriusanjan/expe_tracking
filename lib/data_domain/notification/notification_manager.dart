@@ -14,8 +14,7 @@ import '../storage/auth_helper.dart';
 import '../utils/base_data_controller.dart';
 
 const String accessToken =
-    "ya29.a0AXeO80Qz4LR4yjyY-8yoVqGz7DG5ysCfLqsjH8URVYHUeXa-sYpPHVJckQbo08WlRQbgWjQFJNIrNts0YAt9WBf6aaJ0RcOxQZYyR5Ld1KC6PIRhC-kzBYdDICJD7M6yxTkHRvwbfud-OtEkiPpTWUCjBXMWk0DMA1XH4mo1WgaCgYKARgSAQ8SFQHGX2MifJX0YJxMYfx1RvcQ18UblA0177";
-
+"ya29.a0AXeO80SbAX3n_6Vq28uOgYSiuilTr6b4DLA1ioZfgxAFDbxYGAUMuAXr5RVIIWorYjVpVJTBPRGh8uM03K3D7FBlFRML_Lc6UiN26lhgr-0bRtkbJ3G8_X-_dw0y09miK69iYWWpr0ncnE-iSrS_9R9dDWsPZCDN4yyH3xOl-waCgYKAeYSAQ8SFQHGX2MiwJjtwcdNP_5GRpKHtQs79A0177";
 class NotificationManager {
   NotificationManager._privateConstructor();
 
