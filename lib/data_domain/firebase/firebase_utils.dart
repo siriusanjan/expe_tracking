@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 import '../main_expenses/model/expenses_model.dart';
 import '../utils/base_data_controller.dart';
@@ -25,7 +24,7 @@ class FirebaseUtils {
     )
         .catchError((error, s) {
       if (catchErrorMessage != null) {
-        catchErrorMessage!(error.toString());
+        catchErrorMessage(error.toString());
       }
     });
 
@@ -38,7 +37,7 @@ class FirebaseUtils {
       'role': role, // "admin", "manager", "employee"
     }).catchError((e, s) {
       if (catchErrorMessage != null) {
-        catchErrorMessage!(e.toString());
+        catchErrorMessage(e.toString());
       }
     });
   }
@@ -52,7 +51,7 @@ class FirebaseUtils {
     )
         .catchError((error) {
       if (catchErrorMessage != null) {
-        catchErrorMessage!(error.toString());
+        catchErrorMessage(error.toString());
       }
     });
 

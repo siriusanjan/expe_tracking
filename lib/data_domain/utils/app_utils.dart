@@ -30,7 +30,7 @@ class AppUtils {
      return "Yesterday ${DateFormat('HH:mm').format(date)}";
    } else if (difference <= 10) {
      // Last 10 days
-     return "${difference} days ago";
+     return "$difference days ago";
    } else {
      // Default format for older dates
      return DateFormat("dd/MM/yyyy HH:mm").format(date);

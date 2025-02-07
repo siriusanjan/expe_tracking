@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'AppValues.dart';
@@ -38,14 +37,14 @@ class TextFieldWidget extends StatelessWidget {
           return validatorErrorString;
         } else {
           if (keyboardType == TextInputType.number &&
-              double.tryParse(value!) == null) {
+              double.tryParse(value) == null) {
             return validatorErrorString;
           } else if (keyboardType == TextInputType.emailAddress &&
               !RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                  .hasMatch(value!)) {
+                  .hasMatch(value)) {
             return validatorErrorString;
           } else if (keyboardType == TextInputType.visiblePassword &&
-              value!.length < 6) {
+              value.length < 6) {
             return validatorErrorString;
           } else {
             return null;
@@ -69,12 +68,12 @@ class TextFieldWidget extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide:
-              BorderSide(color: Colors.blueAccent, width: 2), // Border on focus
+              const BorderSide(color: Colors.blueAccent, width: 2), // Border on focus
         ),
         contentPadding:
-            EdgeInsets.symmetric(vertical: 16, horizontal: 20), // Padding
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 20), // Padding
       ),
-      style: TextStyle(fontSize: 16, color: Colors.black), // Text styling
+      style: const TextStyle(fontSize: 16, color: Colors.black), // Text styling
     );
   }
 }

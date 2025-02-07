@@ -73,8 +73,8 @@ class _FilterView extends State<FilterView> {
                         Align(
                           alignment: Alignment.center,
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: const Text(
                               "Filter",
                               style: TextStyle(
                                   color: Colors.black,
@@ -85,15 +85,15 @@ class _FilterView extends State<FilterView> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextFormField(
                       controller: employeeEmailController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Employee Email",
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         Expanded(
@@ -102,7 +102,7 @@ class _FilterView extends State<FilterView> {
                                 ? "Start Date"
                                 : "Start: ${startDate!.toLocal()}"
                                     .split(' ')[0]),
-                            trailing: Icon(Icons.calendar_today),
+                            trailing: const Icon(Icons.calendar_today),
                             onTap: () => _selectDate(context, true),
                           ),
                         ),
@@ -111,13 +111,13 @@ class _FilterView extends State<FilterView> {
                             title: Text(endDate == null
                                 ? "End Date"
                                 : "End: ${endDate!.toLocal()}".split(' ')[0]),
-                            trailing: Icon(Icons.calendar_today),
+                            trailing: const Icon(Icons.calendar_today),
                             onTap: () => _selectDate(context, false),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     DropdownButtonFormField<ExpensesStatusEnum>(
                       value: selectedStatus,
                       items: ExpensesStatusEnum.values.map((status) {
@@ -131,12 +131,12 @@ class _FilterView extends State<FilterView> {
                           selectedStatus = value;
                         });
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Expense Status",
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     DropdownButtonFormField<ExpenseCategoryEnum>(
                       value: selectedCategory,
                       items: ExpenseCategoryEnum.values.map((category) {
@@ -150,12 +150,12 @@ class _FilterView extends State<FilterView> {
                           selectedCategory = value;
                         });
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Expense Category",
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 18,
                     ),
                     ElevatedButton(
@@ -181,7 +181,7 @@ class _FilterView extends State<FilterView> {
                         Navigator.pop(context);
                       },
                       style: AppStyles.elevatedButtonStyle(),
-                      child: Text('Submit'),
+                      child: const Text('Submit'),
                     ),
                   ],
                 ),

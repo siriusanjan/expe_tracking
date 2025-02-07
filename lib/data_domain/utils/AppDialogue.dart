@@ -1,8 +1,5 @@
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AppDialogue {
 
@@ -22,14 +19,14 @@ class AppDialogue {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(
+                const CircularProgressIndicator(
                   color: Colors.black,
                 ),
                 // Loading spinner
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   text ?? 'Please Wait...',
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),

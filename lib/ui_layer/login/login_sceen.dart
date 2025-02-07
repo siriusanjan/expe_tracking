@@ -1,5 +1,4 @@
 import 'package:expe_traking/data_domain/login/login_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../data_domain/utils/AppStyles.dart';
@@ -26,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     loginHelper = LoginHelper(setLoginState);
     loginHelper.autoLogin(context).then((autologin) {
-      print("curretnAutoLoginStatus" +autologin.toString());
+      print("curretnAutoLoginStatus$autologin");
       if (!autologin) {
         showManual = true;
         setState(() {});
@@ -43,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return !showManual
-        ? CircularProgressIndicator()
+        ? const CircularProgressIndicator()
         : Scaffold(
             appBar: AppBar(title: const Text("Login")),
             body: Padding(
@@ -56,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 200,
                       height: 50,
                       child: SwitchListTile(
-                        title: Text("Sign Admin"),
+                        title: const Text("Sign Admin"),
                         activeTrackColor: AppValues.primaryColor,
                         activeColor: Colors.white,
                         inactiveTrackColor: Colors.grey.shade200,
@@ -100,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               loginHelper.adminSignUp
                                   ? "Sign up as Admin"
                                   : "Login",
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                         ],

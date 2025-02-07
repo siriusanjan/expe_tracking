@@ -16,7 +16,7 @@ class ProfileView extends StatelessWidget {
     return Scaffold(
       body: Container(
         color: AppValues.backgroundColor,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           children: [
             Align(
@@ -25,7 +25,7 @@ class ProfileView extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.close,
                     color: Colors.grey,
                     size: 30,
@@ -40,14 +40,14 @@ class ProfileView extends StatelessWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(width: 2, color: Colors.grey)),
-                  child: Icon(
+                  child: const Icon(
                     Icons.account_circle,
                     color: AppValues.primaryColor,
                     size: 100,
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 10, top: 8),
+                  padding: const EdgeInsets.only(left: 10, top: 8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +56,7 @@ class ProfileView extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                             " ${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -65,14 +65,14 @@ class ProfileView extends StatelessWidget {
 
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.mail,
                             color: Colors.grey,
                             size: 15,
                           ),
                           Text(
-                              "${BaseDataController().user?.email ?? ""}",
-                              style: TextStyle(
+                              BaseDataController().user?.email ?? "",
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400)),
@@ -80,14 +80,14 @@ class ProfileView extends StatelessWidget {
                       ),
                       // Adds spacing
                       Row(children: [
-                        Icon(
+                        const Icon(
                           Icons.settings,
                           color: Colors.grey,
                           size: 15,
                         ),
                         Text(
                             " ${capitalizeFirstLetter(BaseDataController().currentUserRole.name)}",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400))
@@ -100,8 +100,8 @@ class ProfileView extends StatelessWidget {
             Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                    margin: EdgeInsets.only(top: 16),
-                    child: Text(
+                    margin: const EdgeInsets.only(top: 16),
+                    child: const Text(
                       "Basic Information",
                       style: TextStyle(
                           color: Colors.black,
@@ -109,7 +109,7 @@ class ProfileView extends StatelessWidget {
                           fontSize: 16),
                     ))),
             Container(
-                margin: EdgeInsets.only(top: 8),
+                margin: const EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12), // Adjust radius here
@@ -119,18 +119,18 @@ class ProfileView extends StatelessWidget {
                     BaseDataController().currentUserRole == UserRole.employee
                         ? "My Expenses"
                         : "Employee Expenses",
-                    style: TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15),
                   ),
                   subtitle: Text(
                       BaseDataController().currentUserRole == UserRole.employee
                           ? "View You Expenses Details"
                           : "View Employees Expenses Details"),
                   backgroundColor: Colors.transparent,
-                  leading: Icon(
+                  leading: const Icon(
                     Icons.attach_money,
                     color: Colors.grey,
                   ),
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                 )),
             GestureDetector(
               onTap: () async {
@@ -144,13 +144,13 @@ class ProfileView extends StatelessWidget {
                 });
               },
               child: Container(
-                  margin: EdgeInsets.only(top: 8),
+                  margin: const EdgeInsets.only(top: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius:
                         BorderRadius.circular(12), // Adjust radius here
                   ),
-                  child: CupertinoListTile(
+                  child: const CupertinoListTile(
                     title: Text(
                       "Logout",
                       style: TextStyle(fontSize: 15),

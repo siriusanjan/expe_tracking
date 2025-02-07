@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../ui_layer/main_expenses/view/expenses_list_screen.dart';
 import '../controller/bloc_employee.dart';
@@ -37,7 +35,7 @@ class _AdminMainView extends State<AdminMainView> {
         children: [
           Container(
             color: Colors.red,
-            child: Center(
+            child: const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,7 +39,7 @@ class NotificationManager {
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@mipmap/ic_launcher');
 
-      final InitializationSettings initializationSettings =
+      const InitializationSettings initializationSettings =
           InitializationSettings(android: initializationSettingsAndroid);
 
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
@@ -278,6 +277,8 @@ class NotificationManager {
   }
 
   Future<String?> _getAccessToken() async {
+    return null;
+  
     // Run gcloud command to get a fresh token
     // User? user = FirebaseAuth.instance.currentUser;
     // if (user != null) {

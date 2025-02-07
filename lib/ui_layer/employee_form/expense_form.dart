@@ -1,9 +1,6 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../data_domain/form_employee_expense/bloc_employee_form.dart';
 import '../../data_domain/form_employee_expense/employee_form_helper.dart';
@@ -82,8 +79,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         Align(
                           alignment: Alignment.center,
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: const Text(
                               "Add Expenses",
                               style: TextStyle(
                                   color: Colors.black,
@@ -96,7 +93,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -126,11 +123,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
                                       width: 120,
                                       height: 120,
                                       margin:
-                                          EdgeInsets.symmetric(horizontal: 8),
+                                          const EdgeInsets.symmetric(horizontal: 8),
                                       decoration: BoxDecoration(
                                         color: Colors.grey[200],
                                         borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
+                                        boxShadow: const [
                                           BoxShadow(
                                             color: Colors.black26,
                                             blurRadius: 8,
@@ -148,7 +145,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                                                 employeeHelper
                                                     .pickImage(context);
                                               },
-                                              child: Center(
+                                              child: const Center(
                                                 child: Icon(
                                                   Icons.camera_alt,
                                                   color: Colors.black45,
@@ -186,7 +183,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                                           validatorErrorString:
                                               "Please enter title",
                                         ),
-                                        Padding(padding: EdgeInsets.all(4)),
+                                        const Padding(padding: EdgeInsets.all(4)),
                                         TextFieldWidget(
                                           hintText: "Amount",
                                           icon: Icons.attach_money,
@@ -201,12 +198,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
                                   )
                                 ],
                               ),
-                              Padding(padding: EdgeInsets.all(4)),
+                              const Padding(padding: EdgeInsets.all(4)),
                               DropdownButtonFormField<ExpenseCategoryEnum>(
                                 value: employeeHelper.expenseCategoryEnum,
                                 decoration: InputDecoration(
                                   labelText: "Select Category",
-                                  prefixIcon: Icon(Icons.category),
+                                  prefixIcon: const Icon(Icons.category),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -231,7 +228,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                                     ? "Please select a category"
                                     : null,
                               ),
-                              Padding(padding: EdgeInsets.all(4)),
+                              const Padding(padding: EdgeInsets.all(4)),
                               TextFieldWidget(
                                 hintText: "Description",
                                 icon: Icons.title,
@@ -250,7 +247,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                     ElevatedButton(
                       onPressed: _submitForm,
                       style: AppStyles.elevatedButtonStyle(),
-                      child: Text('Submit'),
+                      child: const Text('Submit'),
                     ),
                   ],
                 ),
