@@ -1,6 +1,5 @@
 import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
 import 'package:expe_traking/ui_layer/main_expenses/view/widget/cat_wise_expense_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,6 +12,8 @@ import '../../../data_domain/utils/app_utils.dart';
 import '../../../data_domain/utils/base_data_controller.dart';
 
 class ExpensesListScreen extends StatefulWidget {
+  const ExpensesListScreen({super.key});
+
   @override
   _ExpensesListScreenState createState() => _ExpensesListScreenState();
 }
@@ -59,7 +60,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                       (context, animation) => _buildExpenseCard(
                           expensesHelper.expensesList[i], context),
                     );
-                    Future.delayed(Duration(milliseconds: 300), () {
+                    Future.delayed(const Duration(milliseconds: 300), () {
                       // Re-insert the updated item
                       expensesHelper.listKey.currentState?.insertItem(i);
                     });
@@ -136,11 +137,11 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                             onPressed: () {
                               expensesHelper.showFilterDialog(context);
                             },
+                            backgroundColor: AppValues.primaryColor,
                             child: const Icon(
                               Icons.search,
                               color: AppValues.backgroundColor,
                             ),
-                            backgroundColor: AppValues.primaryColor,
                           ),
                         )),
                   ),
@@ -154,11 +155,11 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                             onPressed: () {
                               expensesHelper.showFilterDialog(context);
                             },
+                            backgroundColor: AppValues.primaryColor,
                             child: const Icon(
                               Icons.tune,
                               color: AppValues.backgroundColor,
                             ),
-                            backgroundColor: AppValues.primaryColor,
                           ),
                         )),
                   ),
@@ -207,7 +208,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
         ),
         title: Text(
           expense.title,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text("Amount: \$${AppUtils.formatDollor(expense.amount)}"),
         trailing: SizedBox(

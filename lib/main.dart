@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
           scaffoldBackgroundColor: AppValues.backgroundColor,
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             backgroundColor: AppValues.backgroundColor, // AppBar background
             elevation: 0, // Remove shadow if needed
           ),// Set global background color

@@ -13,7 +13,7 @@ class AppStyles {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     );
   }
 }

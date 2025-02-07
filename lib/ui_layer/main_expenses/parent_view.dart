@@ -1,7 +1,5 @@
 import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data_domain/main_expenses/parent_helper.dart';
 import '../../data_domain/utils/AppValues.dart';
@@ -41,13 +39,13 @@ class ParentView extends StatelessWidget {
               text: TextSpan(children: [
                 TextSpan(
                   text: AppUtils.getGreeting(),
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 TextSpan(
                   text:
                       "\n${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
                       fontSize: 18),
@@ -66,10 +64,10 @@ class ParentView extends StatelessWidget {
         ],
       ),
       body: BaseDataController().currentUserRole == UserRole.employee
-          ? EmployeeMainView()
+          ? const EmployeeMainView()
           : BaseDataController().currentUserRole == UserRole.admin
-              ? AdminMainView()
-              : ManagerMainView(),
+              ? const AdminMainView()
+              : const ManagerMainView(),
     );
   }
 }

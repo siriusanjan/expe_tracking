@@ -1,5 +1,4 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -25,7 +24,7 @@ class CategoryWiseExpenseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("expenseCatLength "+expensesCategoryAmountMap.length.toString());
+    print("expenseCatLength ${expensesCategoryAmountMap.length}");
     double totalExpense = expensesCategoryAmountMap.isEmpty
         ? 0
         : expensesCategoryAmountMap.values.reduce((a, b) => a + b);
@@ -34,7 +33,7 @@ class CategoryWiseExpenseView extends StatelessWidget {
         : expensesCategoryAmountMap.values
             .reduce((a, b) => a > b ? a : b); // Get max expense
 
-    return Container(
+    return SizedBox(
       height: 150,
       child: Card(
         shadowColor: AppValues.backgroundColor,
@@ -72,13 +71,13 @@ class CategoryWiseExpenseView extends StatelessWidget {
                                   children: [
                                     Text(
                                       category.name.toUpperCase(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600),
                                     ),
                                     Text(
                                       "\$${AppUtils.formatDollor(expense)}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -99,7 +98,7 @@ class CategoryWiseExpenseView extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               // Pie Chart Section
@@ -137,7 +136,7 @@ class CategoryWiseExpenseView extends StatelessWidget {
                             children: [
                               Text(
                                 "\$${AppUtils.formatDollor(totalExpense)}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.w600),
                               ),
                             ],

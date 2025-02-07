@@ -12,7 +12,7 @@ class RouteManager {
       case ParentView.route:
         return MaterialPageRoute(builder: (_) => ParentView());
       case LoginScreen.route:
-        return MaterialPageRoute(builder: (_) => LoginScreen());
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
@@ -23,9 +23,9 @@ class RouteManager {
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Error'),
+          title: const Text('Error'),
         ),
-        body: Center(
+        body: const Center(
           child: Text('ERROR'),
         ),
       );

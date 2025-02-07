@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../storage/database_helper.dart';
@@ -132,10 +131,10 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       await DatabaseHelper.instance.insertExpensesList(expensesServer);
       final mapCategoryTotal =
           await expensesHelper.getExpenseCategoryWiseTotal();
-      print("fetchCatTotal "+mapCategoryTotal.length.toString());
+      print("fetchCatTotal ${mapCategoryTotal.length}");
       List<ExpensesModel> expensesList =
           await DatabaseHelper.instance.getFilteredExpenses(page: 0);
-      print("fetchItemTotal "+expensesList.length.toString().toString());
+      print("fetchItemTotal ${expensesList.length}");
 
       emit(state.copyWith(
         expenseCategoryTotal: mapCategoryTotal,

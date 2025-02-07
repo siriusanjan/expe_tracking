@@ -90,14 +90,14 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
 
                         Row(
                           children: [
-                            Icon(Icons.account_circle, size: 24),
-                            SizedBox(
+                            const Icon(Icons.account_circle, size: 24),
+                            const SizedBox(
                               width: 10,
                             ),
                             Text(
                               "${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 15),
+                                  const TextStyle(color: Colors.black, fontSize: 15),
                             )
                           ],
                         ),
@@ -151,10 +151,10 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          SizedBox(width: 5),
+                          const SizedBox(width: 5),
                           Text(
                             "${AppUtils.capitalizeFirstLetter(_selectedStatus.name)} ${(AppUtils.capitalizeFirstLetter(_selectedStatus != ExpensesStatusEnum.pending ? "by ${expense.updaterMail == BaseDataController().user?.email && _selectedStatus != expense.expensesStatus ? "You" : expense.updaterMail}" : ""))} ",
-                            style: TextStyle(color: Colors.grey, fontSize: 10),
+                            style: const TextStyle(color: Colors.grey, fontSize: 10),
                           )
                         ]),
 

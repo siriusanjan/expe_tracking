@@ -1,10 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../ui_layer/main_expenses/view/widget/expenses_detail_view.dart';
 import '../../ui_layer/main_expenses/view/widget/filter_view.dart';
@@ -44,11 +41,11 @@ class ExpensesHelper {
 
   void loadMoreExpense() {
     recordeExpenseLength = expenseListBloc.state.expenseList.length;
-    print("previousLength " + recordeExpenseLength.toString());
+    print("previousLength $recordeExpenseLength");
     expenseListBloc.add(LoadMoreExpensesEvent());
 
     print(
-        "currentLength " + expenseListBloc.state.expenseList.length.toString());
+        "currentLength ${expenseListBloc.state.expenseList.length}");
   }
 
   int addUpdateExpenses() {
@@ -189,13 +186,13 @@ class ExpensesHelper {
               value: expenseListBloc,
               child: Container(
                   height: AppValues.mainScreenHeight * 0.65,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: AppValues.backgroundColor,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(16),
                           topRight: Radius.circular(16))),
                   padding: const EdgeInsets.all(16),
-                  child: ExpenseForm()));
+                  child: const ExpenseForm()));
         });
   }
 
@@ -207,9 +204,9 @@ class ExpensesHelper {
       builder: (BuildContext context) {
         return BlocProvider<ExpenseListBloc>.value(
             value: expenseListBloc,
-            child: Wrap(
+            child: const Wrap(
               children: [
-                const FilterView(),
+                FilterView(),
               ],
             ));
       },
@@ -248,10 +245,10 @@ class ExpensesHelper {
         children: [
           Text(
             "$label: ",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Expanded(
-            child: Text(value, style: TextStyle(color: Colors.black87)),
+            child: Text(value, style: const TextStyle(color: Colors.black87)),
           ),
         ],
       ),

@@ -36,13 +36,13 @@ class EmployeeFormHelper {
               value: blocEmployee,
               child: Container(
                   height: AppValues.mainScreenHeight * 0.65,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: AppValues.backgroundColor,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(16),
                           topRight: Radius.circular(16))),
                   padding: const EdgeInsets.all(16),
-                  child: ExpenseForm()));
+                  child: const ExpenseForm()));
         });
   }
 
