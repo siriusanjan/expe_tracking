@@ -200,4 +200,8 @@ class DatabaseHelper {
     await db.update('expenses', expense.toMap(),
         where: 'expId = ?', whereArgs: [expense.expId]);
   }
+  Future<void> clearAllExpenses() async {
+    final db = await instance.database;
+    await db.delete('expenses'); // Deletes all rows in the table
+  }
 }

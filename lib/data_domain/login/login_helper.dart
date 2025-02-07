@@ -6,24 +6,24 @@ import '../storage/auth_helper.dart';
 import '../utils/AppDialogue.dart';
 import '../utils/base_data_controller.dart';
 
-
 class LoginHelper {
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool adminSignUp = false;
+  bool doSignUp = false;
   Function setLoginState;
   String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  UserRole adminRole = UserRole.none;
 
   LoginHelper(this.setLoginState);
 
   void toggleAdmin(bool value) {
-    adminSignUp = !adminSignUp;
+    doSignUp = !doSignUp;
     setLoginState();
   }
 
   Future<bool> autoLogin(BuildContext context) async {
-   return  BaseDataController().autoLogin(context);
+    return BaseDataController().autoLogin(context);
   }
 
   Future<void> processSign({required BuildContext context}) async {
@@ -32,12 +32,12 @@ class LoginHelper {
     }
     if (formKey.currentState!.validate()) {
       AppDialogue.showLoadingDialog(context);
-      if (adminSignUp) {
+      if (doSignUp) {
         await BaseDataController()
             .createUserWithRole(
                 email: emailController.text.trim(),
                 password: passwordController.text,
-                userRole: UserRole.manager,
+                userRole: adminRole,
                 catchErrorMessage: (message) {
                   Navigator.pop(context);
                   AppDialogue.noUserFoundSnackBar(
@@ -50,9 +50,9 @@ class LoginHelper {
           Navigator.pop(context);
           AppDialogue.noUserFoundSnackBar(
               context: context,
-              message: "Admin created\n Proceed SignIn",
+              message: "${adminRole.name} created\n Proceed SignIn",
               color: Colors.green.shade900);
-          adminSignUp = false;
+          doSignUp = false;
         });
       } else {
         login(context: context);
@@ -89,8 +89,11 @@ class LoginHelper {
       Navigator.pushNamedAndRemoveUntil(
         context,
         ParentView.route, // Named route for LoginScreen
-            (route) => route.settings.name == ParentView.route, // Removes all previous routes
-      );    });
+        (route) =>
+            route.settings.name ==
+            ParentView.route, // Removes all previous routes
+      );
+    });
   }
 
   void onDispose() {}

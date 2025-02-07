@@ -28,6 +28,7 @@ class AuthHelper {
 
   /// 🔹 Save  notification token after login
   static Future<void> saveNotificationToken(String token) async {
+    print("myToke " +token);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('notificationToken', token);
   }
