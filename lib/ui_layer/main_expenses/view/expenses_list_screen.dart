@@ -129,24 +129,22 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SafeArea(
-                    child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.only(right: 15.0, bottom: 15),
-                          child: FloatingActionButton(
-                            onPressed: () {
-                              expensesHelper.showFilterDialog(context);
-                            },
-                            backgroundColor: AppValues.primaryColor,
-                            child: const Icon(
-                              Icons.tune,
-                              color: AppValues.backgroundColor,
-                            ),
+                  Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(right: 15.0, bottom: 15),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            expensesHelper.showFilterDialog(context);
+                          },
+                          backgroundColor: AppValues.primaryColor,
+                          child: const Icon(
+                            Icons.tune,
+                            color: AppValues.backgroundColor,
                           ),
-                        )),
-                  ),
+                        ),
+                      )),
                   if (BaseDataController().currentUserRole == UserRole.employee)
                     SafeArea(
                       child: Align(
@@ -216,31 +214,29 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text("Amount: \$${AppUtils.formatDollor(expense.amount)}"),
-        trailing: SizedBox(
-          width: 80,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                height: 10,
-                width: 20,
-                decoration: BoxDecoration(
-                  color: expense.expensesStatus == ExpensesStatusEnum.pending
-                      ? Colors.grey
-                      : expense.expensesStatus == ExpensesStatusEnum.approved
-                          ? Colors.green
-                          : Colors.red,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+        trailing: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 10,
+              width: 20,
+              decoration: BoxDecoration(
+                color: expense.expensesStatus == ExpensesStatusEnum.pending
+                    ? Colors.grey
+                    : expense.expensesStatus == ExpensesStatusEnum.approved
+                        ? Colors.green
+                        : Colors.red,
+                borderRadius: BorderRadius.circular(10),
               ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  AppUtils.capitalizeFirstLetter(expense.expensesStatus.name),
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                AppUtils.capitalizeFirstLetter(expense.expensesStatus.name),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         onTap: () {
           expensesHelper.showExpenseDetailsDialog(context, expense);

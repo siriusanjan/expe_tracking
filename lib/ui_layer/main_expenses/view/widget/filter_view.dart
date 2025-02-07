@@ -182,12 +182,14 @@ class _FilterView extends State<FilterView> {
                     const SizedBox(
                       height: 18,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        filterHelper.startFilter(context);
-                      },
-                      style: AppStyles.elevatedButtonStyle(),
-                      child: const Text('Filter'),
+                    SafeArea(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          filterHelper.startFilter(context);
+                        },
+                        style: AppStyles.elevatedButtonStyle(),
+                        child: const Text('Filter'),
+                      ),
                     ),
                   ],
                 ),
