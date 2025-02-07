@@ -62,6 +62,8 @@ class EmployeeFormHelper {
           finalPickedFile = File(pickedFile.path);
           blocEmployee.changeBlocState(EmployeeFormState.photoPicked);
         }
+      }else{
+        Navigator.pop(context);
       }
     });
   }

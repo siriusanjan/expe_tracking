@@ -1,12 +1,25 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionUtils {
   static Future<void> requestPhotoPermission(
       BuildContext context, Permission permission, Function isGranted) async {
-    PermissionStatus status = await permission.status;
+    PermissionStatus status =
+    await permission.status;
 
-    if (status.isGranted) {
+    /// fixing for low end devies
+    // if (Platform.isAndroid) {
+    //   final androidInfo = await DeviceInfoPlugin().androidInfo;
+    //   if (androidInfo.version.sdkInt <= 32) {
+    //     use [Permission.storage.status]
+    //   }  else {
+    //     use [Permission.photos.status]
+    //   }
+    //
+
+    if (status.isGranted || status.isLimited) {
       isGranted(true);
       return;
     } else if (status.isPermanentlyDenied) {
@@ -50,7 +63,7 @@ class PermissionUtils {
                 openAppSettings(); // Open settings if permanently denied
               } else {
                 PermissionStatus newStatus = await permission.request();
-                if (newStatus.isGranted) {
+                if (newStatus.isGranted || newStatus.isLimited) {
                   print("Permission granted! Proceed with uploading.");
                   isGranted(true);
                 } else {
