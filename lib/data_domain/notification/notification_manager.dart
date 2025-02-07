@@ -118,6 +118,7 @@ class NotificationManager {
   }
 
   Future<void> registerAdminFCMToken() async {
+    print("tokensRegisterd");
     await FirebaseMessaging.instance.subscribeToTopic(UserRole.admin.name);
     // String? userId = BaseDataController().userCredential?.user?.uid ?? "";
     //

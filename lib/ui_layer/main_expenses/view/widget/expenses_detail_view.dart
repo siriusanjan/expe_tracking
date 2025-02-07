@@ -41,7 +41,9 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
         ),
         child: SizedBox(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: BaseDataController().currentUserRole == UserRole.manager
+                ? const EdgeInsets.all(20.0)
+                : EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
             child: Wrap(direction: Axis.horizontal, children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,6 +100,17 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                               "${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
                               style: const TextStyle(
                                   color: Colors.black, fontSize: 15),
+                            ),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  AppUtils.capitalizeFirstLetter(
+                                      expense.category.name),
+                                  style: const TextStyle(
+                                      color: Colors.black, fontSize: 15),
+                                ),
+                              ),
                             )
                           ],
                         ),
@@ -278,15 +291,18 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                         ),
                       )
                     : Align(
-                        alignment: Alignment.center,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text(
-                            "Close",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w800),
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "Close",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w800),
+                            ),
                           ),
                         ),
                       ),

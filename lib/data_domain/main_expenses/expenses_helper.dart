@@ -177,9 +177,9 @@ class ExpensesHelper {
         return BlocProvider<ExpenseListBloc>.value(
             value: expenseListBloc,
             child: Dialog(
-              insetPadding: EdgeInsets.all(10),
+              insetPadding: EdgeInsets.all(Platform.isAndroid?10:30),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(Platform.isAndroid?8.0:16),
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
