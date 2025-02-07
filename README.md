@@ -6,7 +6,7 @@ A new Flutter project.
 
 
  Project Setup & Authentication
-🔲 Set up Flutter project and configure Firebase /n
+🔲 Set up Flutter project and configure Firebase 
 🔲 Implement role-based authentication (Admin, Manager, Employee).
 🔲 Create predefined accounts for each role.
 🔲 Set up navigation for role-based routing.
