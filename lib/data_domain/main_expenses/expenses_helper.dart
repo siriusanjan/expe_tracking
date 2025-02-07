@@ -232,7 +232,7 @@ class ExpensesHelper {
   }
 
   void onUpdate(ExpensesModel model, {bool shouldUpdate = false}) {
-    DatabaseHelper.instance.insertExpense(model);
+    DatabaseHelper.instance.updateExpense(model);
     if (BaseDataController().filterMap.isEmpty) {
       BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
           expense: model,

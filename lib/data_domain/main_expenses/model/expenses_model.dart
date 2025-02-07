@@ -19,7 +19,7 @@ class ExpensesModel {
   String employeeID;
   ExpensesStatusEnum expensesStatus;
   String receiptUrl;
-  DateTime? timeStamp;
+  String? timeStamp;
   String authorMail;
   String updaterMail;
   String expId;
@@ -48,7 +48,7 @@ class ExpensesModel {
       'employeeID': employeeID,
       'expensesStatus': expensesStatus.name,
       'receiptUrl': receiptUrl,
-      'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
+      'timeStamp': timeStamp, // Convert DateTime to string
       'authorMail': authorMail,
       'updaterMail': updaterMail,
       'expId': expId.toString(),
@@ -64,7 +64,7 @@ class ExpensesModel {
       'description': description.toString(),
       'amount': amount.toString(),
       'receiptUrl': receiptUrl.toString(),
-      'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
+      'timeStamp': timeStamp, // Convert DateTime to string
       'authorMail': authorMail.toString(),
       'updaterMail': updaterMail.toString(),
       'employeeID': employeeID.toString(),
@@ -80,7 +80,7 @@ class ExpensesModel {
       'description': description.toString(),
       'amount': amount.toString(),
       'receiptUrl': receiptUrl.toString(),
-      'timeStamp': timeStamp?.toIso8601String(), // Convert DateTime to string
+      'timeStamp': timeStamp, // Convert DateTime to string
       'authorMail': authorMail.toString(),
       'updaterMail': updaterMail.toString(),
       'employeeID': employeeID.toString(),
@@ -111,9 +111,7 @@ class ExpensesModel {
           e.toString().split('.').last ==
           (map['category'] ?? ExpenseCategoryEnum.miscellaneous.name)),
       expId: docId,
-      timeStamp: (map['timeStamp'] is Timestamp)
-          ? (map['timeStamp'] as Timestamp).toDate()
-          : DateTime.now(),
+      timeStamp: map['timeStamp'],
     );
   }
 }

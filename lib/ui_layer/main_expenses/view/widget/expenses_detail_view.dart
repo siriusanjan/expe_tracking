@@ -151,7 +151,7 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                           ])),
                         ),
                         Row(children: [
-                          Text(AppUtils.formatDate(expense.timeStamp!),
+                          Text(AppUtils.formatDate(expense.timeStamp ?? ""),
                               style: const TextStyle(fontSize: 10)),
                           const SizedBox(width: 10),
                           Container(
@@ -265,6 +265,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                                     expense.updaterMail =
                                         BaseDataController().user?.email ?? "";
                                     expense.expensesStatus = _selectedStatus;
+                                    expense.timeStamp =
+                                        DateTime.now().toString();
                                     BaseDataController()
                                         .updateExpenseStatus(expense)
                                         .then((_) {

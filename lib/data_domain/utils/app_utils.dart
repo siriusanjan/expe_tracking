@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -33,12 +34,13 @@ class AppUtils {
       return true;
     } else {
       AppDialogue.noUserFoundSnackBar(
-          context: context, message: "No Internet connection" );
+          context: context, message: "No Internet connection");
       return false;
     }
   }
 
-  static String formatDate(DateTime date) {
+  static String formatDate(String timeStampString) {
+    DateTime date = DateTime.parse(timeStampString);
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
 
