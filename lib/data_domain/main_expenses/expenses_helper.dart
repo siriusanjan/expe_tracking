@@ -177,9 +177,10 @@ class ExpensesHelper {
         return BlocProvider<ExpenseListBloc>.value(
             value: expenseListBloc,
             child: Dialog(
-              insetPadding: EdgeInsets.all(Platform.isAndroid?10:30),
+              insetPadding: EdgeInsets.all(Platform.isAndroid ? 10 : 30),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Platform.isAndroid?8.0:16),
+                borderRadius:
+                    BorderRadius.circular(Platform.isAndroid ? 8.0 : 16),
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -231,13 +232,36 @@ class ExpensesHelper {
   }
 
   void onUpdate(ExpensesModel model, {bool shouldUpdate = false}) {
-    BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
-        expense: model,
-        shouldUpdate: shouldUpdate,
-        updatedIndex: (updatedIndex, isNew) {
-          indexUpdated = updatedIndex;
-          newAdded = isNew;
-        }));
+    DatabaseHelper.instance.insertExpense(model);
+    if (BaseDataController().filterMap.isEmpty) {
+      BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
+          expense: model,
+          shouldUpdate: shouldUpdate,
+          updatedIndex: (updatedIndex, isNew) {
+            indexUpdated = updatedIndex;
+            newAdded = isNew;
+          }));
+    } else {
+      ExpensesStatusEnum? filterMapEnum =
+          BaseDataController().filterMap[ExpensesStatusEnum];
+      if (filterMapEnum == null) {
+        BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
+            expense: model,
+            shouldUpdate: shouldUpdate,
+            updatedIndex: (updatedIndex, isNew) {
+              indexUpdated = updatedIndex;
+              newAdded = isNew;
+            }));
+      } else if (model.expensesStatus == filterMapEnum) {
+        BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
+            expense: model,
+            shouldUpdate: shouldUpdate,
+            updatedIndex: (updatedIndex, isNew) {
+              indexUpdated = updatedIndex;
+              newAdded = isNew;
+            }));
+      }
+    }
   }
 
   Widget _detailRow(String label, String value) {

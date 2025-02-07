@@ -31,10 +31,6 @@ class BaseDataController {
       Function? catchErrorMessage}) async {
     currentUserRole = await FirebaseUtils()
         .loginUser(email, password, catchErrorMessage: catchErrorMessage);
-    if (BaseDataController().user?.uid != null) {
-      var setupFirebaseMessaging = NotificationManager()
-          .setupFirebaseMessaging(BaseDataController().user?.uid ?? "");
-    }
   }
 
   Future<bool> autoLogin(BuildContext context) async {

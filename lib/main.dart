@@ -1,12 +1,15 @@
+import 'package:expe_traking/data_domain/notification/notification_manager.dart';
 import 'package:expe_traking/ui_layer/login/login_sceen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'data_domain/utils/AppValues.dart';
 import 'data_domain/utils/route_manager.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  NotificationManager().initializeNotifications();
   runApp(const MyApp());
 }
 
@@ -50,8 +53,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             backgroundColor: AppValues.backgroundColor, // AppBar background
             elevation: 0, // Remove shadow if needed
-          ),// Set global background color
-
+          ), // Set global background color
         ),
         home: const LoginScreen(),
         onGenerateRoute: RouteManager.generateRoute,
