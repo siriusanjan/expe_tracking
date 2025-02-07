@@ -1,4 +1,5 @@
 import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
+import 'package:expe_traking/data_domain/utils/app_utils.dart';
 import 'package:expe_traking/ui_layer/login/login_sceen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import '../../data_domain/utils/AppDialogue.dart';
 import '../../data_domain/utils/AppValues.dart';
 import '../../data_domain/utils/base_data_controller.dart';
-
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -70,8 +70,7 @@ class ProfileView extends StatelessWidget {
                             color: Colors.grey,
                             size: 15,
                           ),
-                          Text(
-                              BaseDataController().user?.email ?? "",
+                          Text(BaseDataController().user?.email ?? "",
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
@@ -135,13 +134,20 @@ class ProfileView extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 AppDialogue.showLoadingDialog(context);
-                await BaseDataController().clearAllDataWithLogout(BaseDataController().user?.email ?? "").then((_) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    LoginScreen.route, // Named route for LoginScreen
-                    (route) => true, // Removes all previous routes
-                  );
-                });
+                if (await AppUtils.hasInternetConnection(context)) {
+                  await BaseDataController()
+                      .clearAllDataWithLogout(
+                          BaseDataController().user?.email ?? "")
+                      .then((_) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      LoginScreen.route, // Named route for LoginScreen
+                      (route) => true, // Removes all previous routes
+                    );
+                  });
+                } else {
+                  Navigator.pop(context);
+                }
               },
               child: Container(
                   margin: const EdgeInsets.only(top: 8),

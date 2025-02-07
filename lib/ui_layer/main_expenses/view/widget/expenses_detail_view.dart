@@ -96,8 +96,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                             ),
                             Text(
                               "${BaseDataController().user?.email!.split('@')[0].toUpperCase()}",
-                              style:
-                                  const TextStyle(color: Colors.black, fontSize: 15),
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 15),
                             )
                           ],
                         ),
@@ -113,7 +113,11 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                               width: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.broken_image, size: 100),
+                                  const Icon(
+                                Icons.broken_image,
+                                size: 100,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                         Padding(
@@ -154,7 +158,8 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                           const SizedBox(width: 5),
                           Text(
                             "${AppUtils.capitalizeFirstLetter(_selectedStatus.name)} ${(AppUtils.capitalizeFirstLetter(_selectedStatus != ExpensesStatusEnum.pending ? "by ${expense.updaterMail == BaseDataController().user?.email && _selectedStatus != expense.expensesStatus ? "You" : expense.updaterMail}" : ""))} ",
-                            style: const TextStyle(color: Colors.grey, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 10),
                           )
                         ]),
 
@@ -239,21 +244,26 @@ class _ExpenseDetailView extends State<ExpenseDetailView> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_selectedStatus != expense.expensesStatus) {
                                   AppDialogue.showLoadingDialog(context);
-                                  expense.updaterMail =
-                                      BaseDataController().user?.email ?? "";
-                                  expense.expensesStatus = _selectedStatus;
-                                  BaseDataController()
-                                      .updateExpenseStatus(expense)
-                                      .then((_) {
-                                    BaseDataController().updateExpenseList(
-                                        expense,
-                                        shouldUpdate: true);
+                                  if (await AppUtils.hasInternetConnection(
+                                      context)) {
+                                    expense.updaterMail =
+                                        BaseDataController().user?.email ?? "";
+                                    expense.expensesStatus = _selectedStatus;
+                                    BaseDataController()
+                                        .updateExpenseStatus(expense)
+                                        .then((_) {
+                                      BaseDataController().updateExpenseList(
+                                          expense,
+                                          shouldUpdate: true);
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
+                                  } else {
                                     Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  });
+                                  }
                                 } else {
                                   Navigator.pop(context);
                                 }

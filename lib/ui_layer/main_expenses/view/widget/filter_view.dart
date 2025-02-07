@@ -1,10 +1,12 @@
+import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
+import 'package:expe_traking/data_domain/utils/base_data_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_domain/main_expenses/expense_bloc.dart';
 import '../../../../data_domain/main_expenses/expense_events.dart';
 import '../../../../data_domain/main_expenses/model/expenses_model.dart';
-import '../../../../data_domain/utils/AppStyles.dart';
+import '../../../AppStyles.dart';
 
 class FilterView extends StatefulWidget {
   const FilterView({super.key});
@@ -44,6 +46,7 @@ class _FilterView extends State<FilterView> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -83,16 +86,31 @@ class _FilterView extends State<FilterView> {
                             ),
                           ),
                         ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            child: TextButton(
+                              onPressed: () {},
+                              child: const Text("Reset",
+                                  style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400)),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    TextFormField(
-                      controller: employeeEmailController,
-                      decoration: const InputDecoration(
-                        labelText: "Employee Email",
-                        border: OutlineInputBorder(),
+                    if (BaseDataController().currentUserRole !=
+                        UserRole.employee)
+                      TextFormField(
+                        controller: employeeEmailController,
+                        decoration: const InputDecoration(
+                          labelText: "Employee Email",
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
@@ -181,7 +199,7 @@ class _FilterView extends State<FilterView> {
                         Navigator.pop(context);
                       },
                       style: AppStyles.elevatedButtonStyle(),
-                      child: const Text('Submit'),
+                      child: const Text('Filter'),
                     ),
                   ],
                 ),

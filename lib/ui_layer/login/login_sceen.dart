@@ -1,9 +1,9 @@
 import 'package:expe_traking/data_domain/login/login_helper.dart';
 import 'package:flutter/material.dart';
 
-import '../../data_domain/utils/AppStyles.dart';
+import '../AppStyles.dart';
 import '../../data_domain/utils/AppValues.dart';
-import '../../data_domain/utils/app_widget.dart';
+import '../app_widget.dart';
 import '../main_expenses/parent_view.dart';
 
 class LoginScreen extends StatefulWidget {
