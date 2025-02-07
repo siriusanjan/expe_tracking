@@ -233,7 +233,6 @@ class ExpensesHelper {
 
   void onUpdate(ExpensesModel model, {bool shouldUpdate = false}) {
     DatabaseHelper.instance.updateExpense(model);
-    if (BaseDataController().filterMap.isEmpty) {
       BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
           expense: model,
           shouldUpdate: shouldUpdate,
@@ -241,27 +240,35 @@ class ExpensesHelper {
             indexUpdated = updatedIndex;
             newAdded = isNew;
           }));
-    } else {
-      ExpensesStatusEnum? filterMapEnum =
-          BaseDataController().filterMap[ExpensesStatusEnum];
-      if (filterMapEnum == null) {
-        BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
-            expense: model,
-            shouldUpdate: shouldUpdate,
-            updatedIndex: (updatedIndex, isNew) {
-              indexUpdated = updatedIndex;
-              newAdded = isNew;
-            }));
-      } else if (model.expensesStatus == filterMapEnum) {
-        BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
-            expense: model,
-            shouldUpdate: shouldUpdate,
-            updatedIndex: (updatedIndex, isNew) {
-              indexUpdated = updatedIndex;
-              newAdded = isNew;
-            }));
-      }
-    }
+    // if (BaseDataController().filterMap.isEmpty) {
+    //   BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
+    //       expense: model,
+    //       shouldUpdate: shouldUpdate,
+    //       updatedIndex: (updatedIndex, isNew) {
+    //         indexUpdated = updatedIndex;
+    //         newAdded = isNew;
+    //       }));
+    // } else {
+    //   ExpensesStatusEnum? filterMapEnum =
+    //       BaseDataController().filterMap[ExpensesStatusEnum];
+    //   if (filterMapEnum == null) {
+    //     BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
+    //         expense: model,
+    //         shouldUpdate: shouldUpdate,
+    //         updatedIndex: (updatedIndex, isNew) {
+    //           indexUpdated = updatedIndex;
+    //           newAdded = isNew;
+    //         }));
+    //   } else if (model.expensesStatus == filterMapEnum) {
+    //     BlocProvider.of<ExpenseListBloc>(blocContext).add(UpdateExpenseEvent(
+    //         expense: model,
+    //         shouldUpdate: shouldUpdate,
+    //         updatedIndex: (updatedIndex, isNew) {
+    //           indexUpdated = updatedIndex;
+    //           newAdded = isNew;
+    //         }));
+    //   }
+    // }
   }
 
   Widget _detailRow(String label, String value) {
