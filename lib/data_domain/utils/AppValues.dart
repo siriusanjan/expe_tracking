@@ -8,4 +8,5 @@ class AppValues {
   static const Color backgroundColor = Color(0XFFf0f1f7);
   static String myNotificationToken = "";
   static const int paginationLimit = 9;
+  static String remote_config_Access_token_key="access_token";
 }
