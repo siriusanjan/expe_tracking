@@ -18,16 +18,9 @@ class UpdateExpenseEvent extends ExpenseListEvent {
 }
 
 class FilterExpensesEvent extends ExpenseListEvent {
-  final DateTime? startDate;
-  final DateTime? endDate;
-  final ExpensesStatusEnum? expensesStatusFilter;
-  final ExpenseCategoryEnum? expenseCategoryEnum;
-  final String? employeeEmailFilter;
+  final Map<dynamic,dynamic> filterGear;
+
 
   FilterExpensesEvent(
-      {this.startDate,
-      this.endDate,
-      this.expensesStatusFilter,
-      this.expenseCategoryEnum,
-      this.employeeEmailFilter});
+      {required this.filterGear, r});
 }

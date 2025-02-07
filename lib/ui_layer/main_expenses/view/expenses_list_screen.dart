@@ -129,7 +129,6 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-
                   SafeArea(
                     child: Align(
                         alignment: Alignment.bottomRight,
@@ -157,6 +156,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                                 const EdgeInsets.only(right: 15.0, bottom: 15),
                             child: FloatingActionButton.extended(
                               onPressed: () {
+
                                 expensesHelper.openAddBottomSheet(
                                     blocContext: context);
                               },
@@ -195,11 +195,19 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
               if (loadingProgress == null) return child;
               return Center(
                 child: SizedBox(
-                    height:20,width:20,child: CircularProgressIndicator()), // Show loading indicator
+                    height: 20,
+                    width: 20,
+                    child:
+                        CircularProgressIndicator()), // Show loading indicator
               );
             },
             errorBuilder: (context, error, stackTrace) {
-              return Center(child: Text("Can't load photo",style: TextStyle(color: Colors.grey,fontSize: 8),),); // Show an error icon
+              return Center(
+                child: Text(
+                  "Can't load photo",
+                  style: TextStyle(color: Colors.grey, fontSize: 8),
+                ),
+              ); // Show an error icon
             },
           ),
         ),

@@ -145,6 +145,7 @@ class BaseDataController {
     }
     currentUserRole = UserRole.none;
     user = null;
+    BaseDataController().filterMap = {};
     await AuthHelper.logout();
   }
 }

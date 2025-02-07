@@ -1,6 +1,8 @@
+import 'package:expe_traking/data_domain/utils/base_data_controller.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../filter_helper.dart';
 import '../main_expenses/model/expenses_model.dart';
 import '../utils/AppValues.dart';
 
@@ -46,6 +48,7 @@ class DatabaseHelper {
     await db.insert('expenses', expense.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
   Future<void> insertExpensesList(List<ExpensesModel> expensesList) async {
     final db = await instance.database;
     final batch = db.batch();
@@ -60,10 +63,12 @@ class DatabaseHelper {
 
     await batch.commit();
   }
+
   Future<void> clearExpenses() async {
     final db = await instance.database;
     await db.delete('expenses');
   }
+
   Future<Map<ExpenseCategoryEnum, double>> getCategoryWiseTotalExpenses({
     DateTime? startDate,
     DateTime? endDate,
@@ -101,7 +106,7 @@ class DatabaseHelper {
     }
 
     String whereString =
-    whereClauses.isNotEmpty ? whereClauses.join(" AND ") : "";
+        whereClauses.isNotEmpty ? whereClauses.join(" AND ") : "";
 
     final List<Map<String, dynamic>> maps = await db.query(
       'expenses',
@@ -127,14 +132,19 @@ class DatabaseHelper {
 
     return categoryTotals;
   }
+
   Future<List<ExpensesModel>> getFilteredExpenses({
-    DateTime? startDate,
-    DateTime? endDate,
-    ExpensesStatusEnum? expensesStatusFilter,
-    ExpenseCategoryEnum? expenseCategoryEnum,
-    String? employeeEmailFilter,
+    required Map<dynamic, dynamic> filterGear,
     int page = 0, // Pagination (0-based index)
   }) async {
+    final filterGear = BaseDataController().filterMap;
+    final DateTime? startDate = filterGear[FilterExtraEnum.startDate];
+    final DateTime?  endDate = filterGear[FilterExtraEnum.endDate];
+    final String? employeeEmailFilter = filterGear[FilterExtraEnum.email];
+    final ExpenseCategoryEnum? expenseCategoryEnum = filterGear[ExpenseCategoryEnum];
+    final ExpensesStatusEnum? expensesStatusFilter = filterGear[ExpensesStatusEnum];
+    print("filterExpense "+expenseCategoryEnum.toString());
+    print("filterExpense "+expensesStatusFilter.toString());
     final db = await instance.database;
     List<String> whereClauses = [];
     List<dynamic> whereArgs = [];

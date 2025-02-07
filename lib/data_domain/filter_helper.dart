@@ -47,12 +47,7 @@ class FilterHelper {
     localFilterMap[ExpenseCategoryEnum] = selectedCategory;
     localFilterMap[ExpensesStatusEnum] = selectedStatus;
     BaseDataController().filterMap = localFilterMap;
-    BlocProvider.of<ExpenseListBloc>(context).add(FilterExpensesEvent(
-        startDate: localFilterMap[FilterExtraEnum.startDate],
-        endDate: localFilterMap[FilterExtraEnum.endDate],
-        employeeEmailFilter: localFilterMap[FilterExtraEnum.email],
-        expenseCategoryEnum: localFilterMap[ExpenseCategoryEnum],
-        expensesStatusFilter: localFilterMap[ExpensesStatusEnum]));
+    BlocProvider.of<ExpenseListBloc>(context).add(FilterExpensesEvent(filterGear: localFilterMap));
 
     Navigator.pop(context);
   }
