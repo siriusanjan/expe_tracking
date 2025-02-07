@@ -44,8 +44,7 @@ class ExpensesHelper {
     print("previousLength $recordeExpenseLength");
     expenseListBloc.add(LoadMoreExpensesEvent());
 
-    print(
-        "currentLength ${expenseListBloc.state.expenseList.length}");
+    print("currentLength ${expenseListBloc.state.expenseList.length}");
   }
 
   int addUpdateExpenses() {
@@ -178,28 +177,38 @@ class ExpensesHelper {
   }
 
   void openAddBottomSheet({required BuildContext blocContext}) {
-    showModalBottomSheet(
-        context: blocContext,
-        isScrollControlled: true,
-        builder: (dialogContext) {
-          return BlocProvider<ExpenseListBloc>.value(
-              value: expenseListBloc,
-              child: Container(
-                  height: AppValues.mainScreenHeight * 0.65,
-                  decoration: const BoxDecoration(
-                      color: AppValues.backgroundColor,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16))),
-                  padding: const EdgeInsets.all(16),
-                  child: const ExpenseForm()));
-        });
+    showDialog(
+      context: blocContext,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return BlocProvider<ExpenseListBloc>.value(
+            value: expenseListBloc,
+            child: Dialog(
+              insetPadding: EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context)
+                            .viewInsets
+                            .bottom, // Adjust for keyboard
+                      ),
+                      child: ExpenseForm());
+                },
+              ),
+            ));
+      },
+    );
   }
 
   void showFilterDialog(BuildContext blocContext) {
     showModalBottomSheet(
       useSafeArea: true,
       context: blocContext,
+      isDismissible: false,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return BlocProvider<ExpenseListBloc>.value(

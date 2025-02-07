@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:expe_traking/data_domain/utils/app_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 
 import '../firebase/firebase_utils.dart';
 import '../main_expenses/model/expenses_model.dart';
@@ -227,8 +229,8 @@ class NotificationManager {
     } else if (BaseDataController().currentUserRole == UserRole.manager) {
       registerManagerFCMToken();
     } else if (BaseDataController().currentUserRole == UserRole.employee) {
-      await FirebaseMessaging.instance.subscribeToTopic(
-          BaseDataController().user?.uid ?? "");
+      await FirebaseMessaging.instance
+          .subscribeToTopic(BaseDataController().user?.uid ?? "");
     }
   }
 
@@ -278,7 +280,7 @@ class NotificationManager {
 
   Future<String?> _getAccessToken() async {
     return null;
-  
+
     // Run gcloud command to get a fresh token
     // User? user = FirebaseAuth.instance.currentUser;
     // if (user != null) {
@@ -349,27 +351,28 @@ class NotificationManager {
 
   Future<void> sendPushNotification(
       ExpensesModel expense, Map<String, dynamic> notificationData) async {
-    String projectId = 'expensetraking-9d192';
-    Uri url = Uri.parse(
-        'https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
+      String projectId = 'expensetraking-9d192';
+      Uri url = Uri.parse(
+          'https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
 
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $accessToken",
-        },
-        body: jsonEncode(notificationData),
-      );
-      if (response.statusCode == 200) {
-        print("Notification sent to ");
-      } else {
-        print("Error sending notification: ${response.body}");
+      try {
+        final response = await http.post(
+          url,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $accessToken",
+          },
+          body: jsonEncode(notificationData),
+        );
+        if (response.statusCode == 200) {
+          print("Notification sent to ");
+        } else {
+          print("Error sending notification: ${response.body}");
+        }
+      } catch (e) {
+        print("Error: $e");
       }
-    } catch (e) {
-      print("Error: $e");
-    }
+
   }
 
   void updateExpenseStatus(ExpensesModel expense) async {
@@ -387,8 +390,7 @@ class NotificationManager {
       return true;
     }
 
-    if (BaseDataController().user?.uid ==
-            expensesModel.employeeID &&
+    if (BaseDataController().user?.uid == expensesModel.employeeID &&
         BaseDataController().currentUserRole == UserRole.employee) {
       return true;
     }

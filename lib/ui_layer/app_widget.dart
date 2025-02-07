@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'AppValues.dart';
+import '../data_domain/utils/AppValues.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String hintText;
@@ -32,6 +32,7 @@ class TextFieldWidget extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscure,
       maxLines: lines,
+      autofocus: false,
       validator: (value) {
         if ((value == null || value.isEmpty)) {
           return validatorErrorString;

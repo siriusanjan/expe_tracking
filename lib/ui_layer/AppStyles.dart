@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'AppValues.dart';
+import '../data_domain/utils/AppValues.dart';
 
 class AppStyles {
   static ButtonStyle elevatedButtonStyle() {

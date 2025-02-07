@@ -48,8 +48,10 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                   buildWhen: (previous, current) {
                 return current.currentPage == 1;
               }, builder: (context, state) {
-                return state.expenseCategoryTotal.isEmpty?Container(): CategoryWiseExpenseView(
-                    expensesCategoryAmountMap: state.expenseCategoryTotal);
+                return state.expenseCategoryTotal.isEmpty
+                    ? Container()
+                    : CategoryWiseExpenseView(
+                        expensesCategoryAmountMap: state.expenseCategoryTotal);
               }),
               BlocConsumer<ExpenseListBloc, ExpenseListState>(
                 listener: (context, state) {
@@ -127,24 +129,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SafeArea(
-                    child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.only(right: 15.0, bottom: 10),
-                          child: FloatingActionButton(
-                            onPressed: () {
-                              expensesHelper.showFilterDialog(context);
-                            },
-                            backgroundColor: AppValues.primaryColor,
-                            child: const Icon(
-                              Icons.search,
-                              color: AppValues.backgroundColor,
-                            ),
-                          ),
-                        )),
-                  ),
+
                   SafeArea(
                     child: Align(
                         alignment: Alignment.bottomRight,
@@ -204,7 +189,19 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
       child: ListTile(
         leading: SizedBox(
           width: 70,
-          child: Image.network(expense.receiptUrl),
+          child: Image.network(
+            expense.receiptUrl,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: SizedBox(
+                    height:20,width:20,child: CircularProgressIndicator()), // Show loading indicator
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Center(child: Text("Can't load photo",style: TextStyle(color: Colors.grey,fontSize: 8),),); // Show an error icon
+            },
+          ),
         ),
         title: Text(
           expense.title,

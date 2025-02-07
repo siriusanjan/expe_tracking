@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:expe_traking/data_domain/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,7 +16,8 @@ import '../utils/permission_utils.dart';
 import 'bloc_employee_form.dart';
 
 class EmployeeFormHelper {
-  BlocEmployeeForm blocEmployee = BlocEmployeeForm(EmployeeFormState.initialState);
+  BlocEmployeeForm blocEmployee =
+      BlocEmployeeForm(EmployeeFormState.initialState);
   File? finalPickedFile;
 
   // Focus nodes to manage focus between fields
@@ -23,7 +25,7 @@ class EmployeeFormHelper {
   final FocusNode descriptionFocusNode = FocusNode();
   final FocusNode amountFocusNode = FocusNode();
   ExpensesModel expensesModel = ExpensesModel();
-  ExpenseCategoryEnum expenseCategoryEnum=ExpenseCategoryEnum.miscellaneous;
+  ExpenseCategoryEnum expenseCategoryEnum = ExpenseCategoryEnum.miscellaneous;
 
   EmployeeFormHelper();
 
@@ -64,55 +66,74 @@ class EmployeeFormHelper {
     });
   }
 
-  void submitForm(BuildContext context) {
+  Future<void> submitForm(BuildContext context) async {
     AppDialogue.showLoadingDialog(context);
     blocEmployee.changeBlocState(EmployeeFormState.submittingForm);
     expensesModel.timeStamp = DateTime.timestamp();
-    BaseDataController().uploadReceipt(finalPickedFile!).then((receiptUrl) {
-      if (receiptUrl != null) {
-        expensesModel.receiptUrl = receiptUrl;
-        BaseDataController().addExpense(expensesModel, (message, docID,isSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-          if (isSuccess) {
-            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
-            Navigator.pop(context);
-            Navigator.pop(context);
+    if (finalPickedFile != null) {
+      if (await AppUtils.hasInternetConnection(context)) {
+        BaseDataController()
+            .uploadReceipt(finalPickedFile!)
+            .then((receiptUrl) async {
+          if (receiptUrl != null) {
+            expensesModel.receiptUrl = receiptUrl;
+            BaseDataController().addExpense(expensesModel,
+                (message, docID, isSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
+              if (isSuccess) {
+                blocEmployee
+                    .changeBlocState(EmployeeFormState.submittingResulted);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              } else {
+                blocEmployee
+                    .changeBlocState(EmployeeFormState.submittingResulted);
+                Navigator.pop(context);
+              }
+            });
           } else {
-            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
-            Navigator.pop(context);
+            // Navigator.pop(context);
+            // blocEmployee.changeBlocState(EmployeeState.submittingResulted);
+            //
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(content: Text('Unable to upload receipt')),
+            // );
+            expensesModel.receiptUrl =
+                "https://images.unsplash.com/photo-1546198632-9ef6368bef12?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            BaseDataController().addExpense(expensesModel,
+                (message, docID, isSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
+              if (isSuccess) {
+                blocEmployee
+                    .changeBlocState(EmployeeFormState.submittingResulted);
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  expensesModel.expId = docID;
+                  NotificationManager()
+                      .sendNotificationToManager(expensesModel);
+                  BaseDataController().updateExpenseList(expensesModel);
+                });
+                Navigator.pop(context);
+                Navigator.pop(context);
+              } else {
+                blocEmployee
+                    .changeBlocState(EmployeeFormState.submittingResulted);
+                Navigator.pop(context);
+              }
+            });
           }
         });
       } else {
-        // Navigator.pop(context);
-        // blocEmployee.changeBlocState(EmployeeState.submittingResulted);
-        //
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Unable to upload receipt')),
-        // );
-        expensesModel.receiptUrl =
-            "https://images.unsplash.com/photo-1546198632-9ef6368bef12?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
-        BaseDataController().addExpense(expensesModel, (message,docID, isSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-          if (isSuccess) {
-            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              expensesModel.expId=docID;
-              NotificationManager().sendNotificationToManager(expensesModel);
-              BaseDataController().updateExpenseList(expensesModel);
-            });
-            Navigator.pop(context);
-            Navigator.pop(context);
-          } else {
-            blocEmployee.changeBlocState(EmployeeFormState.submittingResulted);
-            Navigator.pop(context);
-          }
-        });
+        Navigator.pop(context);
       }
-    });
+    } else {
+      Navigator.pop(context);
+
+      AppDialogue.noUserFoundSnackBar(
+          context: context, message: "No File found");
+    }
   }
 }
