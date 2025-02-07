@@ -1,4 +1,6 @@
 import 'package:expe_traking/data_domain/firebase/firebase_utils.dart';
+import 'package:expe_traking/data_domain/notification/notification_manager.dart';
+import 'package:expe_traking/data_domain/utils/AppValues.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +26,18 @@ class AuthHelper {
     await prefs.setString('userRole', userRole.name ?? "");
   }
 
+  /// 🔹 Save  notification token after login
+  static Future<void> saveNotificationToken(String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('notificationToken', token);
+  }
+
+  /// 🔹 Retrieve saved user ID (UID)
+  static Future<String> getSavedNotificationToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('notificationToken') ?? accessToken;
+  }
+
   /// 🔹 Retrieve saved user ID (UID)
   static Future<String?> getSavedUserId() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,7 +47,7 @@ class AuthHelper {
   /// 🔹 Retrieve saved user Role (userRole)
   static Future<String> getSavedUserRole() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userRole' ) ?? "employee";
+    return prefs.getString('userRole') ?? "employee";
   }
 
   /// 🔹 Sign in with email and password
@@ -81,6 +95,6 @@ class AuthHelper {
 
   /// 🔹 Auto-login check (Navigate to home or login screen)
   static Future<bool> checkUserLoginStatus() async {
-   return await isUserLoggedIn();
+    return await isUserLoggedIn();
   }
 }

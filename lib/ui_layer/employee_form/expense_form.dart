@@ -231,10 +231,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 ),
               ),
               // Photo section
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: AppStyles.elevatedButtonStyle(),
-                child: const Text('Submit'),
+              SafeArea(
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: AppStyles.elevatedButtonStyle(),
+                  child: const Text('Submit'),
+                ),
               ),
             ],
           )),

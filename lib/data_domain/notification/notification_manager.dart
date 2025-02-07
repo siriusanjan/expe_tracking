@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 
 import '../firebase/firebase_utils.dart';
 import '../main_expenses/model/expenses_model.dart';
+import '../storage/auth_helper.dart';
 import '../utils/base_data_controller.dart';
 
 const String accessToken =
@@ -351,28 +352,30 @@ class NotificationManager {
 
   Future<void> sendPushNotification(
       ExpensesModel expense, Map<String, dynamic> notificationData) async {
-      String projectId = 'expensetraking-9d192';
-      Uri url = Uri.parse(
-          'https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
+    final String savedSqliteNotifToken =
+        await AuthHelper.getSavedNotificationToken();
 
-      try {
-        final response = await http.post(
-          url,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $accessToken",
-          },
-          body: jsonEncode(notificationData),
-        );
-        if (response.statusCode == 200) {
-          print("Notification sent to ");
-        } else {
-          print("Error sending notification: ${response.body}");
-        }
-      } catch (e) {
-        print("Error: $e");
+    String projectId = 'expensetraking-9d192';
+    Uri url = Uri.parse(
+        'https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $savedSqliteNotifToken",
+        },
+        body: jsonEncode(notificationData),
+      );
+      if (response.statusCode == 200) {
+        print("Notification sent to ");
+      } else {
+        print("Error sending notification: ${response.body}");
       }
-
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   void updateExpenseStatus(ExpensesModel expense) async {
