@@ -1,6 +1,7 @@
 # Expe_Tracking
 
 A new Flutter project for managing expenses with role-based authentication and offline support.
+### No backend and cloud storage so I have use glclinet to setup notification so access token may expires and need to be refresh by me set it to remote config to refresh
 
 ## Getting Started
 
