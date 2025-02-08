@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../ui_layer/main_expenses/view/widget/expenses_detail_view.dart';
 import '../../ui_layer/main_expenses/view/widget/filter_view.dart';
+import '../filter_helper.dart';
 import '../firebase/firebase_utils.dart';
 import '../storage/database_helper.dart';
 import '../../ui_layer/employee_form/expense_form.dart';
@@ -85,13 +86,16 @@ class ExpensesHelper {
         (previous.hasMoreData && !current.hasMoreData);
   }
 
-  Future<Map<ExpenseCategoryEnum, double>> getExpenseCategoryWiseTotal({
-    DateTime? startDate,
-    DateTime? endDate,
-    ExpensesStatusEnum? expensesStatusFilter,
-    ExpenseCategoryEnum? expenseCategoryEnum,
-    String? employeeEmailFilter,
-  }) async {
+  Future<Map<ExpenseCategoryEnum, double>> getExpenseCategoryWiseTotal(
+      {required Map<dynamic, dynamic> filterGear}) async {
+    final filterGear = BaseDataController().filterMap;
+    final DateTime? startDate = filterGear[FilterExtraEnum.startDate];
+    final DateTime? endDate = filterGear[FilterExtraEnum.endDate];
+    final String? employeeEmailFilter = filterGear[FilterExtraEnum.email];
+    final ExpenseCategoryEnum? expenseCategoryEnum =
+        filterGear[ExpenseCategoryEnum];
+    final ExpensesStatusEnum? expensesStatusFilter =
+        filterGear[ExpensesStatusEnum];
     return await DatabaseHelper.instance.getCategoryWiseTotalExpenses(
       startDate: startDate,
       endDate: endDate,
