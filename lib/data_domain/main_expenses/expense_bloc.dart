@@ -94,12 +94,13 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
     emit(state.copyWith(
         isLoading: true, expenseCategoryTotal: state.expenseCategoryTotal));
     try {
-      final mapCategoryTotal =
-          await expensesHelper.getExpenseCategoryWiseTotal();
+      final mapCategoryTotal = await expensesHelper.getExpenseCategoryWiseTotal(
+          filterGear: event.filterGear);
       final List<ExpensesModel> expenses = await expensesHelper.filterExpenses(
           expensesList: state.expenseList, filterGear: event.filterGear);
 
       print("expensesList " + expenses.length.toString());
+      print("mapCategoryTotal " + mapCategoryTotal.toString());
       emit(state.copyWith(
         expenseCategoryTotal: mapCategoryTotal,
         expenseList: expenses,
@@ -129,7 +130,7 @@ class ExpenseListBloc extends Bloc<ExpenseListEvent, ExpenseListState> {
       await DatabaseHelper.instance.clearExpenses();
       await DatabaseHelper.instance.insertExpensesList(expensesServer);
       final mapCategoryTotal =
-          await expensesHelper.getExpenseCategoryWiseTotal();
+          await expensesHelper.getExpenseCategoryWiseTotal(filterGear: {});
       print("fetchCatTotal ${mapCategoryTotal.length}");
       List<ExpensesModel> expensesList = await DatabaseHelper.instance
           .getFilteredExpenses(filterGear: {}, page: 0);

@@ -55,18 +55,20 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
               }),
               BlocConsumer<ExpenseListBloc, ExpenseListState>(
                 listener: (context, state) {
-                  final i = expensesHelper.addUpdateExpenses();
-                  if (!i.isNegative) {
-                    expensesHelper.listKey.currentState?.removeItem(
-                      i,
-                      (context, animation) => _buildExpenseCard(
-                          expensesHelper.expensesList[i], context),
-                    );
-                    Future.delayed(const Duration(milliseconds: 300), () {
-                      // Re-insert the updated item
-                      expensesHelper.listKey.currentState?.insertItem(i);
-                    });
-                  }
+                  try {
+                    final i = expensesHelper.addUpdateExpenses();
+                    if (!i.isNegative) {
+                      expensesHelper.listKey.currentState?.removeItem(
+                        i,
+                        (context, animation) => _buildExpenseCard(
+                            expensesHelper.expensesList[i], context),
+                      );
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        // Re-insert the updated item
+                        expensesHelper.listKey.currentState?.insertItem(i);
+                      });
+                    }
+                  } catch (e) {}
                 },
                 buildWhen: (previous, current) => expensesHelper
                     .canListViewRebuilds(previous: previous, current: current),
@@ -79,14 +81,25 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                   } else if (state.expenseList.isEmpty) {
                     BaseDataController().updateExpenseList =
                         expensesHelper.onUpdate;
-                    return  Expanded(child: Center(child: Column(
+                    return Expanded(
+                        child: Center(
+                            child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("No Expense Found ",style: TextStyle(color: Colors.grey),),
-                        SizedBox(height: 30,),
+                        Text(
+                          "No Expense Found ",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
                         Opacity(
-                          opacity: 0.5, // Adjust opacity between 0.0 (fully transparent) and 1.0 (fully visible)
-                          child: Image.asset("assets/emptyExpense.png",width: AppValues.mainScreenWidth*0.3,)),
+                            opacity: 0.5,
+                            // Adjust opacity between 0.0 (fully transparent) and 1.0 (fully visible)
+                            child: Image.asset(
+                              "assets/emptyExpense.png",
+                              width: AppValues.mainScreenWidth * 0.3,
+                            )),
                       ],
                     )));
                   }
@@ -141,8 +154,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                   Align(
                       alignment: Alignment.bottomRight,
                       child: Padding(
-                        padding:
-                            const EdgeInsets.only(right: 15.0, bottom: 15),
+                        padding: const EdgeInsets.only(right: 15.0, bottom: 15),
                         child: FloatingActionButton(
                           onPressed: () {
                             expensesHelper.showFilterDialog(context);
@@ -163,7 +175,6 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                                 const EdgeInsets.only(right: 15.0, bottom: 15),
                             child: FloatingActionButton.extended(
                               onPressed: () {
-
                                 expensesHelper.openAddBottomSheet(
                                     blocContext: context);
                               },
